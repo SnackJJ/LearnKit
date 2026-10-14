@@ -4,8 +4,10 @@ import { describe, expect, it } from "vitest";
 import { parseCardsFromText } from "../src/engine/parser/parser";
 
 describe("math-review-test.md fixture", () => {
+  // Lives under tests/fixtures so it is versioned with the test: the `offline/`
+  // directory is gitignored scratch space and is absent on CI.
   const text = readFileSync(
-    new URL("../offline/math-review-test.md", import.meta.url),
+    new URL("./fixtures/math-review-test.md", import.meta.url),
     "utf8",
   );
 
