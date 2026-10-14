@@ -7,6 +7,7 @@ offline/
 # Temp files
 *.tmp.css
 *.map
+meta.json
 
 # Source maps in root (if any)
 *.js.map
@@ -27,6 +28,7 @@ tooling/*
 !tooling/esbuild.config.js
 !tooling/postcss.config.cjs
 !tooling/eslint.config.mjs
+!tooling/check-bundle-size.mjs
 !tooling/dedupe-css-source.mjs
 !tooling/postcss-dedupe-selectors.cjs
 !tooling/postcss-dedupe-properties.cjs

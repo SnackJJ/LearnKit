@@ -1,5 +1,13 @@
 # Exclude development-only files from source archives (git archive)
-tooling/** export-ignore
+#
+# DO NOT add `tooling/** export-ignore` here.
+# `npm run build` executes `node tooling/esbuild.config.js` and reads
+# `tooling/postcss.config.cjs`, so stripping tooling/ from the source archive
+# makes `npm run build` fail with MODULE_NOT_FOUND in any clean environment
+# that builds from the archive (GitHub's source zip, and the Obsidian
+# community-plugin review sandbox). What gets committed is controlled by
+# .gitignore, which already whitelists exactly the tooling files the build
+# needs - see the `!tooling/...` negations there.
 offline/** export-ignore
 coverage/** export-ignore
 release/** export-ignore

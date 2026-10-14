@@ -31,3 +31,48 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      # main.js lands in .obsidian/plugins/learnkit/ and Obsidian Sync syncs the
+      # configuration folder. Sync enforces a per-file limit (5 MB on Standard),
+      # so an oversized main.js silently never reaches the user's other devices.
+      - name: Enforce bundle size budget
+        run: npm run check:size
+
+  # The Obsidian community-plugin review sandbox does not build from a git
+  # checkout: it unpacks the GitHub *source archive*, and `git archive` honours
+  # `.gitattributes` `export-ignore`. Stripping the build tooling there makes
+  # `npm run build` die with MODULE_NOT_FOUND ("Cannot find module
+  # .../tooling/esbuild.config.js") for the reviewer while passing locally.
+  # This job reproduces that exact path so it can never regress.
+  build-from-source-archive:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Use Node.js 20.19.0
+        uses: actions/setup-node@v5
+        with:
+          node-version: 20.19.0
+          cache: npm
+
+      - name: Unpack source archive (honours .gitattributes export-ignore)
+        run: |
+          mkdir -p "$RUNNER_TEMP/archive"
+          git archive HEAD | tar -x -C "$RUNNER_TEMP/archive"
+
+      - name: Install dependencies from the archive
+        run: |
+          cd "$RUNNER_TEMP/archive"
+          npm ci
+
+      - name: Build from the archive
+        run: |
+          cd "$RUNNER_TEMP/archive"
+          npm run build
+
+      - name: Check bundle size budget from the archive build
+        run: |
+          cd "$RUNNER_TEMP/archive"
+          node tooling/check-bundle-size.mjs
