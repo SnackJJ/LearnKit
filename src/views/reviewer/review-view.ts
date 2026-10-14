@@ -34,6 +34,7 @@ import { renderSessionMode } from "./render-session";
 
 import { openSproutImageZoom } from "./zoom";
 import { SproutMarkdownHelper } from "./markdown-render";
+import { isRevealOrNextKey, shouldDeferSpaceToNativeControl } from "./key-actions";
 import { processCircleFlagsInMarkdown, hydrateCircleFlagsInElement } from "../../platform/flags/flag-tokens";
 
 // split-out helpers
@@ -2228,6 +2229,12 @@ export class SproutReviewerView extends ItemView {
     )
       return;
 
+    // Space activates the focused control natively. Keyboard users reach the grade
+    // buttons, MCQ options and Skip via Tab, so never steal Space from them.
+    // (See key-actions.ts — this is why the reviewer needs the guard while Enter,
+    // which already behaved this way, is untouched.)
+    if (shouldDeferSpaceToNativeControl(ev, t)) return;
+
     if (this.mode !== "session" || !this.session) return;
 
     if (ev.key === "Escape" && this._moreOpen) {
@@ -2239,6 +2246,11 @@ export class SproutReviewerView extends ItemView {
 
     const isEnter =
       ev.key === "Enter" || ev.code === "Enter" || ev.code === "NumpadEnter";
+    // GitHub #208/#215: the Keyboard Shortcuts modal and the sidebar widget both
+    // document Space and → as "Reveal or next", but the reviewer only ever accepted
+    // Enter. `isAdvance` is the documented contract; `isEnter` is kept for the few
+    // places that genuinely mean "the Enter key specifically".
+    const isAdvance = isRevealOrNextKey(ev);
 
     const k = (ev.key || "").toLowerCase();
 
@@ -2278,6 +2290,13 @@ export class SproutReviewerView extends ItemView {
         this.backToDecks();
         return;
       }
+      if (k === "t") {
+        ev.preventDefault();
+        ev.stopPropagation();
+        closeMoreMenuImpl(this);
+        void this.plugin.openReviewerTab();
+        return;
+      }
       return;
     }
 
@@ -2311,6 +2330,17 @@ export class SproutReviewerView extends ItemView {
       ev.stopPropagation();
       closeMoreMenuImpl(this);
       void this.openCurrentCardInNote();
+      return;
+    }
+
+    // Documented as "Switch to full study page" (GitHub #208) — same action the
+    // sidebar widget's T performs. openReviewerTab() reuses the existing reviewer
+    // leaf, so this is idempotent rather than spawning a duplicate tab.
+    if (k === "t") {
+      ev.preventDefault();
+      ev.stopPropagation();
+      closeMoreMenuImpl(this);
+      void this.plugin.openReviewerTab();
       return;
     }
 
@@ -2359,7 +2389,7 @@ export class SproutReviewerView extends ItemView {
       return;
     }
 
-    if (isEnter && graded) {
+    if (isAdvance && graded) {
       ev.preventDefault();
       ev.stopPropagation();
       closeMoreMenuImpl(this);
@@ -2449,12 +2479,12 @@ export class SproutReviewerView extends ItemView {
               }
             }
           }
-        } else if (isEnter && !graded && this._mcqMultiSelected.size > 0) {
+        } else if (isAdvance && !graded && this._mcqMultiSelected.size > 0) {
           ev.preventDefault();
           ev.stopPropagation();
           closeMoreMenuImpl(this);
           void this.answerMcqMulti([...this._mcqMultiSelected]);
-        } else if (isEnter && !graded && this._mcqMultiSelected.size === 0) {
+        } else if (isAdvance && !graded && this._mcqMultiSelected.size === 0) {
           ev.preventDefault();
           ev.stopPropagation();
           closeMoreMenuImpl(this);
@@ -2475,7 +2505,7 @@ export class SproutReviewerView extends ItemView {
             }
             submitBtnEl.dataset.emptyAttempt = String(Number(submitBtnEl.dataset.emptyAttempt || "0") + 1);
           }
-        } else if (isEnter && graded) {
+        } else if (isAdvance && graded) {
           ev.preventDefault();
           ev.stopPropagation();
           closeMoreMenuImpl(this);
@@ -2504,7 +2534,7 @@ export class SproutReviewerView extends ItemView {
 
     // OQ: Enter key submits order (ungraded) or acts like "Next" (graded)
     if (card.type === "oq") {
-      if (isEnter && !graded) {
+      if (isAdvance && !graded) {
         ev.preventDefault();
         ev.stopPropagation();
         closeMoreMenuImpl(this);
@@ -2521,7 +2551,7 @@ export class SproutReviewerView extends ItemView {
         void this.answerOq(orderToSubmit);
         return;
       }
-      if (isEnter && graded) {
+      if (isAdvance && graded) {
         ev.preventDefault();
         ev.stopPropagation();
         closeMoreMenuImpl(this);
@@ -2529,7 +2559,7 @@ export class SproutReviewerView extends ItemView {
       }
       // Grade keys after reveal
       if (graded) {
-        if (isEnter) {
+        if (isAdvance) {
           ev.preventDefault();
           ev.stopPropagation();
           closeMoreMenuImpl(this);
@@ -2551,7 +2581,7 @@ export class SproutReviewerView extends ItemView {
     const isHotspot = card.type === "hq" || card.type === "hq-child";
 
     if (isHotspot) {
-      if (isEnter && !graded) {
+      if (isAdvance && !graded) {
         ev.preventDefault();
         ev.stopPropagation();
         closeMoreMenuImpl(this);
@@ -2575,7 +2605,7 @@ export class SproutReviewerView extends ItemView {
         return;
       }
 
-      if (isEnter && graded) {
+      if (isAdvance && graded) {
         ev.preventDefault();
         ev.stopPropagation();
         closeMoreMenuImpl(this);
@@ -2618,7 +2648,7 @@ export class SproutReviewerView extends ItemView {
     }
 
     if (isRevealable) {
-      if (isEnter && !graded) {
+      if (isAdvance && !graded) {
         ev.preventDefault();
         ev.stopPropagation();
         closeMoreMenuImpl(this);

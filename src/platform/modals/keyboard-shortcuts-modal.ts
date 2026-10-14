@@ -13,6 +13,7 @@ import { scopeModalToWorkspace, setModalTitle } from "./modal-utils";
 import { setCssProps } from "../core/ui";
 import type LearnKitPlugin from "../../main";
 import { t } from "../translations/translator";
+import { REVEAL_OR_NEXT_KEYS } from "../../views/reviewer/key-actions";
 
 /* ------------------------------------------------------------------ */
 /*  Shortcut data                                                      */
@@ -38,7 +39,9 @@ export function getShortcutGroups(
     {
       title: tx("ui.shortcuts.group.navigation", "Navigation"),
       shortcuts: [
-        { keys: ["Enter", "Space", "→"], label: tx("ui.shortcuts.revealOrNext", "Reveal or next") },
+        // Shared with the reviewer's key handler (src/views/reviewer/key-actions.ts)
+        // so the documented keys and the implemented keys cannot drift apart.
+        { keys: [...REVEAL_OR_NEXT_KEYS], label: tx("ui.shortcuts.revealOrNext", "Reveal or next") },
         { keys: ["←"], label: tx("ui.shortcuts.hideAnswer", "Back to question") },
         { keys: ["Q"], label: tx("ui.shortcuts.quit", "End session") },
         { keys: ["T"], label: tx("ui.shortcuts.openStudyView", "Switch to full study page") },
