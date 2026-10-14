@@ -36,6 +36,7 @@ export interface IStore {
   getAllCards(): CardRecord[];
   getAllStates(): Record<string, CardState>;
   getCardsByNote(notePath: string): CardRecord[];
+  retargetSourceNotePath(oldPath: string, newPath: string): number;
   getQuarantine(): Record<string, QuarantineEntry>;
   isQuarantined(id: string): boolean;
   getState(id: string): CardState | null;

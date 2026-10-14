@@ -296,6 +296,7 @@
   "ui.command.open.addOrderedQuestionToNote": "Añadir tarjeta de pregunta ordenada a la nota",
   "ui.command.open.analytics": "Abrir análisis",
   "ui.command.open.assistantWidget": "Abrir widget de acompañante de estudio",
+  "ui.command.open.cleanupOrphaned": "Limpiar tarjetas huérfanas",
   "ui.command.open.coach": "Abrir entrenador",
   "ui.command.open.editFlashcards": "Editar tarjetas",
   "ui.command.open.exportAnki": "Exportar a Anki (.apkg)",
@@ -599,6 +600,9 @@
   "ui.noteReview.title.noneDue": "¡No hay notas pendientes actualmente!",
   "ui.noteReview.title.practiceRemaining": "{count} nota{suffix} restante{suffix} en esta sesión de práctica",
   "ui.notice.commandUnavailable": "El comando {label} no está disponible.",
+  "ui.notice.orphanCleanup.done": "Se eliminaron {count} tarjeta{suffix} huérfana{suffix}.",
+  "ui.notice.orphanCleanup.none": "No se encontraron tarjetas huérfanas.",
+  "ui.notice.orphanCleanup.skipped": "Omitido: el índice del cofre aún no está listo (no se encontraron notas).",
   "ui.notice.syncNotAvailable": "Sincronización no disponible (no se encontró método de sincronización).",
   "ui.parseError.cannotResolve": "Cannot resolve note path for {anchor}",
   "ui.parseError.closeDialog": "Cerrar este diálogo",
@@ -1932,5 +1936,10 @@
   "ui.sync.privileges.off": "Desactivada",
   "ui.settings.appearance.syncPrivileges.name": "Privilegios de sincronización",
   "ui.settings.appearance.syncPrivileges.desc": "Controla qué puede modificar la sincronización en tus notas de Markdown.",
-  "ui.settings.appearance.syncPrivileges.explainer": "Completa — IDs de anclaje + normalización + migración de taquigrafía + formato. Simple — solo IDs de anclaje, sin otros cambios en tus notas. Desactivada — la sincronización no modifica tus notas."
+  "ui.settings.appearance.syncPrivileges.explainer": "Completa — IDs de anclaje + normalización + migración de taquigrafía + formato. Simple — solo IDs de anclaje, sin otros cambios en tus notas. Desactivada — la sincronización no modifica tus notas.",
+  "ui.settings.modals.cleanupOrphans.body": "Hay {count} tarjeta{suffix} que hace referencia a una nota que ya no existe. Se eliminarán de la base de datos; tus notas no se modificarán.",
+  "ui.settings.modals.cleanupOrphans.confirm": "Limpiar",
+  "ui.settings.modals.cleanupOrphans.error": "LearnKit – no se pudieron limpiar las tarjetas huérfanas",
+  "ui.settings.modals.cleanupOrphans.more": "…y {count} nota{suffix} más",
+  "ui.settings.modals.confirmCleanupOrphans": "¿Limpiar las tarjetas huérfanas?"
 }

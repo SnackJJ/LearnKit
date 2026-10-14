@@ -296,6 +296,7 @@
   "ui.command.open.addOrderedQuestionToNote": "ノートに順序付き質問フラッシュカードを追加",
   "ui.command.open.analytics": "分析を開く",
   "ui.command.open.assistantWidget": "学習コンパニオンウィジェットを開く",
+  "ui.command.open.cleanupOrphaned": "孤立したフラッシュカードを整理",
   "ui.command.open.coach": "コーチを開く",
   "ui.command.open.editFlashcards": "フラッシュカードを編集",
   "ui.command.open.exportAnki": "Ankiにエクスポート（.apkg）",
@@ -599,6 +600,9 @@
   "ui.noteReview.title.noneDue": "現在期限切れのノートはありません！",
   "ui.noteReview.title.practiceRemaining": "この練習セッション残り{suffix}{count}件",
   "ui.notice.commandUnavailable": "{label}コマンドは利用できません。",
+  "ui.notice.orphanCleanup.done": "孤立したフラッシュカードを {count} 件削除しました。",
+  "ui.notice.orphanCleanup.none": "孤立したフラッシュカードは見つかりませんでした。",
+  "ui.notice.orphanCleanup.skipped": "スキップしました：保管庫の索引がまだ準備できていません（ノートが見つかりません）。",
   "ui.notice.syncNotAvailable": "同期できません（同期方法が見つかりません）。",
   "ui.parseError.cannotResolve": "Cannot resolve note path for {anchor}",
   "ui.parseError.closeDialog": "このダイアログを閉じる",
@@ -1935,5 +1939,10 @@
   "ui.sync.privileges.off": "オフ",
   "ui.settings.appearance.syncPrivileges.name": "同期権限",
   "ui.settings.appearance.syncPrivileges.desc": "同期が Markdown ノートで変更できる内容を制御します。",
-  "ui.settings.appearance.syncPrivileges.explainer": "完全 — アンカー ID + 正規化 + ショートハンド移行 + フォーマット。簡易 — アンカー ID のみ、ノートへのその他の変更なし。オフ — 同期はノートに触れません。"
+  "ui.settings.appearance.syncPrivileges.explainer": "完全 — アンカー ID + 正規化 + ショートハンド移行 + フォーマット。簡易 — アンカー ID のみ、ノートへのその他の変更なし。オフ — 同期はノートに触れません。",
+  "ui.settings.modals.cleanupOrphans.body": "{count} 枚のフラッシュカードが存在しないノートを参照しています。データベースから削除されますが、ノートは変更されません。",
+  "ui.settings.modals.cleanupOrphans.confirm": "整理",
+  "ui.settings.modals.cleanupOrphans.error": "LearnKit – 孤立したフラッシュカードの整理に失敗しました",
+  "ui.settings.modals.cleanupOrphans.more": "…ほか {count} 件のノート",
+  "ui.settings.modals.confirmCleanupOrphans": "孤立したフラッシュカードを整理しますか？"
 }

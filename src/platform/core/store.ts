@@ -615,6 +615,52 @@ export class JsonStore {
     return this.getAllCards().filter((c) => c.sourceNotePath === notePath);
   }
 
+  /**
+   * Re-points card and quarantine records after a note or folder is renamed/moved.
+   *
+   * Every reconciliation in the sync engine matches records by `sourceNotePath`
+   * (`rec.sourceNotePath !== file.path → continue`), so a record that keeps a stale
+   * path can never be updated *or* deleted again — it becomes a ghost that still shows
+   * up in the Library and in study sessions (GitHub #216).
+   *
+   * Accepts a file path (exact match) or a folder path (prefix match), so moving a
+   * folder retargets every note inside it.
+   *
+   * @returns the number of card records that were retargeted.
+   */
+  retargetSourceNotePath(oldPath: string, newPath: string): number {
+    const from = String(oldPath ?? "").trim();
+    const to = String(newPath ?? "").trim();
+    if (!from || !to || from === to) return 0;
+
+    const remap = (path: string): string | null => {
+      if (!path) return null;
+      if (path === from) return to;
+      if (path.startsWith(`${from}/`)) return `${to}${path.slice(from.length)}`;
+      return null;
+    };
+
+    let moved = 0;
+
+    for (const rec of Object.values(this.data.cards || {})) {
+      if (!rec) continue;
+      const next = remap(String(rec.sourceNotePath || ""));
+      if (next === null) continue;
+      rec.sourceNotePath = next;
+      moved += 1;
+    }
+
+    for (const entry of Object.values(this.data.quarantine || {})) {
+      if (!entry) continue;
+      const next = remap(String(entry.notePath || ""));
+      if (next === null) continue;
+      entry.notePath = next;
+    }
+
+    if (moved > 0) this.bumpRevision();
+    return moved;
+  }
+
   getQuarantine() {
     return this.data.quarantine || {};
   }

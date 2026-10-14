@@ -256,6 +256,105 @@ export class ConfirmDeleteAllFlashcardsModal extends Modal {
 }
 
 // ────────────────────────────────────────────
+// 3b) ConfirmCleanupOrphanedCardsModal
+// ────────────────────────────────────────────
+
+/** One row per note that still owns ghost cards. */
+export type OrphanedNoteSummary = { path: string; count: number };
+
+/**
+ * Confirms removing flashcards whose source note no longer exists.
+ *
+ * These records are unreachable: the sync engine matches cards by note path, so it can
+ * neither update nor delete them, yet they still appear in the Library and in study
+ * sessions (GitHub #216). Only records are removed — no note content is touched.
+ */
+export class ConfirmCleanupOrphanedCardsModal extends Modal {
+  plugin: LearnKitPlugin;
+  onConfirm: () => Promise<void>;
+  private readonly cardCount: number;
+  private readonly notes: OrphanedNoteSummary[];
+
+  constructor(
+    app: App,
+    plugin: LearnKitPlugin,
+    cardCount: number,
+    notes: OrphanedNoteSummary[],
+    onConfirm: () => Promise<void>,
+  ) {
+    super(app);
+    this.plugin = plugin;
+    this.cardCount = cardCount;
+    this.notes = notes;
+    this.onConfirm = onConfirm;
+  }
+
+  onOpen() {
+    const locale = this.plugin.settings?.general?.interfaceLanguage;
+    const common = txCommon(locale);
+    const contentEl = initConfirmModal(
+      this,
+      tx(locale, "ui.settings.modals.confirmCleanupOrphans", "Clean up orphaned flashcards?"),
+    );
+
+    contentEl.createEl("p", {
+      cls: "learnkit-confirm-modal-copy learnkit-confirm-modal-copy",
+      text: tx(
+        locale,
+        "ui.settings.modals.cleanupOrphans.body",
+        "{count} flashcard{suffix} reference a note that no longer exists. They will be removed from the database; your notes are not modified.",
+        { count: this.cardCount, suffix: this.cardCount === 1 ? "" : "s" },
+      ),
+    });
+
+    const list = contentEl.createEl("ul", { cls: "learnkit-confirm-modal-list" });
+    const MAX_ROWS = 10;
+    for (const note of this.notes.slice(0, MAX_ROWS)) {
+      list.createEl("li", {
+        text: `${note.path} (${note.count})`,
+        cls: "learnkit-confirm-modal-list-item",
+      });
+    }
+    if (this.notes.length > MAX_ROWS) {
+      list.createEl("li", {
+        text: tx(locale, "ui.settings.modals.cleanupOrphans.more", "…and {count} more note{suffix}", {
+          count: this.notes.length - MAX_ROWS,
+          suffix: this.notes.length - MAX_ROWS === 1 ? "" : "s",
+        }),
+        cls: "learnkit-confirm-modal-list-item",
+      });
+    }
+
+    const row = contentEl.createDiv();
+    row.classList.add("learnkit-confirm-row", "learnkit-confirm-row");
+
+    const cancelBtn = row.createEl("button", { text: common.cancel });
+    styleConfirmActionButton(cancelBtn, "default");
+    cancelBtn.onclick = () => this.close();
+
+    const confirmBtn = row.createEl("button", {
+      text: tx(locale, "ui.settings.modals.cleanupOrphans.confirm", "Clean up"),
+    });
+    styleConfirmActionButton(confirmBtn, "danger");
+    confirmBtn.onclick = async () => {
+      this.close();
+      try {
+        await this.onConfirm();
+      } catch (e) {
+        log.error(e);
+        new Notice(
+          tx(locale, "ui.settings.modals.cleanupOrphans.error", "LearnKit – failed to clean up orphaned flashcards"),
+        );
+      }
+    };
+  }
+
+  onClose() {
+    this.contentEl.empty();
+  }
+}
+
+// ────────────────────────────────────────────
 // 4) ConfirmResetDefaultsModal
 // ────────────────────────────────────────────
 

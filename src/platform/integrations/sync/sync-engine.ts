@@ -1337,6 +1337,163 @@ function countRemovedGroups(before: Set<string>, after: Set<string>): number {
   return removed;
 }
 
+// ────────────────────────────────────────────
+// Ghost cards (source note no longer exists)
+// ────────────────────────────────────────────
+
+/** Card types whose lifecycle is owned by a parent card. */
+const CHILD_CARD_TYPES = new Set([
+  "io-child",
+  "hq-child",
+  "cloze-child",
+  "reversed-child",
+  "combo-child",
+]);
+
+/** Why a card record is considered unreachable. */
+export type OrphanedCardReason = "note-missing";
+
+export type OrphanedCard = {
+  id: string;
+  type: string;
+  sourceNotePath: string;
+  reason: OrphanedCardReason;
+};
+
+/**
+ * Finds top-level card records whose source note is no longer in the vault.
+ *
+ * These are the "ghost" cards reported in GitHub #216: every reconciliation in this
+ * engine matches records by `sourceNotePath`, so once a note is renamed/moved and the
+ * path drifts (or the note is deleted outside Obsidian), the record can never be
+ * updated or deleted again — yet the Library and study sessions still list it.
+ *
+ * Child cards are excluded: they are reaped through their parent.
+ */
+export function findOrphanedCards(plugin: LearnKitPlugin): OrphanedCard[] {
+  const vault = plugin.app?.vault;
+  if (!vault) return [];
+
+  const out: OrphanedCard[] = [];
+
+  for (const [id, rec] of Object.entries(plugin.store.data.cards || {})) {
+    if (!rec) continue;
+    const type = String(rec.type || "");
+    if (CHILD_CARD_TYPES.has(type)) continue;
+
+    const path = String(rec.sourceNotePath || "").trim();
+    // A record with no path at all cannot be reconciled either, but it also cannot be
+    // attributed to a note — leave it to the backup/restore tooling.
+    if (!path) continue;
+
+    const file = vault.getAbstractFileByPath(path);
+    if (file instanceof TFile) continue;
+
+    out.push({ id: String(id), type, sourceNotePath: path, reason: "note-missing" });
+  }
+
+  return out;
+}
+
+export type PruneOrphanedCardsResult = {
+  removed: number;
+  childrenRemoved: number;
+  ids: string[];
+  /** Set when the sweep refused to run because the vault index looked unavailable. */
+  skippedReason?: "vault-empty";
+};
+
+/**
+ * Deletes card records (and their children, states, IO/HQ maps and cached TTS audio)
+ * for notes that no longer exist.
+ *
+ * Safety: refuses to run when the vault reports zero markdown files, because that means
+ * the index is not ready (or the vault is genuinely empty) and every card would look
+ * orphaned. Callers that run a vault-wide scan already know the vault is readable.
+ */
+export async function pruneOrphanedCards(
+  plugin: LearnKitPlugin,
+  options?: { dryRun?: boolean },
+): Promise<PruneOrphanedCardsResult> {
+  const vault = plugin.app?.vault;
+  const dryRun = options?.dryRun === true;
+
+  if (!vault) return { removed: 0, childrenRemoved: 0, ids: [], skippedReason: "vault-empty" };
+
+  const markdownFiles = vault.getMarkdownFiles();
+  if (!markdownFiles.length) {
+    log.warn("pruneOrphanedCards: vault reported no markdown files — skipping (index not ready?)");
+    return { removed: 0, childrenRemoved: 0, ids: [], skippedReason: "vault-empty" };
+  }
+
+  const orphans = findOrphanedCards(plugin);
+  if (!orphans.length) return { removed: 0, childrenRemoved: 0, ids: [], skippedReason: undefined };
+
+  if (dryRun) {
+    return { removed: orphans.length, childrenRemoved: 0, ids: orphans.map((o) => o.id) };
+  }
+
+  let childrenRemoved = 0;
+  const removedIds: string[] = [];
+
+  for (const orphan of orphans) {
+    const rec = plugin.store.data.cards[orphan.id];
+    if (!rec) continue;
+
+    // Mirror the type-specific teardown used by the vault-wide scan.
+    switch (orphan.type) {
+      case "io": {
+        childrenRemoved += deleteIoChildren(plugin, orphan.id);
+        if (rec.imageRef) await deleteIoImage(plugin, rec.imageRef, orphan.sourceNotePath);
+        const ioMap = plugin.store.data.io || {};
+        if (ioMap[orphan.id]) delete ioMap[orphan.id];
+        break;
+      }
+      case "hq": {
+        childrenRemoved += deleteHqChildren(plugin, orphan.id);
+        const hqMap = plugin.store.data.hq || {};
+        if (hqMap[orphan.id]) delete hqMap[orphan.id];
+        break;
+      }
+      case "cloze":
+        childrenRemoved += deleteClozeChildren(plugin, orphan.id);
+        break;
+      case "reversed":
+        childrenRemoved += deleteReversedChildren(plugin, orphan.id);
+        break;
+      case "combo":
+        childrenRemoved += deleteComboChildren(plugin, orphan.id);
+        break;
+      default:
+        break;
+    }
+
+    delete plugin.store.data.cards[orphan.id];
+    if (plugin.store.data.states) delete plugin.store.data.states[orphan.id];
+    removedIds.push(orphan.id);
+
+    logSyncMutation("pruneOrphanedCards", "deleted", {
+      id: orphan.id,
+      type: orphan.type,
+      notePath: orphan.sourceNotePath,
+      reason: "source-note-missing",
+    });
+  }
+
+  // Any children whose parent just vanished, plus orphaned scheduling states.
+  childrenRemoved +=
+    deleteOrphanIoChildren(plugin) +
+    deleteOrphanHqChildren(plugin) +
+    deleteOrphanClozeChildren(plugin) +
+    deleteOrphanReversedChildren(plugin) +
+    deleteOrphanComboChildren(plugin);
+  sanitizeOrphanStates(plugin);
+
+  await pruneTtsCacheForCards(plugin, removedIds, "orphaned");
+
+  return { removed: removedIds.length, childrenRemoved, ids: removedIds, skippedReason: undefined };
+}
+
 /**
  * Deletes orphaned IO / HQ images from the vault.
  * Matches both the legacy `sprout-io-*` pattern and the new

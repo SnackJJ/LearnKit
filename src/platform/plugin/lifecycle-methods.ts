@@ -6,7 +6,7 @@
  *  - WithLifecycleMethods
  */
 
-import { Notice, TAbstractFile, TFile, Platform, type WorkspaceLeaf } from "obsidian";
+import { Notice, TAbstractFile, TFile, TFolder, Platform, type WorkspaceLeaf } from "obsidian";
 import { LearnKitPluginBase, type Constructor } from "./plugin-base";
 
 import {
@@ -59,9 +59,10 @@ import { SproutNoteReviewView } from "../../views/note-review/view/note-review-v
 import { SproutExamGeneratorView } from "../../views/exam-generator/exam-generator-view";
 import { SproutCoachView } from "../../views/coach";
 import { CoachPlanSqlite } from "../core/coach-plan-sqlite";
-import { syncQuestionBank } from "../integrations/sync/sync-engine";
+import { syncQuestionBank, findOrphanedCards, pruneOrphanedCards } from "../integrations/sync/sync-engine";
 import { CardCreatorModal } from "../modals/card-creator-modal";
 import { ParseErrorModal } from "../modals/parse-error-modal";
+import { ConfirmCleanupOrphanedCardsModal } from "../../views/settings/confirm-modals";
 import { setDelimiter } from "../core/delimiter";
 import {
   initialiseDedicatedApiKeyStorage,
@@ -76,6 +77,73 @@ import { setLocaleFileReader, loadLocaleBundlesAsync } from "../translations/tra
 
 export function WithLifecycleMethods<T extends Constructor<LearnKitPluginBase>>(Base: T) {
   return class WithLifecycleMethods extends Base {
+    /**
+     * Re-points this plugin's card records after a note or folder is renamed/moved.
+     *
+     * Every reconciliation in the sync engine matches records by `sourceNotePath`
+     * (`rec.sourceNotePath !== file.path → continue`), so a record that keeps a stale
+     * path can never be updated *or* deleted again — it becomes a ghost that still
+     * shows up in the Library and in study sessions (GitHub #216).
+     */
+    async _retargetCardsAfterMove(oldPath: string, newPath: string): Promise<void> {
+      try {
+        const moved = this.store?.retargetSourceNotePath?.(oldPath, newPath) ?? 0;
+        if (moved <= 0) return;
+        await this.store.persist();
+        log.info(`rename: retargeted ${moved} card record(s) ${oldPath} -> ${newPath}`);
+      } catch (e) {
+        log.swallow(`retarget cards after move ${oldPath} -> ${newPath}`, e);
+      }
+    }
+
+    /**
+     * Command entry point: find flashcards whose source note no longer exists, confirm
+     * with the user, then remove them (plus their children, scheduling state and any
+     * cached audio).
+     */
+    async _runCleanupOrphanedCards(): Promise<void> {
+      const orphans = findOrphanedCards(this);
+
+      if (!orphans.length) {
+        new Notice(this._tx("ui.notice.orphanCleanup.none", "No orphaned flashcards found."));
+        return;
+      }
+
+      const byNote = new Map<string, number>();
+      for (const orphan of orphans) {
+        byNote.set(orphan.sourceNotePath, (byNote.get(orphan.sourceNotePath) ?? 0) + 1);
+      }
+
+      new ConfirmCleanupOrphanedCardsModal(
+        this.app,
+        this,
+        orphans.length,
+        Array.from(byNote.entries()).map(([path, count]) => ({ path, count })),
+        async () => {
+          const result = await pruneOrphanedCards(this);
+          await this.store.persist();
+
+          if (result.skippedReason === "vault-empty") {
+            new Notice(
+              this._tx(
+                "ui.notice.orphanCleanup.skipped",
+                "Skipped: the vault index is not ready yet (no notes found).",
+              ),
+            );
+            return;
+          }
+
+          new Notice(
+            this._tx(
+              "ui.notice.orphanCleanup.done",
+              "Removed {count} orphaned flashcard{suffix}.",
+              { count: result.removed, suffix: result.removed === 1 ? "" : "s" },
+            ),
+          );
+        },
+      ).open();
+    }
+
     _registerCommands(): void {
       const tx = (token: string, fallback: string) => this._tx(token, fallback);
 
@@ -88,6 +156,11 @@ export function WithLifecycleMethods<T extends Constructor<LearnKitPluginBase>>(
         "sync-flashcards",
         tx("ui.command.open.syncAll", "Sync all flashcards from the vault"),
         async () => this._runSync(),
+      );
+      this._addCommand(
+        "cleanup-orphaned-flashcards",
+        tx("ui.command.open.cleanupOrphaned", "Clean up orphaned flashcards"),
+        async () => this._runCleanupOrphanedCards(),
       );
       this._addCommand("open", tx("ui.command.open.home", "Open home"), async () => this.openHomeTab());
       this._addCommand(
@@ -319,6 +392,13 @@ export function WithLifecycleMethods<T extends Constructor<LearnKitPluginBase>>(
           this.app.vault.on("rename", (file: TAbstractFile, oldPath: string) => {
             if (file instanceof TFile && file.path.toLowerCase().endsWith(".md")) {
               void this._assistantPopup?.onFileRename(oldPath, file);
+            }
+            // Keep card records pointed at the note's new path. Handles both a single
+            // note and a whole folder (prefix match), and renames that only change
+            // capitalisation — which macOS treats as the same file but Obsidian reports
+            // as a different path (GitHub #216).
+            if (file instanceof TFile || file instanceof TFolder) {
+              void this._retargetCardsAfterMove(oldPath, file.path);
             }
           }),
         );
