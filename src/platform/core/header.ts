@@ -62,11 +62,13 @@ export class SproutHeader {
 
   private headerNavId: string;
   private topNavPopoverEl: HTMLElement | null = null;
+  private topNavWrapperEl: HTMLElement | null = null;
   private topNavCleanup: (() => void) | null = null;
 
   private moreId: string;
   private moreTriggerEl: HTMLButtonElement | null = null;
   private morePopoverEl: HTMLElement | null = null;
+  private moreWrapperEl: HTMLElement | null = null;
   private moreCleanup: (() => void) | null = null;
 
   private widthBtnEl: HTMLButtonElement | null = null;
@@ -503,6 +505,14 @@ export class SproutHeader {
   // Top Nav popover (radio)
   // ---------------------------
 
+  /** Detaches a portalled popover wrapper from <body>, swallowing teardown races. */
+  private removeWrapper(wrapper: HTMLElement | null, context: string): void {
+    if (!wrapper) return;
+    try {
+      wrapper.remove();
+    } catch (e) { log.swallow(`${context}: remove popover wrapper`, e); }
+  }
+
   private closeTopNavPopover() {
     try {
       this.topNavCleanup?.();
@@ -516,6 +526,12 @@ export class SproutHeader {
       } catch (e) { log.swallow("closeTopNavPopover: remove popover element", e); }
     }
     this.topNavPopoverEl = null;
+
+    // The popover is portalled to <body> inside a wrapper; removing only the panel leaves an
+    // empty, body-level `.learnkit` node behind on every open/close (the same class of leftover
+    // `_sweepOrphanedBodyPortals` has to clean up after an update).
+    this.removeWrapper(this.topNavWrapperEl, "closeTopNavPopover");
+    this.topNavWrapperEl = null;
 
     const trigger = queryFirst(this.deps.containerEl, `#${this.headerNavId}-trigger`);
     if (trigger) trigger.setAttribute("aria-expanded", "false");
@@ -679,6 +695,7 @@ export class SproutHeader {
 
     activeDocument.body.appendChild(sproutWrapper);
     this.topNavPopoverEl = root;
+    this.topNavWrapperEl = sproutWrapper;
     root.classList.add("is-open");
 
     const isMobile = activeDocument.body.classList.contains("is-mobile");
@@ -849,6 +866,9 @@ export class SproutHeader {
     }
     this.morePopoverEl = null;
 
+    this.removeWrapper(this.moreWrapperEl, "closeMorePopover");
+    this.moreWrapperEl = null;
+
     if (this.moreTriggerEl) this.moreTriggerEl.setAttribute("aria-expanded", "false");
   }
 
@@ -986,6 +1006,7 @@ export class SproutHeader {
 
     activeDocument.body.appendChild(sproutWrapper);
     this.morePopoverEl = root;
+    this.moreWrapperEl = sproutWrapper;
     root.classList.add("is-open");
 
     const place = () => {

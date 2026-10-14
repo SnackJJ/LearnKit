@@ -33,3 +33,5 @@ tooling/*
 !tooling/postcss-strip-has.cjs
 !tooling/expand-css-hex.mjs
 !tooling/postcss-expand-hex.cjs
+# Required by tooling/postcss.config.cjs - must ship or `npm run build` fails in CI.
+!tooling/postcss-scope-global-roots.cjs

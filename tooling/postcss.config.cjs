@@ -1,4 +1,5 @@
 const prefixer = require("postcss-prefix-selector");
+const scopeGlobalRoots = require("./postcss-scope-global-roots.cjs");
 const expandHex = require("./postcss-expand-hex.cjs");
 const stripHas = require("./postcss-strip-has.cjs");
 const dedupeSelectors = require("./postcss-dedupe-selectors.cjs");
@@ -89,7 +90,9 @@ module.exports = {
         if (!selector) return selector;
         if (selector.startsWith("@")) return selector;
 
-        // Leave global roots alone
+        // Global roots are handled by `postcss-scope-global-roots` below: they cannot be
+        // prefixed with an ancestor here (they are not descendants of `.learnkit`), and
+        // leaving them unscoped would leak page-level declarations app-wide.
         if (selector.startsWith(":root") || selector.startsWith("html") || selector.startsWith("body")) {
           return selector;
         }
@@ -100,6 +103,14 @@ module.exports = {
         // Scope by ancestor
         return `${prefix} ${selector}`;
       },
+    }),
+    scopeGlobalRoots({
+      scope: ".learnkit",
+      // `LEARNKIT_SCOPE_REPORT=1 npm run build:css` prints every page-level declaration that
+      // was dropped from the shipped stylesheet, for auditing the plugin root scoping.
+      report: process.env.LEARNKIT_SCOPE_REPORT
+        ? ({ rule, dropped }) => console.log(`[scope-global-roots] ${rule} -> dropped ${dropped.join(", ")}`)
+        : undefined,
     }),
     expandHex(),
     stripHas(),

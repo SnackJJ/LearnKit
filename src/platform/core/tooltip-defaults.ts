@@ -15,6 +15,24 @@ type TooltipTarget = HTMLElement & {
   removeAttribute(name: string): void;
 };
 
+/**
+ * Roots that belong to LearnKit.
+ *
+ * `styles.css`/`main.js` are injected into the running app, so "the whole app" is reachable -
+ * but Obsidian's own tooltip system is driven by the very attributes this module writes
+ * (`aria-label`, `data-tooltip-position`, `title`): a delegated `pointerover` handler on
+ * `<body>` shows a tooltip for ANY element carrying `aria-label`, and the tooltip element is
+ * destroyed and rebuilt whenever the anchor changes. Writing those attributes onto Obsidian's
+ * (and other plugins') DOM therefore fights the file explorer's hover tooltip, which is why
+ * every write here is restricted to LearnKit's own DOM.
+ */
+const LEARNKIT_ROOT_SELECTOR = ".learnkit, .lk-modals";
+
+function isLearnKitOwned(el: Element | null | undefined): boolean {
+  if (!el || typeof el.closest !== "function") return false;
+  return el.closest(LEARNKIT_ROOT_SELECTOR) !== null;
+}
+
 function normalizeTooltipText(v: string): string {
   return String(v ?? "")
     .replace(/\s+/g, " ")
@@ -137,6 +155,9 @@ function processNode(node: Node): void {
   if (node.nodeType !== Node.ELEMENT_NODE) return;
   const elementNode = node as HTMLElement;
 
+  // Never touch DOM outside LearnKit: see LEARNKIT_ROOT_SELECTOR.
+  if (!isLearnKitOwned(elementNode)) return;
+
   // Process the node itself
   if (elementNode.matches("button,[role='button']")) ensureTooltip(elementNode as TooltipTarget);
 
@@ -165,15 +186,16 @@ export function initButtonTooltipDefaults(): () => void {
   const root = activeDocument.body;
   if (!root) return () => {};
 
-  // Initial pass (Obsidian loads views long after DOMContentLoaded)
-  processNode(root);
-  markTooltipParentsInSubtree(root);
-  syncPlaceholdersInSubtree(root);
+  // Initial pass (Obsidian loads views long after DOMContentLoaded). Only LearnKit's own
+  // roots are scanned - the app's buttons are not ours to relabel.
+  const learnKitRoots = root.querySelectorAll<HTMLElement>(LEARNKIT_ROOT_SELECTOR);
+  learnKitRoots.forEach((el) => processNode(el));
 
   const obs = new MutationObserver((mutations) => {
     mutations.forEach((m) => {
       if (m.type === "attributes" && m.target.nodeType === Node.ELEMENT_NODE) {
         const target = m.target as HTMLElement;
+        if (!isLearnKitOwned(target)) return;
         if (target.matches("button,[role='button']")) {
           ensureTooltip(target as TooltipTarget);
         }
