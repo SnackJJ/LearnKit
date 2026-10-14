@@ -205,8 +205,8 @@
 .learnkit .learnkit-dd-popover .learnkit-dd-panel {
   background: color-mix(in srgb, var(--color-base-05) 95%, transparent 05%) ;
   border: 0.5px solid var(--color-base-35) ;
-  -webkit-backdrop-filter: blur(14px);
-  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: var(--blur-m, blur(14px));
+  backdrop-filter: var(--blur-m, blur(14px));
 }
 
 .learnkit .learnkit-dd-popover [role="menuitemradio"].group {
@@ -226,7 +226,10 @@
 .learnkit.dropdown-menu.learnkit-popover-overlay,
 .learnkit .learnkit-ss-popover.learnkit-popover-overlay,
 .learnkit.learnkit-ss-popover.learnkit-popover-overlay {
-  zoom: var(--learnkit-leaf-zoom, 1);
+  /* No zoom context unless the athlete actually zoomed (see _applySproutZoom):
+     `zoom: 1` still spins up a scaling layer, and a zoomed subtree beside the
+     translucent sidebar is a known source of ghost/repaint artefacts. */
+  zoom: var(--learnkit-leaf-zoom, normal);
 }
 
 .learnkit .learnkit-overflow-visible {
@@ -327,16 +330,16 @@
 .learnkit-header-menu-panel {
   background: color-mix(in srgb, var(--color-base-05) 95%, transparent 05%) ;
   border: var(--color-base-35) 0.5px solid;
-  -webkit-backdrop-filter: blur(14px);
-  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: var(--blur-m, blur(14px));
+  backdrop-filter: var(--blur-m, blur(14px));
 }
 
 /* Keep reviewer/note-review More menus on the same panel surface as header dropdowns. */
 .learnkit :is(.learnkit-session-more-popover, .learnkit-note-review-more-popover).learnkit-header-menu-panel {
   background: color-mix(in srgb, var(--color-base-05) 95%, transparent 05%) ;
   border: 0.5px solid var(--color-base-35) ;
-  -webkit-backdrop-filter: blur(14px);
-  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: var(--blur-m, blur(14px));
+  backdrop-filter: var(--blur-m, blur(14px));
 }
 
 /* Keep header menu items visually soft: transparent base border + transparent hover fill. */

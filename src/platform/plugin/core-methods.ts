@@ -165,7 +165,14 @@ export function WithCoreMethods<T extends Constructor<LearnKitPluginBase>>(Base:
     _applySproutZoom(value: number): void {
       const next = clamp(Number(value || 1), 0.8, 1.8);
       this._sproutZoomValue = next;
-      activeDocument.body.style.setProperty("--learnkit-leaf-zoom", next.toFixed(3));
+      // Only declare a zoom when there is one. `zoom: 1` still instantiates a scaling layer
+      // in Chromium, and a zoomed subtree sitting beside the (translucent) sidebar is a known
+      // source of repaint/ghosting artefacts, so at 1x the CSS falls back to `zoom: normal`.
+      if (Math.abs(next - 1) < 0.001) {
+        activeDocument.body.style.removeProperty("--learnkit-leaf-zoom");
+      } else {
+        activeDocument.body.style.setProperty("--learnkit-leaf-zoom", next.toFixed(3));
+      }
     }
 
     _queueSproutZoomSave(): void {

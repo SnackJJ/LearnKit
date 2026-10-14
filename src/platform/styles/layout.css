@@ -43,9 +43,47 @@
 
 /* Sprout-scoped pinch zoom: only Sprout leaves, never other plugins */
 .workspace-leaf-content.learnkit {
-  zoom: var(--learnkit-leaf-zoom, 1);
+  /* No zoom context unless the athlete actually zoomed (see _applySproutZoom):
+     `zoom: 1` still spins up a scaling layer, and a zoomed subtree beside the
+     translucent sidebar is a known source of ghost/repaint artefacts. */
+  zoom: var(--learnkit-leaf-zoom, normal);
     border-radius: 0px;
     border: none;
+}
+
+/* ============================================================================
+   TRANSLUCENT WINDOWS — no backdrop-filter inside LearnKit.
+
+   `body.is-translucent` is the macOS vibrancy window: the window itself has no
+   background and the desktop shows through. A `backdrop-filter` makes Chromium
+   keep and re-sample a "backdrop root" that then contains the window's own
+   vibrancy layer, with two consequences:
+
+     1. Every repaint anywhere in the window (e.g. a file-explorer row highlight
+        while the pointer moves) forces already-composited blurred surfaces to
+        re-rasterise, so the window flickers.
+     2. The re-sampled region is not clipped to the element, so a stale window
+        snapshot is painted outside it — the reported artefact of a background
+        bleeding "above the tabs and out to the left of the file explorer".
+
+   Both were reported against the Baseline theme (LearnKit #217), which reaches
+   the same conclusion itself: `.is-translucent` there sets `--blur-s/m/l: none`.
+   Every surface in this bundle now reads those tokens, so that decision is
+   honoured; this rule states it directly as well, so it also holds for host
+   themes that do not disable blur, and beats the few surfaces that declare a
+   blur with high-specificity selectors.
+
+   `!important` is load-bearing: `body:not(.is-phone) .learnkit .view-header…`
+   (header.css) is more specific than this rule's `body.is-translucent .learnkit *`.
+   ========================================================================== */
+body.is-translucent .learnkit,
+body.is-translucent .learnkit *,
+body.is-translucent .lk-modals,
+body.is-translucent .lk-modals *,
+body.is-translucent .learnkit-popover-overlay,
+body.is-translucent .learnkit-popover-overlay * {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
 }
 
 /* View-header wrappers: transparent so header card margins are clean */

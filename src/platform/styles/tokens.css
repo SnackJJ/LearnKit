@@ -7,6 +7,15 @@
    Theme packs:
    - Current preset: Glass (`./tokens/themes/glass.css`)
    - To create a new visual flavor, duplicate glass.css and adjust only tokens.
+
+   SURFACE BLUR — always `var(--blur-s|m|l, blur(Npx))`, never a bare `blur(Npx)`.
+   Obsidian exposes `--blur-s/m/l` (built from `--blur-radius-*` and the saturation/
+   brightness tokens) precisely so a host theme can switch surface blur OFF. Themes do:
+   Baseline sets `--blur-s/m/l: none` on `.is-translucent`, because a backdrop-filter
+   in a macOS vibrancy window is re-sampled on every repaint and paints outside its own
+   bounds (LearnKit #217 — flashing, and a background bleeding past the file explorer).
+   Hardcoding the radius overrides that decision and brings the artefacts back; the
+   `var()` fallback keeps the intended look on hosts that predate the tokens.
    ========================================================================== */
 
 @import "./tokens/core.css";
