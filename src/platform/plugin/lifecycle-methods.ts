@@ -75,15 +75,85 @@ import { getTtsService } from "../integrations/tts/tts-service";
 import { getTtsCacheDirPath } from "../integrations/tts/tts-cache";
 import { setLocaleFileReader, loadLocaleBundlesAsync } from "../translations/translator";
 
+/**
+ * View types that must be torn down when the plugin unloads.
+ *
+ * Obsidian does NOT close custom view leaves when a plugin unloads: the leaf, its DOM
+ * and its event handlers survive, still pointing at the dead plugin instance. After a
+ * plugin update that left buttons dead until Obsidian was restarted (GitHub #205 —
+ * "Some sections in the Guide don't work when clicked"). Detaching on unload makes the
+ * views rebuild against the live plugin instead.
+ */
+const LEARNKIT_VIEW_TYPES_TO_DETACH = [
+  VIEW_TYPE_REVIEWER,
+  VIEW_TYPE_NOTE_REVIEW,
+  VIEW_TYPE_WIDGET,
+  VIEW_TYPE_BROWSER,
+  VIEW_TYPE_ANALYTICS,
+  VIEW_TYPE_HOME,
+  VIEW_TYPE_SETTINGS,
+  VIEW_TYPE_EXAM_GENERATOR,
+  VIEW_TYPE_COACH,
+  VIEW_TYPE_STUDY_ASSISTANT,
+] as const;
+
+/** Marker class used by the Guide's body-portal dropdown in the settings view. */
+const GUIDE_PORTAL_MARKER_SELECTOR = ".learnkit-guide-nav-group";
+
 export function WithLifecycleMethods<T extends Constructor<LearnKitPluginBase>>(Base: T) {
   return class WithLifecycleMethods extends Base {
     /**
+     * Closes every open LearnKit view so the next open constructs it from the current
+     * plugin instance. See {@link LEARNKIT_VIEW_TYPES_TO_DETACH}.
+     */
+    _detachLearnKitLeaves(): void {
+      const ws = this.app?.workspace;
+      if (!ws) return;
+
+      const types = new Set<string>(LEARNKIT_VIEW_TYPES_TO_DETACH);
+      // Long-lived vaults can still hold leaves under the pre-rename ("sprout-*") ids.
+      for (const legacy of Object.keys(LEGACY_TO_CURRENT_VIEW_TYPES)) types.add(legacy);
+
+      // Remember whether the sidebar widget was open: it is the one view the user
+      // expects to still be there after an update, and a reload gives us a fresh
+      // module scope, so the flag has to live on the window.
+      try {
+        if (ws.getLeavesOfType(VIEW_TYPE_WIDGET).length > 0) {
+          (window as unknown as Record<string, unknown>).__learnkitReopenWidget = true;
+        }
+      } catch (e) {
+        log.swallow("record widget state before unload", e);
+      }
+
+      for (const type of types) {
+        try {
+          ws.detachLeavesOfType(type);
+        } catch (e) {
+          log.swallow(`detach leaves for ${type}`, e);
+        }
+      }
+    }
+
+    /**
+     * Re-opens the sidebar widget when the previous plugin instance closed it on unload.
+     * Pairs with {@link _detachLearnKitLeaves}.
+     */
+    _restoreWidgetAfterReload(): void {
+      const flagKey = "__learnkitReopenWidget";
+      const holder = window as unknown as Record<string, unknown>;
+      if (holder[flagKey] !== true) return;
+      holder[flagKey] = false;
+
+      this.app.workspace.onLayoutReady(() => {
+        void this.openWidgetSafe();
+      });
+    }
+
+    /**
      * Re-points this plugin's card records after a note or folder is renamed/moved.
      *
-     * Every reconciliation in the sync engine matches records by `sourceNotePath`
-     * (`rec.sourceNotePath !== file.path → continue`), so a record that keeps a stale
-     * path can never be updated *or* deleted again — it becomes a ghost that still
-     * shows up in the Library and in study sessions (GitHub #216).
+     * GitHub #216: without this the records keep the old path, the sync engine can no
+     * longer reconcile them, and deleted flashcards linger in the Library forever.
      */
     async _retargetCardsAfterMove(oldPath: string, newPath: string): Promise<void> {
       try {
@@ -142,6 +212,29 @@ export function WithLifecycleMethods<T extends Constructor<LearnKitPluginBase>>(
           );
         },
       ).open();
+    }
+
+    /**
+     * Removes Guide dropdown portals left on <body> by a previous plugin instance.
+     *
+     * The portal is appended to `document.body` and only removed in the settings view's
+     * onClose — which Obsidian never calls for a plugin that is being unloaded. A
+     * stranded portal sits above the content and swallows clicks, which is the other
+     * half of GitHub #205.
+     */
+    _sweepOrphanedBodyPortals(): void {
+      let ports: NodeListOf<Element>;
+      try {
+        ports = activeDocument.querySelectorAll("body > div.learnkit");
+      } catch (e) {
+        log.swallow("scan for orphaned portals", e);
+        return;
+      }
+
+      for (const el of Array.from(ports)) {
+        if (!el.querySelector(GUIDE_PORTAL_MARKER_SELECTOR)) continue;
+        el.remove();
+      }
     }
 
     _registerCommands(): void {
@@ -221,6 +314,13 @@ export function WithLifecycleMethods<T extends Constructor<LearnKitPluginBase>>(
         initMobileKeyboardHandler();
 
         if (Platform.isPhone) activeDocument.body.classList.add("is-phone");
+
+        // Drop any Guide dropdown portal stranded on <body> by a previous instance
+        // (GitHub #205) before we build our own UI.
+        this._sweepOrphanedBodyPortals();
+
+        // Re-open the sidebar widget that the previous instance detached on unload.
+        this._restoreWidgetAfterReload();
 
         this._bc = {
           VIEW_TYPE_REVIEWER,
@@ -394,7 +494,7 @@ export function WithLifecycleMethods<T extends Constructor<LearnKitPluginBase>>(
               void this._assistantPopup?.onFileRename(oldPath, file);
             }
             // Keep card records pointed at the note's new path. Handles both a single
-            // note and a whole folder (prefix match), and renames that only change
+            // note and a whole folder (prefix match), and note renames that only change
             // capitalisation — which macOS treats as the same file but Obsidian reports
             // as a different path (GitHub #216).
             if (file instanceof TFile || file instanceof TFolder) {
@@ -455,6 +555,10 @@ export function WithLifecycleMethods<T extends Constructor<LearnKitPluginBase>>(
     }
 
     onunload(): void {
+      // Close our views first: Obsidian leaves plugin view leaves mounted on unload, and
+      // a surviving view keeps its dead event handlers (GitHub #205).
+      this._detachLearnKitLeaves();
+
       const pending = this._saving ?? Promise.resolve();
       void pending
         .then(() => this._doSave())
