@@ -671,10 +671,21 @@ async function requestStreamingTransport(params: {
     headers,
     body,
   });
+
+  // Obsidian's requestUrl exposes `json` as a LAZY getter that runs JSON.parse on the
+  // raw body. Touching it on a streaming (text/event-stream) response throws
+  // "Unexpected token 'd', "data: {" is not valid JSON" straight out of the transport,
+  // before readStreamingResponseText() ever gets to see the SSE chunks.
+  //
+  // Read the text first (a plain decode, which cannot throw) and parse defensively.
+  // Note: requestUrl buffers the whole response, so this fallback path delivers the
+  // SSE body in one piece rather than incrementally — readStreamingResponseText()
+  // handles that via its "no body -> use text" branch.
+  const fallbackText = typeof fallback.text === "string" ? fallback.text : "";
   return {
     status: fallback.status,
-    text: typeof fallback.text === "string" ? fallback.text : "",
-    json: fallback.json,
+    text: fallbackText,
+    json: tryParseJsonText(fallbackText),
     headers: fallback.headers ?? {},
     body: null,
   };
