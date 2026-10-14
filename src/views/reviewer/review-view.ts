@@ -164,6 +164,8 @@ export class SproutReviewerView extends ItemView {
   // Add shared header instance
   private _header: SproutHeader | null = null;
   private _titleStripEl: HTMLElement | null = null;
+  /** Live subtitle node inside the title strip ("N due cards remaining"). */
+  private _titleSubtitleEl: HTMLElement | null = null;
   private _pendingSessionBuildOptions: SessionBuildOptions | null = null;
   private _isCoachSession = false;
   private _trackCoachProgress = false;
@@ -515,6 +517,21 @@ export class SproutReviewerView extends ItemView {
     return nextUngradedIndex >= 0 ? nextUngradedIndex : queue.length - 1;
   }
 
+  /**
+   * Refreshes the title strip's subtitle in place.
+   *
+   * The lightweight session-card render path (see render()) deliberately keeps the
+   * title strip mounted to avoid scroll jumps and re-running the entrance animation,
+   * which means the subtitle is never rebuilt. Without this the "N due card(s)
+   * remaining" counter would stay frozen on the value captured at session start.
+   */
+  private _syncTitleStripSubtitle(): void {
+    const subtitle = this._titleSubtitleEl;
+    if (!subtitle) return;
+    const next = this._reviewerSubtitleText();
+    if (subtitle.textContent !== next) subtitle.textContent = next;
+  }
+
   private _ensureTitleStrip(root: HTMLElement): void {
     const parent = root.parentElement;
     if (!parent) return;
@@ -536,6 +553,7 @@ export class SproutReviewerView extends ItemView {
     const { strip, right, title, subtitle } = frame;
     title.textContent = this._reviewerTitleText();
     subtitle.textContent = this._reviewerSubtitleText();
+    this._titleSubtitleEl = subtitle;
 
     if (coachShellMode) {
       this._titleStripEl = strip;
@@ -1281,6 +1299,7 @@ export class SproutReviewerView extends ItemView {
     this.clearUndo();
     this._titleStripEl?.remove();
     this._titleStripEl = null;
+    this._titleSubtitleEl = null;
     this._titleTimerHostEl = null;
     // Stop any ongoing TTS
     getTtsService().stop();
@@ -2717,6 +2736,11 @@ export class SproutReviewerView extends ItemView {
     if (this.mode === "session" && this.session && !this._firstSessionRender) {
       const existingCardEl = root.querySelector<HTMLElement>(".learnkit-session-card");
       if (existingCardEl) {
+        // Keep the session subtitle ("N due cards remaining", "N flashcards left in
+        // this practice session") in step with the grade tally, which changes on
+        // every card but never triggers a full rebuild.
+        this._syncTitleStripSubtitle();
+
         const activeCard = this.currentCard();
         if (activeCard) this.noteCardPresented(activeCard);
 
@@ -2887,6 +2911,7 @@ export class SproutReviewerView extends ItemView {
     if (preservedCoachStrip) preservedCoachStrip.remove();
     this._titleStripEl?.remove();
     this._titleStripEl = null;
+    this._titleSubtitleEl = null;
     this._titleTimerHostEl = null;
     
     // Preserve the study session header when in session mode
