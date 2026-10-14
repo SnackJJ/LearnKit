@@ -22,10 +22,13 @@ import { fileURLToPath } from "node:url";
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
 // Hard limit: exceeds this and the file never syncs on the Standard plan.
-const MAX_BYTES = 5 * 1024 * 1024; // 5,242,880 — 5 MiB
-// Soft limit: "5 MB" is ambiguous; 5,000,000 B is the other common reading.
-// We aim to stay under the stricter one so we are safe either way.
-const WARN_BYTES = 5_000_000;
+// "5 MB" is ambiguous (5,000,000 B vs 5,242,880 B). We enforce the stricter
+// reading so we are safe either way. This threshold is also the regression
+// guard for the inlined sql.js WASM: shipping it as raw base64 instead of
+// deflated adds ~440 KB, which pushes main.js over this line and fails here.
+const MAX_BYTES = 5_000_000;
+// Soft limit: warn while there is still room to react.
+const WARN_BYTES = 4_800_000;
 
 const target = path.resolve(rootDir, process.argv[2] ?? "dist/main.js");
 

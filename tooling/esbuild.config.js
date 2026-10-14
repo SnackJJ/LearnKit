@@ -1,6 +1,7 @@
 const esbuild = require("esbuild");
 const fs = require("fs");
 const path = require("path");
+const zlib = require("zlib");
 
 const isWatch = process.argv.includes("--watch");
 const isProd = process.argv.includes("--prod");
@@ -37,6 +38,46 @@ const external = ["obsidian", "*.css", "@codemirror/state", "@codemirror/view"];
 function formatBytes(bytes) {
   return `${bytes.toLocaleString("en-US")} B (${(bytes / 1024).toFixed(0)} KB)`;
 }
+
+/**
+ * Inline `.wasm` files as *deflated* base64 rather than raw base64.
+ *
+ * esbuild's built-in `binary` loader base64-encodes the file verbatim, which
+ * costs 4/3 of the raw size. sql.js ships a 660 KB WASM binary, so the default
+ * path parked ~880 KB of base64 inside main.js - 17% of the bundle - for a
+ * feature (Anki .apkg import) that most sessions never touch. Deflate first and
+ * the same payload costs ~429 KB.
+ *
+ * This matters because main.js is copied into .obsidian/plugins/learnkit/ and
+ * Obsidian Sync enforces a per-file limit (5 MB on the Standard plan). See
+ * tooling/check-bundle-size.mjs.
+ *
+ * The emitted value is still a Uint8Array so consumers keep the same shape; the
+ * only contract change is that the bytes are now a zlib stream, so callers must
+ * unzlibSync() before handing them to whatever wants the real binary.
+ * anki-sql.ts is the only consumer.
+ */
+const deflateWasmPlugin = {
+  name: "deflate-wasm-inline",
+  setup(build) {
+    build.onLoad({ filter: /\.wasm$/ }, (args) => {
+      const raw = fs.readFileSync(args.path);
+      const deflated = zlib.deflateSync(raw, { level: zlib.constants.Z_BEST_COMPRESSION });
+      const base64 = deflated.toString("base64");
+      return {
+        loader: "js",
+        contents:
+          `// ${path.basename(args.path)}: ${formatBytes(raw.length)} raw -> ` +
+          `${formatBytes(deflated.length)} deflated (inlined as base64 by build)\n` +
+          `const base64 = ${JSON.stringify(base64)};\n` +
+          `const bytes = typeof Buffer !== "undefined"\n` +
+          `  ? new Uint8Array(Buffer.from(base64, "base64"))\n` +
+          `  : Uint8Array.from(atob(base64), (c) => c.charCodeAt(0));\n` +
+          `export default bytes;\n`,
+      };
+    });
+  },
+};
 
 /**
  * Group metafile inputs into buckets so the report answers the question we
@@ -110,6 +151,7 @@ async function build() {
     outfile: path.join(outdir, "main.js"),
     external,
     logLevel: "info",
+    plugins: [deflateWasmPlugin],
 
     // Only ask esbuild for a metafile when a caller wants one, so the default
     // build path is unaffected.
@@ -123,7 +165,9 @@ async function build() {
 
     // ✅ Add these two lines anywhere inside this object
     jsx: "automatic",
-    loader: { ".ts": "ts", ".tsx": "tsx", ".wasm": "binary", ".json": "json", ".svg": "text" },
+    // NOTE: no ".wasm" entry here on purpose - deflateWasmPlugin above owns
+    // .wasm and inlines it deflated. Adding it back would shadow the plugin.
+    loader: { ".ts": "ts", ".tsx": "tsx", ".json": "json", ".svg": "text" },
 
     banner: {
       js:

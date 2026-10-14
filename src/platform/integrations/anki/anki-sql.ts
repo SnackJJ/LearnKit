@@ -16,7 +16,8 @@
 
 import initSqlJs from "sql.js/dist/sql-wasm-browser.js";
 import type { Database, SqlJsStatic, SqlValue } from "sql.js";
-import wasmBinary from "sql.js/dist/sql-wasm.wasm";
+import wasmDeflated from "sql.js/dist/sql-wasm.wasm";
+import { unzlibSync } from "fflate/browser";
 import {
   ANKI_SCHEMA_VERSION,
   DEFAULT_DECK_ID,
@@ -41,15 +42,21 @@ const initSqlJsTyped = initSqlJs as unknown as (config: {
 /**
  * Lazily initialise sql.js. Uses the bundled sql.js package and embedded WASM
  * binary (no CDN fetch). Subsequent calls return the cached instance.
+ *
+ * The WASM is inlined into main.js as a *deflated* zlib stream rather than raw
+ * base64 (see deflateWasmPlugin in tooling/esbuild.config.js) because the raw
+ * base64 cost ~880 KB of the bundle, and main.js has to stay under Obsidian
+ * Sync's 5 MB per-file limit. Inflating the 660 KB binary takes a few ms.
  */
 export async function getSqlJs(): Promise<SqlJsStatic> {
   if (_sqlJs) return _sqlJs;
   if (_sqlJsPromise) return _sqlJsPromise;
 
   _sqlJsPromise = (async () => {
-    const wasmArray = wasmBinary instanceof Uint8Array
-      ? wasmBinary
-      : new Uint8Array(wasmBinary);
+    const deflated = wasmDeflated instanceof Uint8Array
+      ? wasmDeflated
+      : new Uint8Array(wasmDeflated);
+    const wasmArray = unzlibSync(deflated);
     const wasmBuffer = wasmArray.slice().buffer;
 
     _sqlJs = await initSqlJsTyped({ wasmBinary: wasmBuffer });
