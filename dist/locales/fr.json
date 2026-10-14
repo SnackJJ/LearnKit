@@ -296,6 +296,7 @@
   "ui.command.open.addOrderedQuestionToNote": "Ajouter une fiche ordonnée à la note",
   "ui.command.open.analytics": "Ouvrir les statistiques",
   "ui.command.open.assistantWidget": "Ouvrir le widget du compagnon d'étude",
+  "ui.command.open.cleanupOrphaned": "Nettoyer les cartes orphelines",
   "ui.command.open.coach": "Ouvrir le coach",
   "ui.command.open.editFlashcards": "Modifier les fiches",
   "ui.command.open.exportAnki": "Exporter vers Anki (.apkg)",
@@ -599,6 +600,9 @@
   "ui.noteReview.title.noneDue": "Aucune note n'est à réviser actuellement !",
   "ui.noteReview.title.practiceRemaining": "{count} note{suffix} restante{suffix} dans cette session d'entraînement",
   "ui.notice.commandUnavailable": "La commande {label} n'est pas disponible.",
+  "ui.notice.orphanCleanup.done": "{count} carte{suffix} orpheline{suffix} supprimée{suffix}.",
+  "ui.notice.orphanCleanup.none": "Aucune carte orpheline trouvée.",
+  "ui.notice.orphanCleanup.skipped": "Ignoré : l'index du coffre n'est pas encore prêt (aucune note trouvée).",
   "ui.notice.syncNotAvailable": "Synchronisation non disponible (aucune méthode de synchronisation trouvée).",
   "ui.parseError.cannotResolve": "Cannot resolve note path for {anchor}",
   "ui.parseError.closeDialog": "Fermer cette boîte de dialogue",
@@ -1932,5 +1936,10 @@
   "ui.sync.privileges.off": "Désactivée",
   "ui.settings.appearance.syncPrivileges.name": "Privilèges de synchronisation",
   "ui.settings.appearance.syncPrivileges.desc": "Contrôle ce que la synchronisation est autorisée à modifier dans vos notes Markdown.",
-  "ui.settings.appearance.syncPrivileges.explainer": "Complète — ID d'ancrage + normalisation + migration de sténographie + formatage. Simple — ID d'ancrage uniquement, aucune autre modification de vos notes. Désactivée — la synchronisation ne touche pas vos notes."
+  "ui.settings.appearance.syncPrivileges.explainer": "Complète — ID d'ancrage + normalisation + migration de sténographie + formatage. Simple — ID d'ancrage uniquement, aucune autre modification de vos notes. Désactivée — la synchronisation ne touche pas vos notes.",
+  "ui.settings.modals.cleanupOrphans.body": "{count} carte{suffix} référence une note qui n'existe plus. Elles seront supprimées de la base de données ; vos notes ne seront pas modifiées.",
+  "ui.settings.modals.cleanupOrphans.confirm": "Nettoyer",
+  "ui.settings.modals.cleanupOrphans.error": "LearnKit – échec du nettoyage des cartes orphelines",
+  "ui.settings.modals.cleanupOrphans.more": "…et {count} autre{suffix} note{suffix}",
+  "ui.settings.modals.confirmCleanupOrphans": "Nettoyer les cartes orphelines ?"
 }

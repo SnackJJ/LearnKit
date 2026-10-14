@@ -2,6 +2,23 @@
 
 All notable changes to LearnKit are summarized here.
 
+## 1.8.3 (2026-10-14)
+
+### Added
+- **Clean up orphaned flashcards** command (command palette): finds flashcards whose source note no longer exists, lists the affected notes, and removes them on confirmation — together with their scheduling state and cached audio (#216).
+
+### Fixed
+- **Space and → now reveal the answer and advance**, exactly as the keyboard shortcuts dialog has always claimed. Previously only Enter worked (#215, #208).
+- Space still activates whichever control has keyboard focus (grade buttons, MCQ options, Skip), so tabbing and answering by keyboard keeps working.
+- **T now switches to the full study page** from the reviewer, matching the documented shortcut and the sidebar widget (#208).
+- The **"N due cards remaining"** counter in the study header now updates after every card instead of freezing on the value captured when the session started (#212).
+- **AI streaming** no longer fails with `SyntaxError: Unexpected token 'd', "data: {" is not valid JSON {…}`. The streaming transport read a lazily-parsed JSON value from a Server-Sent-Events body; it now reads the text first and parses defensively (#214).
+- **Renaming or moving a note (or folder) now re-points its flashcards** in the database. Previously the records kept the old path, the sync engine could no longer match them, and every card deleted afterwards lingered in the Library as a "ghost" — still listed, still impossible to remove through sync (#216).
+- **Guide sections no longer become unclickable after a plugin update.** Obsidian does not close a plugin's views when it unloads, so the old view objects — and a Guide dropdown portal left on the page — survived an update and swallowed clicks until Obsidian was restarted (#205).
+
+### Changed
+- Open LearnKit tabs are now closed when the plugin is unloaded or updated, so they always rebuild against the new version. The sidebar study widget is reopened automatically if it was open.
+
 ## 1.8.2 (2026-09-14)
 
 ### Added
@@ -13,6 +30,8 @@ All notable changes to LearnKit are summarized here.
 
 ### Fixed
 - Selected answers now stay visibly highlighted, and focused options show a visible outline for keyboard navigation (#209).
+
+Thanks to [@0b10headedcalf](https://github.com/0b10headedcalf) for #209, #210, and #211.
 
 ## 1.8.1 (2026-09-06)
 
