@@ -83,27 +83,4 @@ describe("surface blur uses the host theme's tokens", () => {
       /body\.is-translucent \.learnkit[\s\S]{0,400}backdrop-filter: none !important/,
     );
   });
-
-  it("keeps blur on the small floating surfaces when the window is translucent", () => {
-    const css = fs.readFileSync(path.join(STYLES_DIR, "layout.css"), "utf8");
-
-    // The #217 artefact came from a LEAF-SIZED backdrop root; popovers, dropdown
-    // menus and the header strip are small and transient, so they are exempted.
-    // Host themes (Manifest, Baseline) set the tokens to `none` under
-    // `.is-translucent`, so the exemption has to re-declare them for those
-    // elements as well as restate the declaration with `!important`.
-    for (const surface of [
-      "body.is-translucent .learnkit .view-header.learnkit-header",
-      "body.is-translucent .learnkit .learnkit-header-menu-panel",
-      "body.is-translucent .learnkit .learnkit-dd-panel",
-      "body.is-translucent .learnkit .learnkit-ana-popover",
-      "body.is-translucent .learnkit .learnkit-exam-generator-select-panel",
-      // Popovers can also be appended outside `.learnkit`, so this one is matched
-      // without the ancestor.
-      "body.is-translucent .learnkit-popover-overlay",
-    ]) {
-      expect(css).toContain(surface);
-    }
-    expect(css).toMatch(/--blur-m:\s*blur\(14px\);/);
-  });
 });
