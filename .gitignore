@@ -29,6 +29,7 @@ tooling/*
 !tooling/postcss.config.cjs
 !tooling/eslint.config.mjs
 !tooling/check-bundle-size.mjs
+!tooling/eslint.obsidian.mjs
 !tooling/dedupe-css-source.mjs
 !tooling/postcss-dedupe-selectors.cjs
 !tooling/postcss-dedupe-properties.cjs
