@@ -14,7 +14,7 @@
     "build": "npm run build:js && npm run build:css && node patch-script-elements.cjs && mkdir -p dist/locales && cp src/platform/translations/locales/community/*.json dist/locales/ && cp manifest.json dist/manifest.json",
     "check": "npm run lint && npm run translations:check && npm run i18n:literals:check && npm run test && npm run build && npm run check:size",
     "build:local": "[ -f .local/build-local.sh ] && bash .local/build-local.sh || (echo 'Missing .local/build-local.sh (local-only helper).' && exit 1)",
-    "deploy": "npm run build && cp dist/main.js dist/manifest.json dist/styles.css \"$HOME/Library/Mobile Documents/iCloud~md~obsidian/Documents/Medicine/.obsidian/plugins/learnkit/\" && cp -r dist/locales \"$HOME/Library/Mobile Documents/iCloud~md~obsidian/Documents/Medicine/.obsidian/plugins/learnkit/\" && cp dist/main.js dist/manifest.json dist/styles.css \"$HOME/Library/Mobile Documents/iCloud~md~obsidian/Documents/Medicine 17.09.35/.obsidian/plugins/learnkit/\" && cp -r dist/locales \"$HOME/Library/Mobile Documents/iCloud~md~obsidian/Documents/Medicine 17.09.35/.obsidian/plugins/learnkit/\"",
+    "deploy": "npm run build && VAULT=\"$HOME/Library/Mobile Documents/iCloud~md~obsidian/Documents/Medicine Vault/.obsidian/plugins/learnkit\" && cp dist/main.js dist/manifest.json dist/styles.css \"$VAULT/\" && cp -r dist/locales \"$VAULT/\" && node tooling/check-bundle-size.mjs",
     "analyze": "node tooling/esbuild.config.js --prod --metafile=meta.json --analyze",
     "check:size": "node tooling/check-bundle-size.mjs",
     "test": "vitest run --config vitest.config.ts",
