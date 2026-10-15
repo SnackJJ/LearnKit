@@ -2332,10 +2332,10 @@ export async function syncOneFile(
 
         oqSteps: c.type === "oq" ? (c.oqSteps ?? []) : undefined,
 
-        extensionData: (c.type === "combo" || c.type === "basic") && (c.qVariants?.length > 1 || c.aVariants?.length > 1)
+        extensionData: (c.type === "combo" || c.type === "basic") && ((c.qVariants?.length ?? 0) > 1 || (c.aVariants?.length ?? 0) > 1)
           ? { qVariants: c.qVariants ?? [], aVariants: c.aVariants ?? [], comboMode: c.comboMode ?? "product" }
           : undefined,
-        comboMode: (c.type === "combo" || c.type === "basic") && (c.qVariants?.length > 1 || c.aVariants?.length > 1)
+        comboMode: (c.type === "combo" || c.type === "basic") && ((c.qVariants?.length ?? 0) > 1 || (c.aVariants?.length ?? 0) > 1)
           ? (c.comboMode ?? "product")
           : undefined,
 
@@ -2899,10 +2899,10 @@ export async function syncQuestionBank(plugin: LearnKitPlugin, options?: { syncM
 
         oqSteps: c.type === "oq" ? (c.oqSteps ?? []) : undefined,
 
-        extensionData: (c.type === "combo" || c.type === "basic") && (c.qVariants?.length > 1 || c.aVariants?.length > 1)
+        extensionData: (c.type === "combo" || c.type === "basic") && ((c.qVariants?.length ?? 0) > 1 || (c.aVariants?.length ?? 0) > 1)
           ? { qVariants: c.qVariants ?? [], aVariants: c.aVariants ?? [], comboMode: c.comboMode ?? "product" }
           : undefined,
-        comboMode: (c.type === "combo" || c.type === "basic") && (c.qVariants?.length > 1 || c.aVariants?.length > 1)
+        comboMode: (c.type === "combo" || c.type === "basic") && ((c.qVariants?.length ?? 0) > 1 || (c.aVariants?.length ?? 0) > 1)
           ? (c.comboMode ?? "product")
           : undefined,
 

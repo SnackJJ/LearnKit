@@ -1615,7 +1615,10 @@ export async function requestStudyAssistantCompletionDetailed(params: {
       }
     };
 
-    let res: Awaited<ReturnType<typeof requestUrl>>;
+    // Assigned in the try/catch below; the `if (retryError) throw` guard before
+    // every use means the only path that reaches a read has already assigned it.
+    // The assertion is type-level only and emits nothing.
+    let res!: Awaited<ReturnType<typeof requestUrl>>;
     let activeUserPrompt = effectiveUserPrompt;
     let activeAttachments = attachments;
     let activeDataUrls = allDataUrls;
@@ -1789,7 +1792,10 @@ export async function requestStudyAssistantCompletionDetailed(params: {
     }
   };
 
-  let res: Awaited<ReturnType<typeof requestUrl>>;
+    // Assigned in the try/catch below; the `if (retryError) throw` guard before
+    // every use means the only path that reaches a read has already assigned it.
+    // The assertion is type-level only and emits nothing.
+    let res!: Awaited<ReturnType<typeof requestUrl>>;
   let activeUserPrompt = effectiveUserPrompt;
   let activeAttachments = attachments;
   let activeDataUrls = allDataUrls;
