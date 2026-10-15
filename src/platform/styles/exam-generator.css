@@ -326,7 +326,7 @@
 }
 
 .learnkit .learnkit-exam-generator-loading-atom-dot.is-a {
-  background: color-mix(in oklab, var(--theme-accent) 82%, white 18%);
+  background: color-mix(in oklab, var(--theme-accent) 82%, #ffffff 18%);
   animation: learnkit-exam-loader-orbit-a 1.15s ease-in-out infinite alternate;
 }
 
@@ -398,7 +398,7 @@
   justify-content: center;
   line-height: var(--learnkit-loading-word-height);
   white-space: nowrap;
-  color: color-mix(in oklab, var(--theme-accent) 78%, white 22%);
+  color: color-mix(in oklab, var(--theme-accent) 78%, #ffffff 22%);
   opacity: 0;
   transition:
     transform var(--learnkit-loading-swap-ms) cubic-bezier(0.22, 0.61, 0.36, 1),

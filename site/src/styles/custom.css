@@ -34,7 +34,7 @@
   --shadow-sm: 0 1px 2px 0 rgb(17 18 22 / 0.08);
   --hero-logo-color: var(--accent);
 
-  --sl-color-accent-low: color-mix(in oklab, var(--accent) 12%, white);
+  --sl-color-accent-low: color-mix(in oklab, var(--accent) 12%, #ffffff);
   --sl-color-accent: var(--accent);
   --sl-color-accent-high: oklch(0.549 0.22 263.1);
   --sl-color-white: var(--foreground);

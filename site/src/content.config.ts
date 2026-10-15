@@ -45,4 +45,4 @@ export const collections = {
     schema: docsSchema(),
   }),
 };
-/* eslint-enable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call */
+/* eslint-enable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call -- re-enable the rules scoped to the collections block above */

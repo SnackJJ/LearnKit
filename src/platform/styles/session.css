@@ -548,7 +548,7 @@ body.is-phone .learnkit .lk-review-title-strip-session .lk-review-title-timer-ho
 .learnkit mark {
   border-radius: var(--radius-s);
   background-color: rgb(0, 0, 0);
-  color: white;
+  color: #ffffff;
   padding: 0px 4px;
   margin: 0px 1px;
 }
@@ -1068,11 +1068,11 @@ body.is-phone .learnkit .lk-review-title-strip-session .lk-review-title-timer-ho
 
 /* Dark mode: white text for correct/wrong answers */
 .theme-dark .learnkit :is(.lk-session-card, .learnkit-gatekeeper-modal, .learnkit-widget, .learnkit-widget-card-body) :is(.learnkit-mcq-correct-highlight, .learnkit-oq-correct-highlight) :is(.learnkit-mcq-option-text, .learnkit-mcq-option-line, .learnkit-oq-step-text) {
-  color: white ;
+  color: #ffffff ;
 }
 
 .theme-dark .learnkit :is(.lk-session-card, .learnkit-gatekeeper-modal, .learnkit-widget, .learnkit-widget-card-body) :is(.learnkit-mcq-wrong-highlight, .learnkit-oq-wrong-highlight) :is(.learnkit-mcq-option-text, .learnkit-mcq-option-line, .learnkit-oq-step-text) {
-  color: white ;
+  color: #ffffff ;
 }
 
 .learnkit :is(.lk-session-card, .learnkit-gatekeeper-modal, .learnkit-widget, .learnkit-widget-card-body) :is(.learnkit-mcq-correct-highlight, .learnkit-oq-correct-highlight) :is(kbd, .kbd) {

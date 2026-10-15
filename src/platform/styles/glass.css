@@ -121,25 +121,25 @@ body[data-learnkit-theme-preset="glass"] .learnkit,
   --theme-base-95: color-mix(in oklab, var(--theme-accent) 95%, transparent);
 
   /* Accent-to-black scale */
-  --theme-black-05: color-mix(in oklab, var(--theme-accent) 5%, black);
-  --theme-black-10: color-mix(in oklab, var(--theme-accent) 10%, black);
-  --theme-black-15: color-mix(in oklab, var(--theme-accent) 15%, black);
-  --theme-black-20: color-mix(in oklab, var(--theme-accent) 20%, black);
-  --theme-black-25: color-mix(in oklab, var(--theme-accent) 25%, black);
-  --theme-black-30: color-mix(in oklab, var(--theme-accent) 30%, black);
-  --theme-black-35: color-mix(in oklab, var(--theme-accent) 35%, black);
-  --theme-black-40: color-mix(in oklab, var(--theme-accent) 40%, black);
-  --theme-black-45: color-mix(in oklab, var(--theme-accent) 45%, black);
-  --theme-black-50: color-mix(in oklab, var(--theme-accent) 50%, black);
-  --theme-black-55: color-mix(in oklab, var(--theme-accent) 55%, black);
-  --theme-black-60: color-mix(in oklab, var(--theme-accent) 60%, black);
-  --theme-black-65: color-mix(in oklab, var(--theme-accent) 65%, black);
-  --theme-black-70: color-mix(in oklab, var(--theme-accent) 70%, black);
-  --theme-black-75: color-mix(in oklab, var(--theme-accent) 75%, black);
-  --theme-black-80: color-mix(in oklab, var(--theme-accent) 80%, black);
-  --theme-black-85: color-mix(in oklab, var(--theme-accent) 85%, black);
-  --theme-black-90: color-mix(in oklab, var(--theme-accent) 90%, black);
-  --theme-black-95: color-mix(in oklab, var(--theme-accent) 95%, black);
+  --theme-black-05: color-mix(in oklab, var(--theme-accent) 5%, #000000);
+  --theme-black-10: color-mix(in oklab, var(--theme-accent) 10%, #000000);
+  --theme-black-15: color-mix(in oklab, var(--theme-accent) 15%, #000000);
+  --theme-black-20: color-mix(in oklab, var(--theme-accent) 20%, #000000);
+  --theme-black-25: color-mix(in oklab, var(--theme-accent) 25%, #000000);
+  --theme-black-30: color-mix(in oklab, var(--theme-accent) 30%, #000000);
+  --theme-black-35: color-mix(in oklab, var(--theme-accent) 35%, #000000);
+  --theme-black-40: color-mix(in oklab, var(--theme-accent) 40%, #000000);
+  --theme-black-45: color-mix(in oklab, var(--theme-accent) 45%, #000000);
+  --theme-black-50: color-mix(in oklab, var(--theme-accent) 50%, #000000);
+  --theme-black-55: color-mix(in oklab, var(--theme-accent) 55%, #000000);
+  --theme-black-60: color-mix(in oklab, var(--theme-accent) 60%, #000000);
+  --theme-black-65: color-mix(in oklab, var(--theme-accent) 65%, #000000);
+  --theme-black-70: color-mix(in oklab, var(--theme-accent) 70%, #000000);
+  --theme-black-75: color-mix(in oklab, var(--theme-accent) 75%, #000000);
+  --theme-black-80: color-mix(in oklab, var(--theme-accent) 80%, #000000);
+  --theme-black-85: color-mix(in oklab, var(--theme-accent) 85%, #000000);
+  --theme-black-90: color-mix(in oklab, var(--theme-accent) 90%, #000000);
+  --theme-black-95: color-mix(in oklab, var(--theme-accent) 95%, #000000);
 
   --sidebar-accent: var(--theme-accent, rgb(244, 244, 245));
 

@@ -35,7 +35,7 @@ LearnKit is easiest to understand once you use it. Install it, create a flashcar
 2. Copy `main.js`, `styles.css`, and `manifest.json` into:
 
    ```
-   <Your Vault>/.obsidian/plugins/learnkit/
+   <Vault folder>/.obsidian/plugins/learnkit/
    ```
 3. Restart Obsidian → Settings → Community Plugins → Enable **LearnKit**
 
