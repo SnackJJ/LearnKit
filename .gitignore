@@ -30,6 +30,7 @@ tooling/*
 !tooling/eslint.config.mjs
 !tooling/check-bundle-size.mjs
 !tooling/eslint.obsidian.mjs
+!tooling/deploy-vault.mjs
 !tooling/dedupe-css-source.mjs
 !tooling/postcss-dedupe-selectors.cjs
 !tooling/postcss-dedupe-properties.cjs
