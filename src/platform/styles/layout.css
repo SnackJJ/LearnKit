@@ -75,6 +75,10 @@
 
    `!important` is load-bearing: `body:not(.is-phone) .learnkit .view-header…`
    (header.css) is more specific than this rule's `body.is-translucent .learnkit *`.
+
+   NOTE: the small floating surfaces (popovers, menus, the header strip) are
+   exempted again immediately below — see the block that follows this one for
+   why the leaf-sized backdrop root is the actual problem and they are not it.
    ========================================================================== */
 body.is-translucent .learnkit,
 body.is-translucent .learnkit *,
@@ -84,6 +88,48 @@ body.is-translucent .learnkit-popover-overlay,
 body.is-translucent .learnkit-popover-overlay * {
   -webkit-backdrop-filter: none !important;
   backdrop-filter: none !important;
+}
+
+/* ============================================================================
+   …except the small, transient surfaces, which keep their blur.
+
+   The guard above is deliberately broad because the #217 bleed was produced by
+   a LEAF-SIZED backdrop root: `.workspace-leaf-content.learnkit` covers the
+   whole view, so Chromium kept and re-sampled a backdrop root that large and
+   painted a stale window snapshot outside its bounds. That rationale does not
+   transfer to a ~200x300px popover or the header strip: they re-sample a
+   fraction of the area, they are on screen for seconds rather than for the
+   whole session, and losing their blur is what users actually notice. Reported
+   as "the old blur effects on LearnKit popovers and top of page do not work".
+
+   Two things have to be undone for these elements:
+
+     1. the guard's `!important`, which only a more specific selector can beat; and
+     2. host themes that blank the tokens under translucency — Manifest ships
+        `.is-translucent { --blur-s/m/l: none !important }` and Baseline does the
+        same — which these elements would otherwise inherit.
+
+   So the block re-declares the tokens for these elements and restates the
+   declaration with `!important`. It is purely additive: no surface that was
+   neutralised before is neutralised any less, and no bare blur radius is
+   introduced — the values still read `var(--blur-*)` as tokens.css requires.
+   ========================================================================== */
+body.is-translucent .learnkit .view-header.learnkit-header,
+body.is-translucent .learnkit .learnkit-header-menu-panel,
+body.is-translucent .learnkit .learnkit-dd-panel,
+body.is-translucent .learnkit .learnkit-ana-popover,
+body.is-translucent .learnkit .learnkit-exam-generator-select-panel,
+body.is-translucent .learnkit .learnkit-assistant-popup-header-popover,
+body.is-translucent .learnkit .learnkit-session-more-popover,
+body.is-translucent .learnkit .learnkit-note-review-more-popover,
+body.is-translucent .learnkit [id^="learnkit-"][id$="-filter-popover"],
+body.is-translucent .learnkit-popover-overlay,
+body.is-translucent .learnkit-popover-overlay .learnkit-header-menu-panel {
+  --blur-s: blur(8px);
+  --blur-m: blur(14px);
+  --blur-l: blur(16px);
+  -webkit-backdrop-filter: var(--blur-m, blur(14px)) !important;
+  backdrop-filter: var(--blur-m, blur(14px)) !important;
 }
 
 /* View-header wrappers: transparent so header card margins are clean */

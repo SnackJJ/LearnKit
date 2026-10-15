@@ -16,6 +16,11 @@
    bounds (LearnKit #217 — flashing, and a background bleeding past the file explorer).
    Hardcoding the radius overrides that decision and brings the artefacts back; the
    `var()` fallback keeps the intended look on hosts that predate the tokens.
+
+   One deliberate exception: the small, transient surfaces (popovers, dropdown menus
+   and the header strip) re-declare the tokens for themselves under `.is-translucent`
+   in layout.css, so they keep their blur. The #217 artefact came from a LEAF-SIZED
+   backdrop root, which those surfaces are not — see the comment there.
    ========================================================================== */
 
 @import "./tokens/core.css";
