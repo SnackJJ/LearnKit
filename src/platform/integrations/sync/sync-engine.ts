@@ -327,7 +327,7 @@ function isFilterIdMatch(id: string, file: TFile, app: App): boolean {
     // Check frontmatter tags
     const frontmatter = cache?.frontmatter;
     if (frontmatter && typeof frontmatter === "object") {
-      const entries = Object.entries(frontmatter as Record<string, unknown>);
+      const entries = Object.entries(frontmatter);
       for (const [key, value] of entries) {
         const normalizedKey = String(key ?? "").trim().toLowerCase();
         if (normalizedKey !== "tag" && normalizedKey !== "tags") continue;
@@ -352,7 +352,7 @@ function isFilterIdMatch(id: string, file: TFile, app: App): boolean {
     const cache = app.metadataCache.getFileCache(file);
     const frontmatter = cache?.frontmatter;
     if (!frontmatter || typeof frontmatter !== "object") return false;
-    const entries = Object.entries(frontmatter as Record<string, unknown>);
+    const entries = Object.entries(frontmatter);
     for (const [rawKey, rawValue] of entries) {
       const key = String(rawKey ?? "").trim().toLowerCase();
       if (key !== pair.key) continue;
@@ -464,12 +464,12 @@ function upsertStateIfPresent(plugin: LearnKitPlugin, snapshot: StateMap | null 
  */
 async function loadBestSchedulingSnapshot(plugin: LearnKitPlugin): Promise<StateMap | null> {
   const inMem = plugin.store.data.states;
-  if (countObjectKeys(inMem) > 0) return inMem as StateMap;
+  if (countObjectKeys(inMem) > 0) return inMem;
 
   // Try store helper first (may already do the right thing)
   try {
     const prev = await loadSchedulingFromDataJson(plugin);
-    if (prev && typeof prev === "object" && Object.keys(prev).length > 0) return prev as StateMap;
+    if (prev && typeof prev === "object" && Object.keys(prev).length > 0) return prev;
   } catch {
     // ignore
   }
@@ -569,13 +569,13 @@ function cardSignature(rec: CardRecord | null): string {
     base.clozeChildren = Array.isArray(rec.clozeChildren) ? rec.clozeChildren : [];
   } else if (rec.type === "io") {
     const legacy = rec as unknown as Record<string, unknown>;
-    base.imageRef = rec.imageRef ?? (legacy.ioSrc as string | undefined) ?? (legacy.src as string | undefined) ?? "";
-    base.occlusions = (legacy.occlusions ?? legacy.rects ?? legacy.masks ?? []) as string[];
-    base.maskMode = rec.maskMode ?? (legacy.mode as typeof rec.maskMode) ?? null;
+    base.imageRef = rec.imageRef ?? (legacy.ioSrc) ?? (legacy.src) ?? "";
+    base.occlusions = (legacy.occlusions ?? legacy.rects ?? legacy.masks ?? []);
+    base.maskMode = rec.maskMode ?? (legacy.mode) ?? null;
   } else if (rec.type === "hq") {
     const legacy = rec as unknown as Record<string, unknown>;
-    base.imageRef = rec.imageRef ?? (legacy.hqSrc as string | undefined) ?? (legacy.src as string | undefined) ?? "";
-    base.regions = (legacy.hqRegions ?? legacy.occlusions ?? legacy.rects ?? []) as string[];
+    base.imageRef = rec.imageRef ?? (legacy.hqSrc) ?? (legacy.src) ?? "";
+    base.regions = (legacy.hqRegions ?? legacy.occlusions ?? legacy.rects ?? []);
     base.interactionMode = rec.interactionMode ?? null;
     base.prompt = rec.prompt ?? null;
   } else if (rec.type === "io-child") {
@@ -1169,7 +1169,7 @@ function syncReversedChildren(plugin: LearnKitPlugin, parent: CardRecord, now: n
       if (dir === "forward" && hasState(plugin, parentId)) {
         const parentState = plugin.store.data.states?.[parentId];
         if (parentState && typeof parentState === "object") {
-          plugin.store.upsertState({ ...parentState, id: cid } as CardState);
+          plugin.store.upsertState({ ...parentState, id: cid });
           delete (plugin.store.data.states as Record<string, unknown>)[parentId];
         }
         return true;
@@ -1227,7 +1227,7 @@ function syncComboChildren(plugin: LearnKitPlugin, parent: CardRecord, now: numb
   const parentId = String(parent?.id ?? "");
   if (!parentId) return;
 
-  const ext = parent?.extensionData ?? {} as Record<string, unknown>;
+  const ext = parent?.extensionData ?? {};
   let qVariants: string[] = Array.isArray(ext.qVariants) ? (ext.qVariants as string[]) : [];
   let aVariants: string[] = Array.isArray(ext.aVariants) ? (ext.aVariants as string[]) : [];
   const comboMode: string = (typeof ext.comboMode === "string" && ext.comboMode) || (typeof parent?.comboMode === "string" && parent.comboMode) || "product";
@@ -1993,7 +1993,7 @@ function hqFieldsFromParsed(
 
   const hqRegions = Array.isArray(c?.hqRegions) ? c.hqRegions
     : storedHqDef?.rects ?? null;
-  const interactionMode = (c?.interactionMode ?? storedHqDef?.interactionMode ?? null) as "click" | "drag-drop" | null;
+  const interactionMode = (c?.interactionMode ?? storedHqDef?.interactionMode ?? null);
 
   return { imageRef, hqRegions, interactionMode };
 }
@@ -2032,7 +2032,7 @@ async function pruneTtsCacheForCards(plugin: LearnKitPlugin, cardIds: readonly s
 
   const cacheDirPath = getTtsCacheDirPath(configDir, pluginId);
   const removedCount = await deleteTtsCacheForCardIds(
-    adapter as Parameters<typeof deleteTtsCacheForCardIds>[0],
+    adapter,
     cacheDirPath,
     cardIds,
   );
@@ -2382,7 +2382,7 @@ export async function syncOneFile(
         if (c.type === "basic" && hasState(plugin, fwdChildId)) {
           const fwdState = plugin.store.data.states?.[fwdChildId];
           if (fwdState && typeof fwdState === "object") {
-            plugin.store.upsertState({ ...fwdState, id } as CardState);
+            plugin.store.upsertState({ ...fwdState, id });
           }
         } else {
           const restored = upsertStateIfPresent(plugin, schedulingSnapshot, id);
@@ -2949,7 +2949,7 @@ export async function syncQuestionBank(plugin: LearnKitPlugin, options?: { syncM
         if (c.type === "basic" && hasState(plugin, fwdChildId)) {
           const fwdState = plugin.store.data.states?.[fwdChildId];
           if (fwdState && typeof fwdState === "object") {
-            plugin.store.upsertState({ ...fwdState, id } as CardState);
+            plugin.store.upsertState({ ...fwdState, id });
           }
         } else {
           const restored = upsertStateIfPresent(plugin, schedulingSnapshot, id);

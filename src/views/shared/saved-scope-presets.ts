@@ -38,7 +38,7 @@ export function parseScopesJson(scopesJson: string): Scope[] {
         if (type !== "vault" && type !== "folder" && type !== "note" && type !== "group" && type !== "tag" && type !== "property") {
           return null;
         }
-        return { type, key, name } as Scope;
+        return { type, key, name };
       })
       .filter((scope): scope is Scope => !!scope);
   } catch {

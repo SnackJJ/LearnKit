@@ -23,7 +23,7 @@ import { ImageOcclusionCreatorModal } from "../../../platform/modals/image-occlu
 import { findCardBlockRangeById, buildCardBlockMarkdown } from "../../reviewer/markdown-block";
 import { syncOneFile } from "../../../platform/integrations/sync/sync-engine";
 
-import type { UndoFrame, WidgetViewLike, ReviewMeta } from "../core/widget-helpers";
+import type { WidgetViewLike, ReviewMeta } from "../core/widget-helpers";
 import type { CardRecord } from "../../../platform/types/card";
 import { getCorrectIndices, isMultiAnswerMcq } from "../../../platform/types/card";
 import type LearnKitPlugin from "../../../main";
@@ -97,7 +97,7 @@ export async function gradeCurrentRating(
     reviewLogLenBefore,
     analyticsLenBefore,
     prevState: deepClone(st),
-  } as UndoFrame);
+  });
   if (view._undoStack.length > UNDO_MAX)
     view._undoStack.splice(0, view._undoStack.length - UNDO_MAX);
 
@@ -279,7 +279,7 @@ export async function answerMcqMulti(view: WidgetViewLike, selectedIndices: numb
     view.session.graded[id] = {
       rating: pass ? "good" : "again",
       at: Date.now(),
-      meta: { ...meta, practice: true } as ReviewMeta,
+      meta: { ...meta, practice: true },
     };
     view.session.stats.done = Object.keys(view.session.graded).length;
     view.showAnswer = true;
@@ -287,7 +287,7 @@ export async function answerMcqMulti(view: WidgetViewLike, selectedIndices: numb
     return;
   }
 
-  await gradeCurrentRating(view, pass ? "good" : "again", meta as ReviewMeta);
+  await gradeCurrentRating(view, pass ? "good" : "again", meta);
   view.render();
 }
 

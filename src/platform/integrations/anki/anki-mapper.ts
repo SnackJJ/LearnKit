@@ -41,7 +41,7 @@ import {
   ankiDeckToGroupPath,
 } from "./anki-utils";
 import type { CardRecord } from "../../types/card";
-import type { CardState, ReviewRating } from "../../types/scheduler";
+import type { CardState } from "../../types/scheduler";
 import type { ReviewLogEntry } from "../../types/review";
 import { State as FsrsState } from "ts-fsrs";
 import { makeEl } from "../../core/dom-factory";
@@ -184,7 +184,7 @@ export function reviewLogToAnkiRevlog(
     id: entry.at,
     cid: cardId,
     usn: -1,
-    ease: sproutRatingToAnkiEase(entry.result as ReviewRating),
+    ease: sproutRatingToAnkiEase(entry.result),
     ivl: Math.floor(Math.max(0, entry.nextDue - entry.prevDue) / 86400000) || 0,
     lastIvl: 0,
     factor: 0,

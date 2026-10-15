@@ -270,7 +270,7 @@ export class CardEditModal extends Modal {
 
       const row = contentEl.createDiv({ cls: "learnkit-edit-mcq-option-row learnkit-edit-mcq-option-row" });
 
-      row.createEl("div", { text: tx("ui.reviewer.cardEditor.field.optionN", "Option {index}", { index: idx + 1 }), cls: "learnkit-muted learnkit-muted learnkit-edit-mcq-option-label learnkit-edit-mcq-option-label" });
+      row.createDiv({ text: tx("ui.reviewer.cardEditor.field.optionN", "Option {index}", { index: idx + 1 }), cls: "learnkit-muted learnkit-muted learnkit-edit-mcq-option-label learnkit-edit-mcq-option-label" });
 
       const input = row.createEl("input");
       input.type = "text";
@@ -570,14 +570,14 @@ export class CardEditModal extends Modal {
 
     const cancel = footer.createEl("button", { cls: "learnkit-btn-toolbar learnkit-btn-toolbar learnkit-btn-outline-muted learnkit-btn-outline-muted inline-flex items-center gap-2 h-9 px-3 text-sm" });
     cancel.type = "button";
-    const cancelIcon = cancel.createEl("span", { cls: "inline-flex items-center justify-center [&_svg]:size-4" });
+    const cancelIcon = cancel.createSpan({ cls: "inline-flex items-center justify-center [&_svg]:size-4" });
     setIcon(cancelIcon, "x");
     cancel.createSpan({ text: tx("ui.common.cancel", "Cancel") });
     cancel.onclick = () => this.close();
 
     const save = footer.createEl("button", { cls: "learnkit-btn-toolbar learnkit-btn-toolbar learnkit-btn-primary-action learnkit-btn-primary-action inline-flex items-center gap-2 h-9 px-3 text-sm" });
     save.type = "button";
-    const saveIcon = save.createEl("span", { cls: "inline-flex items-center justify-center [&_svg]:size-4" });
+    const saveIcon = save.createSpan({ cls: "inline-flex items-center justify-center [&_svg]:size-4" });
     setIcon(saveIcon, "save");
     save.createSpan({ text: tx("ui.common.save", "Save") });
     save.onclick = async () => {

@@ -517,7 +517,7 @@ export function ForgettingCurveChart(props: {
     if (!curves.length) return [] as DataRow[];
     const rows: DataRow[] = [];
     for (let day = 0; day <= maxDays; day += 1) {
-      const row: DataRow = { day } as DataRow;
+      const row: DataRow = { day };
       for (const curve of curves) {
         const { firstReviewAt, timeline } = curve;
         if (!Number.isFinite(firstReviewAt) || !timeline.length) {

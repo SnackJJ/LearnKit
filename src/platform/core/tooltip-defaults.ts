@@ -159,11 +159,11 @@ function processNode(node: Node): void {
   if (!isLearnKitOwned(elementNode)) return;
 
   // Process the node itself
-  if (elementNode.matches("button,[role='button']")) ensureTooltip(elementNode as TooltipTarget);
+  if (elementNode.matches("button,[role='button']")) ensureTooltip(elementNode);
 
   // Process descendants
   const descendants = elementNode.querySelectorAll<HTMLElement>("button,[role='button']");
-  descendants.forEach((el) => ensureTooltip(el as TooltipTarget));
+  descendants.forEach((el) => ensureTooltip(el));
 
   // Mark [data-tooltip] parents (for CSS tooltip overflow escalation)
   if (elementNode.hasAttribute('data-tooltip')) {
@@ -197,7 +197,7 @@ export function initButtonTooltipDefaults(): () => void {
         const target = m.target as HTMLElement;
         if (!isLearnKitOwned(target)) return;
         if (target.matches("button,[role='button']")) {
-          ensureTooltip(target as TooltipTarget);
+          ensureTooltip(target);
         }
         if (target.hasAttribute("data-tooltip")) {
           syncTooltipContentVar(target);

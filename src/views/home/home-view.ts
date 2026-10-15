@@ -736,7 +736,7 @@ export class SproutHomeView extends ItemView {
       const headingRow = section.createDiv({ cls: "m-0 flex items-center justify-between gap-2" });
       headingRow.createDiv({ cls: "lk-home-section-title font-semibold", text: label });
       if (iconName) {
-        const iconWrapper = headingRow.createEl("span", { cls: "w-5 h-5 text-muted-foreground shrink-0 inline-flex items-center justify-center [&_svg]:w-5 [&_svg]:h-5 [&_svg]:stroke-current" });
+        const iconWrapper = headingRow.createSpan({ cls: "w-5 h-5 text-muted-foreground shrink-0 inline-flex items-center justify-center [&_svg]:w-5 [&_svg]:h-5 [&_svg]:stroke-current" });
         if (iconName === "pin") {
           // Use lucide bookmark icon for pinned decks
           setIcon(iconWrapper, "bookmark");
@@ -960,7 +960,7 @@ export class SproutHomeView extends ItemView {
           const left = row.createDiv({ cls: "flex items-center gap-2 min-w-0 flex-1" });
           
           // Hamburger menu for reordering
-          const hamburger = left.createEl("span", { 
+          const hamburger = left.createSpan({ 
             cls: "learnkit-drag-handle learnkit-drag-handle inline-flex items-center justify-center",
             attr: {
               "data-action": "drag",
@@ -979,7 +979,7 @@ export class SproutHomeView extends ItemView {
           const due = getDueForPrefix(path);
           right.createDiv({ cls: "text-xs text-muted-foreground", text: tx("ui.home.deck.dueCount", "{count} due", { count: due }) });
           
-          const removeBtn = right.createEl("span", { 
+          const removeBtn = right.createSpan({ 
             cls: "learnkit-deck-remove-btn learnkit-deck-remove-btn inline-flex items-center justify-center cursor-pointer",
             attr: {
               "data-action": "delete",

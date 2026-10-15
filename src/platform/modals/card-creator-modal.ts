@@ -673,7 +673,7 @@ export class CardCreatorModal extends Modal {
     });
     addBtn.type = "button";
     addBtn.setAttr("data-tooltip-position", "top");
-    const addIcon = addBtn.createEl("span", { cls: "inline-flex items-center justify-center [&_svg]:size-4" });
+    const addIcon = addBtn.createSpan({ cls: "inline-flex items-center justify-center [&_svg]:size-4" });
     setIcon(addIcon, "plus");
     addBtn.createSpan({ text: this.tx("ui.cardCreator.action.add", "Add") });
     addBtn.onclick = async () => {

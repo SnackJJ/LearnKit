@@ -75,7 +75,7 @@ export function extractFileTags(app: App, file: TFile): Set<string> {
 
   const frontmatter = cache?.frontmatter;
   if (frontmatter && typeof frontmatter === "object") {
-    const entries = Object.entries(frontmatter as Record<string, unknown>);
+    const entries = Object.entries(frontmatter);
     for (const [key, value] of entries) {
       const normalizedKey = String(key || "").trim().toLowerCase();
       if (normalizedKey !== "tag" && normalizedKey !== "tags") continue;
@@ -109,7 +109,7 @@ export function extractFilePropertyPairs(app: App, file: TFile): PropertyPair[] 
   if (!frontmatter || typeof frontmatter !== "object") return [];
 
   const out: PropertyPair[] = [];
-  const entries = Object.entries(frontmatter as Record<string, unknown>);
+  const entries = Object.entries(frontmatter);
 
   for (const [rawKey, rawValue] of entries) {
     const key = normalizePropertyKey(rawKey);

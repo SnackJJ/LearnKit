@@ -1055,10 +1055,10 @@ export async function createDataJsonBackupNow(plugin: LearnKitPlugin, label?: st
   if (await isSqliteDatabasePresent(plugin)) {
     const backupFolder = getPreferredBackupFolder(plugin);
     if (!backupFolder) return null;
-    await ensureFolder(adapter as AdapterLike, backupFolder);
+    await ensureFolder(adapter, backupFolder);
 
     const srcPath = getFlashcardsDbPath(plugin);
-    const bytes = await readBinaryFile(adapter as AdapterLike, srcPath);
+    const bytes = await readBinaryFile(adapter, srcPath);
     if (!bytes || bytes.byteLength === 0) return null;
 
     const kind = String(label ?? "").toLowerCase().includes("manual") ? "manual" : "daily";
@@ -1073,7 +1073,7 @@ export async function createDataJsonBackupNow(plugin: LearnKitPlugin, label?: st
       : DAILY_SQLITE_BACKUP;
     const dstPath = joinPath(backupFolder, dstName);
 
-    const ok = await writeBinaryFile(adapter as AdapterLike, dstPath, bytes);
+    const ok = await writeBinaryFile(adapter, dstPath, bytes);
     return ok ? dstPath : null;
   }
 
@@ -1116,7 +1116,7 @@ export async function createDataJsonBackupNow(plugin: LearnKitPlugin, label?: st
     const preferredBackupFolder = getPreferredBackupFolder(plugin);
     let backupPath: string | null = null;
 
-    if (preferredBackupFolder && (await ensureFolder(adapter as AdapterLike, preferredBackupFolder))) {
+    if (preferredBackupFolder && (await ensureFolder(adapter, preferredBackupFolder))) {
       const candidate = joinPath(preferredBackupFolder, baseName);
       try {
         await adapter.write(candidate, text);
@@ -1185,13 +1185,13 @@ export async function restoreFromDataJsonBackup(
         return { ok: false, message: integrity.reason || "Backup integrity check failed." };
       }
 
-      const bytes = await readBinaryFile(adapter as AdapterLike, backupPath);
+      const bytes = await readBinaryFile(adapter, backupPath);
       if (!bytes || bytes.byteLength === 0) {
         return { ok: false, message: "Backup DB is unreadable." };
       }
 
       const dbPath = getFlashcardsDbPath(plugin);
-      const written = await writeBinaryFile(adapter as AdapterLike, dbPath, bytes);
+      const written = await writeBinaryFile(adapter, dbPath, bytes);
       if (!written) {
         return { ok: false, message: "Failed to write flashcards.db." };
       }

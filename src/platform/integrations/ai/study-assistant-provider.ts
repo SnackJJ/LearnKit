@@ -141,7 +141,7 @@ function sanitizeJsonResponse(value: unknown, depth = 0): unknown {
   }
   if (value && typeof value === "object") {
     const out: Record<string, unknown> = {};
-    for (const key of Object.keys(value as Record<string, unknown>)) {
+    for (const key of Object.keys(value)) {
       if (POISONED_KEYS.has(key)) continue;
       out[key] = sanitizeJsonResponse((value as Record<string, unknown>)[key], depth + 1);
     }

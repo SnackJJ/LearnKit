@@ -31,7 +31,6 @@ import type { GeneratedExamQuestion, ExamGeneratorConfig } from "../../exam-gene
 import { deleteStudyAssistantConversation } from "../../../platform/integrations/ai/study-assistant-provider";
 import type {
   StudyAssistantCardType,
-  StudyAssistantChatMode,
   StudyAssistantConversationRef,
   StudyAssistantImageDescriptor,
   StudyAssistantReviewDepth,
@@ -349,7 +348,7 @@ export class SproutAssistantPopup {
     };
     window.addEventListener(
       CHAT_LOG_SYNC_EVENT_NAME,
-      this._onChatLogSynced as EventListener,
+      this._onChatLogSynced,
     );
   }
 
@@ -357,7 +356,7 @@ export class SproutAssistantPopup {
     if (!this._onChatLogSynced) return;
     window.removeEventListener(
       CHAT_LOG_SYNC_EVENT_NAME,
-      this._onChatLogSynced as EventListener,
+      this._onChatLogSynced,
     );
     this._onChatLogSynced = null;
   }
@@ -374,7 +373,7 @@ export class SproutAssistantPopup {
     };
     window.addEventListener(
       EDIT_PROPOSAL_RESOLVED_EVENT_NAME,
-      this._onEditProposalResolved as EventListener,
+      this._onEditProposalResolved,
     );
   }
 
@@ -382,7 +381,7 @@ export class SproutAssistantPopup {
     if (!this._onEditProposalResolved) return;
     window.removeEventListener(
       EDIT_PROPOSAL_RESOLVED_EVENT_NAME,
-      this._onEditProposalResolved as EventListener,
+      this._onEditProposalResolved,
     );
     this._onEditProposalResolved = null;
   }
@@ -1019,7 +1018,7 @@ export class SproutAssistantPopup {
       const popup = makeEl("div");
       popup.className = "learnkit learnkit-assistant-popup learnkit-assistant-popup-embedded";
       host.appendChild(popup);
-      this.popupEl = popup as unknown as HTMLDivElement;
+      this.popupEl = popup;
     } else if (this.popupEl.parentElement !== host) {
       host.appendChild(this.popupEl);
     }
@@ -3304,7 +3303,7 @@ export class SproutAssistantPopup {
       const result = await generateStudyAssistantChatReplyStreaming({
         settings,
         input: {
-          mode: "ask" as StudyAssistantChatMode,
+          mode: "ask",
           notePath: file?.path || "",
           noteContent: context.noteContentForAi,
           imageRefs: context.imageRefs,
@@ -3434,7 +3433,7 @@ export class SproutAssistantPopup {
       const result = await generateStudyAssistantChatReplyStreaming({
         settings,
         input: {
-          mode: "edit" as StudyAssistantChatMode,
+          mode: "edit",
           notePath: file.path,
           noteContent,
           imageRefs: [],
@@ -5423,7 +5422,7 @@ export class SproutAssistantPopup {
     const popup = makeEl("div");
     popup.className = "learnkit learnkit-assistant-popup is-hidden";
     this._attachToBestHost(popup);
-    this.popupEl = popup as unknown as HTMLDivElement;
+    this.popupEl = popup;
     this._applyPresentationState();
   }
 
@@ -6068,7 +6067,7 @@ export class SproutAssistantPopup {
             });
           }
           const header = item.createDiv({ cls: "learnkit-assistant-popup-generated-card-header learnkit-assistant-popup-generated-card-header" });
-          header.createEl("span", { cls: "learnkit-assistant-popup-generated-card-type learnkit-assistant-popup-generated-card-type", text: typeLabel });
+          header.createSpan({ cls: "learnkit-assistant-popup-generated-card-type learnkit-assistant-popup-generated-card-type", text: typeLabel });
           this.renderDifficultyStars(header, suggestion.difficulty);
 
           this.renderSuggestionSummary(item, suggestion);
@@ -6431,7 +6430,7 @@ export class SproutAssistantPopup {
               });
             }
             const header = item.createDiv({ cls: "learnkit-assistant-popup-generated-card-header learnkit-assistant-popup-generated-card-header" });
-            header.createEl("span", { cls: "learnkit-assistant-popup-generated-card-type learnkit-assistant-popup-generated-card-type", text: typeLabel });
+            header.createSpan({ cls: "learnkit-assistant-popup-generated-card-type learnkit-assistant-popup-generated-card-type", text: typeLabel });
             this.renderDifficultyStars(header, suggestion.difficulty);
 
             this.renderSuggestionSummary(item, suggestion);
@@ -6538,7 +6537,7 @@ class AttachmentPickerModal extends Modal {
     systemBtn.addEventListener("click", () => this._pickSystemFile());
 
     // ---- Divider ----
-    this.contentEl.createEl("div", {
+    this.contentEl.createDiv({
       cls: "learnkit-attachment-picker-divider learnkit-attachment-picker-divider",
       text: this._tx("ui.assistant.orChooseFromVault", "Or choose from vault"),
     });

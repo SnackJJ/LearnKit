@@ -1287,7 +1287,7 @@ export class SproutAnalyticsView extends ItemView {
         rootNode.render(
           React.createElement(ChartErrorBoundary, { chartName: tx("ui.analytics.chart.testsPerformance", "Tests Performance") },
             React.createElement(TestsAnalyticsCard, {
-              events: events.filter((ev) => ev && ev.kind === "exam-attempt") as Array<Record<string, unknown>>,
+              events: events.filter((ev) => ev && ev.kind === "exam-attempt"),
               dbAttempts: this._examAttemptsHydrated ? this._examAttemptsCache : [],
               timezone,
               locale: this.plugin.settings?.general?.interfaceLanguage,
@@ -1309,7 +1309,7 @@ export class SproutAnalyticsView extends ItemView {
         rootNode.render(
           React.createElement(ChartErrorBoundary, { chartName: tx("ui.analytics.chart.noteReviewActivity", "Note Review Activity") },
             React.createElement(NoteReviewAnalyticsCard, {
-              events: events.filter((ev) => ev && ev.kind === "note-review") as Array<Record<string, unknown>>,
+              events: events.filter((ev) => ev && ev.kind === "note-review"),
               includePracticeDefault: this.plugin.settings?.study?.analyticsIncludePracticeNoteReview !== false,
               timezone,
               locale: this.plugin.settings?.general?.interfaceLanguage,

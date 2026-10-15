@@ -94,7 +94,7 @@ function pointHitsRect(
   if (rect.shape === "polygon" && Array.isArray(rect.points) && rect.points.length >= 3) {
     const relX = w > 0 ? (point.x - x) / w : 0;
     const relY = h > 0 ? (point.y - y) / h : 0;
-    return pointInPolygon({ x: relX, y: relY }, rect.points as Array<{ x: number; y: number }>);
+    return pointInPolygon({ x: relX, y: relY }, rect.points);
   }
 
   if (rect.shape === "circle") {

@@ -142,7 +142,7 @@ export class LaunchNoticeModal extends Modal {
       cls: "learnkit-btn-toolbar learnkit-btn-toolbar inline-flex items-center gap-2 h-9 px-3 text-sm",
       attr: { type: "button", "aria-label": tx("ui.launchNotice.releaseNotes.open", "Open release notes") },
     });
-    const releaseIcon = releaseNotesBtn.createEl("span", { cls: "inline-flex items-center justify-center [&_svg]:size-4" });
+    const releaseIcon = releaseNotesBtn.createSpan({ cls: "inline-flex items-center justify-center [&_svg]:size-4" });
     setIcon(releaseIcon, "file-text");
     releaseNotesBtn.createSpan({ text: tx("ui.launchNotice.releaseNotes.label", "Release notes") });
     releaseNotesBtn.addEventListener("click", () => {
@@ -153,7 +153,7 @@ export class LaunchNoticeModal extends Modal {
       cls: "learnkit-btn-toolbar learnkit-btn-toolbar inline-flex items-center gap-2 h-9 px-3 text-sm",
       attr: { type: "button", "aria-label": tx("ui.launchNotice.settings.open", "Open LearnKit settings") },
     });
-    const settingsIcon = settingsBtn.createEl("span", { cls: "inline-flex items-center justify-center [&_svg]:size-4" });
+    const settingsIcon = settingsBtn.createSpan({ cls: "inline-flex items-center justify-center [&_svg]:size-4" });
     setIcon(settingsIcon, "settings");
     settingsBtn.createSpan({ text: tx("ui.common.settings", "Settings") });
     settingsBtn.addEventListener("click", () => {
@@ -165,7 +165,7 @@ export class LaunchNoticeModal extends Modal {
       cls: "learnkit-btn-toolbar learnkit-btn-toolbar inline-flex items-center gap-2 h-9 px-3 text-sm",
       attr: { type: "button", "aria-label": tx("ui.launchNotice.close", "Close") },
     });
-    const closeIcon = closeBtn.createEl("span", { cls: "inline-flex items-center justify-center [&_svg]:size-4" });
+    const closeIcon = closeBtn.createSpan({ cls: "inline-flex items-center justify-center [&_svg]:size-4" });
     setIcon(closeIcon, "x");
     closeBtn.createSpan({ text: tx("ui.launchNotice.close", "Close") });
     closeBtn.addEventListener("click", () => this.close());

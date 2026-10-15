@@ -140,7 +140,7 @@ export function WithCoreMethods<T extends Constructor<LearnKitPluginBase>>(Base:
     }
 
     _migrateSettingsInPlace(): void {
-      migrateSettingsInPlace(this.settings as Record<string, unknown>);
+      migrateSettingsInPlace(this.settings);
     }
 
     _normaliseSettingsInPlace(): void {
@@ -266,7 +266,7 @@ export function WithCoreMethods<T extends Constructor<LearnKitPluginBase>>(Base:
       registerMarkdownSourceClozeShortcuts({
         app: this.app,
         registerDomEvent: (type, callback, options) => {
-          this.registerDomEvent(activeDocument, type, callback as (this: HTMLElement, ev: KeyboardEvent) => void, options);
+          this.registerDomEvent(activeDocument, type, callback, options);
         },
         applyClozeShortcut: (editor: Editor, clozeIndex: number) => {
           this._applyClozeShortcutToEditor(editor, clozeIndex);

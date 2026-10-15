@@ -85,7 +85,7 @@ export function buildToolbar(parent: HTMLElement, cb: ToolbarCallbacks): Toolbar
     btn.type = "button";
     btn.setAttribute("aria-label", tooltip);
 
-    const iconWrapper = btn.createEl("span", { cls: "inline-flex items-center justify-center" });
+    const iconWrapper = btn.createSpan({ cls: "inline-flex items-center justify-center" });
     setIcon(iconWrapper, iconName);
 
     if (opts.label) {
@@ -298,9 +298,9 @@ export function buildFooter(parent: HTMLElement, cb: FooterCallbacks, defaultMod
     cls: "learnkit-btn-toolbar learnkit-btn-toolbar h-7 px-2 text-sm inline-flex items-center gap-2 learnkit-io-mode-trigger learnkit-io-mode-trigger",
     attr: { type: "button", "aria-haspopup": "menu", "aria-expanded": "false" },
   });
-  const triggerLabel = trigger.createEl("span", { cls: "", text: options.find((o) => o.value === selectedMode)?.label ?? t(undefined, "ui.io.footer.mode.hideGroup", "Hide group") });
+  const triggerLabel = trigger.createSpan({ cls: "", text: options.find((o) => o.value === selectedMode)?.label ?? t(undefined, "ui.io.footer.mode.hideGroup", "Hide group") });
   trigger.setAttribute("aria-label", triggerLabel.textContent || t(undefined, "ui.io.footer.mode.hideGroup", "Hide group"));
-  const chevronWrap = trigger.createEl("span", { cls: "inline-flex items-center justify-center [&_svg]:size-3" });
+  const chevronWrap = trigger.createSpan({ cls: "inline-flex items-center justify-center [&_svg]:size-3" });
   setIcon(chevronWrap, "chevron-down");
 
   const popover = makeEl("div");
@@ -370,16 +370,16 @@ export function buildFooter(parent: HTMLElement, cb: FooterCallbacks, defaultMod
   };
 
   for (const opt of options) {
-    const item = menuList.createEl("div", {
+    const item = menuList.createDiv({
       cls: "group flex items-center gap-2 rounded-md px-2 py-1.5 text-sm cursor-pointer select-none outline-none hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground learnkit-card-creator-type-item learnkit-card-creator-type-item",
       text: "",
     });
     item.setAttribute("role", "menuitemradio");
     item.setAttribute("aria-checked", opt.value === selectedMode ? "true" : "false");
     item.tabIndex = 0;
-    const dotWrap = item.createEl("div", { cls: "size-4 flex items-center justify-center" });
-    dotWrap.createEl("div", { cls: "size-2 rounded-full bg-foreground invisible group-aria-checked:visible", attr: { "aria-hidden": "true" } });
-    item.createEl("span", { cls: "", text: opt.label });
+    const dotWrap = item.createDiv({ cls: "size-4 flex items-center justify-center" });
+    dotWrap.createDiv({ cls: "size-2 rounded-full bg-foreground invisible group-aria-checked:visible", attr: { "aria-hidden": "true" } });
+    item.createSpan({ cls: "", text: opt.label });
 
     const choose = (ev?: Event) => {
       if (ev) {
@@ -503,7 +503,7 @@ export function buildHeader(parent: HTMLElement, title: string, onClose: () => v
     attr: { type: "button", "aria-label": t(undefined, "ui.io.modal.close", "Close") },
   });
   headerClose.classList.add("learnkit-io-close-btn", "learnkit-io-close-btn");
-  const headerCloseIcon = headerClose.createEl("span", { cls: "inline-flex items-center justify-center [&_svg]:size-4" });
+  const headerCloseIcon = headerClose.createSpan({ cls: "inline-flex items-center justify-center [&_svg]:size-4" });
   setIcon(headerCloseIcon, "x");
   headerClose.onclick = () => onClose();
   return headerRow;

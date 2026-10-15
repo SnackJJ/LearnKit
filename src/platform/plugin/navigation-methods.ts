@@ -22,7 +22,7 @@ import {
   VIEW_TYPE_EXAM_GENERATOR,
   VIEW_TYPE_COACH,
 } from "../core/constants";
-import { CoachPlanSqlite, type CoachScopeType } from "../core/coach-plan-sqlite";
+import { CoachPlanSqlite } from "../core/coach-plan-sqlite";
 import { log } from "../core/logger";
 
 export function WithNavigationMethods<T extends Constructor<LearnKitPluginBase>>(Base: T) {
@@ -311,7 +311,7 @@ export function WithNavigationMethods<T extends Constructor<LearnKitPluginBase>>
       d.setUTCHours(0, 0, 0, 0);
       const dayUtc = d.getTime();
       const scopeKey = scope.type === "vault" ? "" : String(scope.key || "");
-      this._coachDb.incrementProgress(dayUtc, scope.type as CoachScopeType, scopeKey, kind, by);
+      this._coachDb.incrementProgress(dayUtc, scope.type, scopeKey, kind, by);
       await this._coachDb.persist();
     }
 

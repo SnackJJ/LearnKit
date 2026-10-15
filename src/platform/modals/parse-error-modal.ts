@@ -203,7 +203,7 @@ export class ParseErrorModal extends Modal {
       cls: "learnkit-btn-toolbar learnkit-btn-toolbar inline-flex items-center gap-2 h-9 px-3 text-sm",
       attr: { type: "button", "aria-label": this._tx("ui.parseError.closeDialog", "Close this dialog") },
     });
-    const closeBtnIcon = closeBtn.createEl("span", { cls: "inline-flex items-center justify-center [&_svg]:size-4" });
+    const closeBtnIcon = closeBtn.createSpan({ cls: "inline-flex items-center justify-center [&_svg]:size-4" });
     setIcon(closeBtnIcon, "x");
     closeBtn.createSpan({ text: "Close" });
     closeBtn.onclick = () => this.close();
@@ -389,7 +389,7 @@ export class ParseErrorModal extends Modal {
           options: Array.isArray(found.options) ? found.options : [],
           correctIndex: Number.isFinite(found.correctIndex) ? Number(found.correctIndex) : -1,
           prompt: found.prompt ?? "",
-          lines: Array.isArray((found as Record<string, unknown>).lines) ? (found as Record<string, unknown>).lines as unknown[] : [],
+          lines: Array.isArray((found as Record<string, unknown>).lines) ? (found as Record<string, unknown>).lines : [],
           ioSrc: found.ioSrc ?? (found as Record<string, unknown>).src ?? "",
           info: found.info || "",
           sourceNotePath: ref.sourceNotePath,

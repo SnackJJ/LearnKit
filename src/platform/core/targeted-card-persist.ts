@@ -254,7 +254,7 @@ export async function persistEditedCardAndSiblings(
   if (adapter && configDir && pluginId) {
     const cacheDirPath = getTtsCacheDirPath(configDir, pluginId);
     await deleteTtsCacheForCardIds(
-      adapter as Parameters<typeof deleteTtsCacheForCardIds>[0],
+      adapter,
       cacheDirPath,
       [id],
     );

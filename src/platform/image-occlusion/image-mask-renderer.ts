@@ -442,11 +442,11 @@ export class ImageOcclusionEditorModal extends Modal {
       cls: "learnkit-btn-toolbar learnkit-btn-toolbar h-7 px-2 text-sm inline-flex items-center gap-2",
       attr: { type: "button", "aria-haspopup": "menu", "aria-expanded": "false" },
     });
-    const triggerLabel = trigger.createEl("span", {
+    const triggerLabel = trigger.createSpan({
       cls: "truncate",
       text: modeOptions.find((o) => o.value === this.selectedMaskMode)?.label ?? "Basic",
     });
-    const chevronWrap = trigger.createEl("span", { cls: "inline-flex items-center justify-center [&_svg]:size-3" });
+    const chevronWrap = trigger.createSpan({ cls: "inline-flex items-center justify-center [&_svg]:size-3" });
     setIcon(chevronWrap, "chevron-down");
 
     const modeMenu = dropRoot.createDiv({ cls: "learnkit-io-mode-menu learnkit-io-mode-menu" });
@@ -931,7 +931,7 @@ export class ImageOcclusionEditorModal extends Modal {
       forceMaskMode === "all" || forceMaskMode === "solo"
         ? forceMaskMode
         : isMaskMode(this.ioDef?.maskMode)
-          ? (this.ioDef.maskMode as IOMaskMode)
+          ? (this.ioDef.maskMode)
           : "solo";
 
     if (this.ioDef) this.ioDef.maskMode = maskMode;

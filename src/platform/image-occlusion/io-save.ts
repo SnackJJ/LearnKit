@@ -109,7 +109,7 @@ function dismissPasteImageRenameModal(): void {
     // Click the Cancel button to dismiss without renaming
     const buttons = modal.querySelectorAll("button");
     for (const el of buttons) {
-      const btn = el as HTMLButtonElement;
+      const btn = el;
       if ((btn.textContent ?? "").trim().toLowerCase() === "cancel") {
         btn.click();
         return;

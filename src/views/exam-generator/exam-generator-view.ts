@@ -3293,7 +3293,7 @@ class ExamAttachmentPickerModal extends Modal {
     systemBtn.addEventListener("click", () => this._pickSystemFile());
 
     // ---- Divider ----
-    body.createEl("div", {
+    body.createDiv({
       cls: "learnkit-attachment-picker-divider learnkit-attachment-picker-divider",
       text: this._tx("ui.view.examGenerator.attachments.orChooseFromVault", "Or choose from vault"),
     });

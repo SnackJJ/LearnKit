@@ -275,7 +275,7 @@ type ReadingViewSettings = NonNullable<SproutPluginLike["settings"]>["readingVie
 type AudioSettings = NonNullable<NonNullable<SproutPluginLike["settings"]>["audio"]>;
 
 function getSproutPlugin(): SproutPluginLike | null {
-  if (sproutPluginRef) return sproutPluginRef as SproutPluginLike;
+  if (sproutPluginRef) return sproutPluginRef;
   try {
     const plugin = Object.values(window?.app?.plugins?.plugins ?? {}).find(
       (p): p is SproutPluginLike => {
@@ -407,7 +407,7 @@ export function syncReadingViewStyles(): void {
   const plugin = getSproutPlugin();
   const enabled = !!plugin?.settings?.general?.enableReadingStyles;
   const rv = plugin?.settings?.readingView;
-  const macroPreset = normaliseMacroPreset((rv?.activeMacro as string | undefined) ?? rv?.preset);
+  const macroPreset = normaliseMacroPreset((rv?.activeMacro) ?? rv?.preset);
   const effectiveLayout = resolveReadingLayout(rv?.layout, macroPreset);
 
   // Skip stylesheet regeneration when settings haven't changed.
@@ -526,20 +526,7 @@ export function syncReadingViewStyles(): void {
   }
 
   // ── Field visibility / included data ──
-  const macroFields = (macroConfig as {
-    fields?: {
-      title?: boolean;
-      question?: boolean;
-      options?: boolean;
-      answer?: boolean;
-      info?: boolean;
-      groups?: boolean;
-      edit?: boolean;
-      labels?: boolean;
-      displayAudioButton?: boolean;
-      displayEditButton?: boolean;
-    };
-  } | undefined)?.fields;
+  const macroFields = (macroConfig)?.fields;
   const activeFields = macroFields ?? rv?.visibleFields;
   if (activeFields) {
     const vf = activeFields;
@@ -558,7 +545,7 @@ export function syncReadingViewStyles(): void {
     if (!showAudioButton) css += `${macroSelector} .learnkit-flashcard-speak-btn { display: none ; }\n`;
     if (!showEditButton) css += `${macroSelector} .learnkit-card-edit-btn { display: none ; }\n`;
   }
-  const showLabels = (macroConfig as { fields?: { labels?: boolean } } | undefined)?.fields?.labels ?? rv?.displayLabels;
+  const showLabels = (macroConfig)?.fields?.labels ?? rv?.displayLabels;
   if (showLabels === false) {
     css += `${macroSelector} .learnkit-section-label { display: none ; }\n`;
   }
@@ -1015,7 +1002,7 @@ export function teardownReadingView(): void {
   }
   // Remove all tracked window listeners
   for (const { event, handler, options } of registeredWindowListeners) {
-    window.removeEventListener(event, handler, options as boolean | EventListenerOptions | undefined);
+    window.removeEventListener(event, handler, options);
   }
   registeredWindowListeners = [];
   // Clear global references
@@ -1163,7 +1150,7 @@ function setupDebouncedMutationObserver() {
 function isFlashcardsReadingPresetActive(): boolean {
   try {
     const rv = getSproutPlugin()?.settings?.readingView;
-    const macroPreset = normaliseMacroPreset((rv?.activeMacro as string | undefined) ?? rv?.preset);
+    const macroPreset = normaliseMacroPreset((rv?.activeMacro) ?? rv?.preset);
     return macroPreset === 'flashcards';
   } catch {
     return false;
@@ -1732,7 +1719,7 @@ function resolveSectionLayoutFromDomAndSettings(
   }
 
   if (rvSettings) {
-    const macroPreset = normaliseMacroPreset((rvSettings.activeMacro as string | undefined) ?? rvSettings.preset);
+    const macroPreset = normaliseMacroPreset((rvSettings.activeMacro) ?? rvSettings.preset);
     return resolveReadingLayout(rvSettings.layout, macroPreset);
   }
 
@@ -3373,7 +3360,7 @@ function enhanceCardElement(
       replaceChildrenWithHTML(el, originalContent);
       return;
     }
-    macroPreset = normaliseMacroPreset((activePlugin?.settings?.readingView?.activeMacro as string | undefined) ?? activePlugin?.settings?.readingView?.preset);
+    macroPreset = normaliseMacroPreset((activePlugin?.settings?.readingView?.activeMacro) ?? activePlugin?.settings?.readingView?.preset);
     const macroConfig =
       macroPreset === 'classic'
         ? activePlugin?.settings?.readingView?.macroConfigs?.classic

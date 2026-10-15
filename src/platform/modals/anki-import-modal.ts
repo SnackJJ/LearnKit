@@ -75,7 +75,7 @@ export class AnkiImportModal extends Modal {
       cls: "learnkit-btn-toolbar learnkit-btn-toolbar inline-flex items-center gap-2 h-9 px-3 text-sm",
       attr: { type: "button", "aria-label": opts?.tooltip || label },
     });
-    const ic = btn.createEl("span", { cls: "inline-flex items-center justify-center [&_svg]:size-4" });
+    const ic = btn.createSpan({ cls: "inline-flex items-center justify-center [&_svg]:size-4" });
     setIcon(ic, icon);
     btn.createSpan({ text: label });
     return btn;
@@ -115,11 +115,11 @@ export class AnkiImportModal extends Modal {
       cls: "learnkit-btn-toolbar learnkit-btn-toolbar inline-flex items-center gap-2 h-9 px-3 text-sm",
       attr: { type: "button", "aria-label": this.tx("ui.anki.import.aria.chooseAnkiFile", "Choose an Anki file from your computer") },
     });
-    const pickIcon = pickBtn.createEl("span", { cls: "inline-flex items-center justify-center [&_svg]:size-4" });
+    const pickIcon = pickBtn.createSpan({ cls: "inline-flex items-center justify-center [&_svg]:size-4" });
     setIcon(pickIcon, "file-up");
     pickBtn.createSpan({ text: this.tx("ui.anki.import.action.chooseAnkiFile", "Choose Anki file") });
 
-    const fileLabel = fileRow.createEl("span", {
+    const fileLabel = fileRow.createSpan({
       text: "No file selected",
       cls: "text-sm text-muted-foreground",
     });

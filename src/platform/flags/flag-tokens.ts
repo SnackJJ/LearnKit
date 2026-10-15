@@ -275,7 +275,7 @@ function parseFlagCodeFromImage(img: HTMLImageElement): string | null {
 
 export function hydrateCircleFlagsInElement(root: ParentNode): void {
   const images: HTMLImageElement[] = [];
-  const stack: Node[] = [root as Node];
+  const stack: Node[] = [root];
 
   while (stack.length > 0) {
     const node = stack.pop();

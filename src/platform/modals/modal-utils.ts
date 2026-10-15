@@ -43,7 +43,6 @@ import type LearnKitPlugin from "../../main";
 import {
   type CardType, createCardEditor, } from "../card-editor/card-editor";
 import type { CardRecord } from "../core/store";
-import type { CardRecordType } from "../types/card";
 import { setCssProps } from "../core/ui";
 import { t } from "../translations/translator";
 
@@ -55,8 +54,8 @@ import { t } from "../translations/translator";
 export function mkDangerCallout(parent: HTMLElement, text: string) {
   const box = parent.createDiv({ cls: "rounded-lg p-3 text-sm learnkit-danger-callout learnkit-danger-callout" });
 
-  box.createEl("div", { text: "How to fix parse errors", cls: "font-medium mb-1" });
-  box.createEl("div", { text, cls: "learnkit-danger-callout-body learnkit-danger-callout-body" });
+  box.createDiv({ text: "How to fix parse errors", cls: "font-medium mb-1" });
+  box.createDiv({ text, cls: "learnkit-danger-callout-body learnkit-danger-callout-body" });
 
   return box;
 }
@@ -281,7 +280,7 @@ export function createModalCardEditor(config: ModalCardEditorConfig): ModalCardE
   // Build a minimal card record so the editor component can render
   const dummyCard: CardRecord = {
     id: "",
-    type: type as CardRecordType,
+    type: type,
     title: null,
     q: null,
     a: null,

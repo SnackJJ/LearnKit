@@ -148,7 +148,7 @@ export class LearnKitSettingsView extends ItemView {
   ) {
     window.addEventListener(event, handler, options);
     this._windowListenerCleanups.push(() => {
-      window.removeEventListener(event, handler, options as boolean | EventListenerOptions | undefined);
+      window.removeEventListener(event, handler, options);
     });
   }
 

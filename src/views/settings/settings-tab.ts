@@ -467,7 +467,7 @@ export class LearnKitSettingsTab extends PluginSettingTab {
         const pager = tableWrap.createDiv({ cls: "setting-item-control" });
         pager.classList.add("learnkit-backup-actions", "learnkit-backup-pager");
 
-        const summary = pager.createEl("span", {
+        const summary = pager.createSpan({
           cls: "learnkit-settings-text-muted learnkit-backup-pager-summary",
         });
         summary.textContent = this._tx("ui.settings.backups.pager.showingRange", "Showing {start}-{end} of {total} backups", {
@@ -476,7 +476,7 @@ export class LearnKitSettingsTab extends PluginSettingTab {
           total: totalRows,
         });
 
-        const rowsLabel = pager.createEl("span", { cls: "learnkit-settings-text-muted learnkit-settings-text-muted" });
+        const rowsLabel = pager.createSpan({ cls: "learnkit-settings-text-muted learnkit-settings-text-muted" });
         rowsLabel.textContent = this._tx("ui.settings.backups.pager.rowsPerPage", "Rows per page");
 
         const rowsWrap = pager.createDiv({ cls: "learnkit learnkit-backup-pager-rows-wrap" });
@@ -673,7 +673,7 @@ export class LearnKitSettingsTab extends PluginSettingTab {
           renderTable(rows);
         };
 
-        const pageLabel = pager.createEl("span", {
+        const pageLabel = pager.createSpan({
           cls: "learnkit-settings-text-muted learnkit-backup-pager-page-label",
         });
         pageLabel.textContent = this._tx("ui.settings.backups.pager.pageXofY", "Page {page} / {total}", {
