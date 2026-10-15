@@ -19,6 +19,7 @@
 import { Platform, setIcon } from "obsidian";
 import { placePopover, setCssProps } from "../../platform/core/ui";
 import { t } from "../translations/translator";
+import { makeEl } from "../core/dom-factory";
 
 function isMobileLikePlatform(): boolean {
   if (Platform.isMobileApp || Platform.isIosApp || Platform.isAndroidApp) return true;
@@ -113,7 +114,7 @@ export function buildToolbar(parent: HTMLElement, cb: ToolbarCallbacks): Toolbar
   };
 
   // File upload button
-  const fileInput = activeDocument.createElement("input");
+  const fileInput = makeEl("input");
   fileInput.type = "file";
   fileInput.accept = "image/*";
   fileInput.classList.add("learnkit-io-file-input", "learnkit-io-file-input");
@@ -302,19 +303,19 @@ export function buildFooter(parent: HTMLElement, cb: FooterCallbacks, defaultMod
   const chevronWrap = trigger.createEl("span", { cls: "inline-flex items-center justify-center [&_svg]:size-3" });
   setIcon(chevronWrap, "chevron-down");
 
-  const popover = activeDocument.createElement("div");
-  const sproutWrapper = activeDocument.createElement("div");
+  const popover = makeEl("div");
+  const sproutWrapper = makeEl("div");
   sproutWrapper.className = "learnkit";
   popover.className = "";
   popover.setAttribute("aria-hidden", "true");
   popover.classList.add("learnkit-popover-overlay", "learnkit-popover-overlay", "learnkit-card-creator-type-popover", "learnkit-card-creator-type-popover");
   sproutWrapper.appendChild(popover);
 
-  const panel = activeDocument.createElement("div");
+  const panel = makeEl("div");
   panel.className = "rounded-md border border-border bg-popover text-popover-foreground shadow-lg p-1 learnkit-pointer-auto learnkit-card-creator-type-panel";
   popover.appendChild(panel);
 
-  const menuList = activeDocument.createElement("div");
+  const menuList = makeEl("div");
   menuList.className = "flex flex-col";
   menuList.setAttribute("role", "menu");
   panel.appendChild(menuList);

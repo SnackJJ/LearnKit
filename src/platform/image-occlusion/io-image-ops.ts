@@ -15,6 +15,7 @@
 import {  } from "obsidian";
 
 import type { ClipboardImage, IORect, IOTextBox } from "./io-types";
+import { makeEl } from "../core/dom-factory";
 
 // ── Colour / background helpers ─────────────────────────────────────────────
 
@@ -75,7 +76,7 @@ export async function rotateImageData(
 
   const srcW = img.naturalWidth;
   const srcH = img.naturalHeight;
-  const canvas = activeDocument.createElement("canvas");
+  const canvas = makeEl("canvas");
   canvas.width = srcH;
   canvas.height = srcW;
   const ctx = canvas.getContext("2d");
@@ -169,7 +170,7 @@ export async function cropImageData(
   const cropW = Math.max(1, Math.min(srcW - cropX, sw));
   const cropH = Math.max(1, Math.min(srcH - cropY, sh));
 
-  const canvas = activeDocument.createElement("canvas");
+  const canvas = makeEl("canvas");
   canvas.width = Math.round(cropW);
   canvas.height = Math.round(cropH);
   const ctx = canvas.getContext("2d");
@@ -249,7 +250,7 @@ export async function burnTextBoxesIntoImageData(
   const img = await loadImageElement(imageData);
   if (!img) return imageData;
 
-  const canvas = activeDocument.createElement("canvas");
+  const canvas = makeEl("canvas");
   canvas.width = img.naturalWidth;
   canvas.height = img.naturalHeight;
   const ctx = canvas.getContext("2d");
@@ -354,7 +355,7 @@ export async function drawTextOnImageData(
   const img = await loadImageElement(imageData);
   if (!img) return null;
 
-  const canvas = activeDocument.createElement("canvas");
+  const canvas = makeEl("canvas");
   canvas.width = img.naturalWidth;
   canvas.height = img.naturalHeight;
   const ctx = canvas.getContext("2d");

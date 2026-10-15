@@ -20,6 +20,7 @@ import { t } from "../../translations/translator";
 import type { SproutSettings } from "../../types/settings";
 import { splitClozeAnswerAndHint } from "../../core/shared-utils";
 import { getCircleFlagTokenMatches, stripCircleFlagTokens } from "../../../platform/flags/flag-tokens";
+import { makeEl } from "../../core/dom-factory";
 
 // ── TTS debug mode ─────────────────────────────────────────────
 // Type  sproutTtsDebug()       in the dev console to enable.
@@ -2068,11 +2069,11 @@ export function bindTtsPlayingState(btn: HTMLElement): void {
   // Clear any existing icon content (e.g. from setIcon call before this)
   btn.empty();
 
-  const idleWrap = activeDocument.createElement("span");
+  const idleWrap = makeEl("span");
   idleWrap.className = "tts-icon-idle";
   setIcon(idleWrap, "volume-2");
 
-  const playingWrap = activeDocument.createElement("span");
+  const playingWrap = makeEl("span");
   playingWrap.className = "tts-icon-playing";
   setIcon(playingWrap, "volume-off");
 

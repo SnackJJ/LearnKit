@@ -30,6 +30,7 @@ import * as IO from "../../platform/image-occlusion/image-occlusion-index";
 import { getTtsService, bindTtsPlayingState, markTtsButtonActive } from "../../platform/integrations/tts/tts-service";
 import { shouldSkipBackAutoplay } from "../../platform/integrations/tts/autoplay-policy";
 import { t } from "../../platform/translations/translator";
+import { makeEl } from "../../platform/core/dom-factory";
 
 type HotspotAttemptMapEntry = {
   mode: "click" | "drag-drop";
@@ -494,9 +495,9 @@ export class GatekeeperModal extends Modal {
 
   /** Build a label row matching the study session style ("Question", "Answer", etc.) */
   private makeLabelRow(text: string, card?: CardRecord, answerSide?: boolean): HTMLElement {
-    const row = activeDocument.createElement("div");
+    const row = makeEl("div");
     row.className = "flex items-center justify-between learnkit-label-row";
-    const label = activeDocument.createElement("div");
+    const label = makeEl("div");
     label.className = "text-muted-foreground text-sm font-medium";
     label.textContent = text;
     row.appendChild(label);
@@ -569,7 +570,7 @@ export class GatekeeperModal extends Modal {
 
   /** Create a styled markdown block matching the study session pattern. */
   private renderMdBlock(cls: string, text: string, card: CardRecord): HTMLElement {
-    const block = activeDocument.createElement("div");
+    const block = makeEl("div");
     block.className = `bc ${cls} whitespace-pre-wrap break-words learnkit-md-block`;
     this.renderTextBlock(block, text, card);
     return block;
@@ -666,7 +667,7 @@ export class GatekeeperModal extends Modal {
     const targetIndex = card.type === "cloze-child" ? Number(card.clozeIndex) : undefined;
 
     if (text.includes("$") || text.includes("\\(") || text.includes("\\[") || text.includes("[[") || this.hasMarkdownList(text)) {
-      const clozeEl = activeDocument.createElement("div");
+      const clozeEl = makeEl("div");
       clozeEl.className = "learnkit-widget-cloze learnkit-widget-text w-full whitespace-pre-wrap break-words";
       const sourcePath = String(card.sourceNotePath || "");
       const clozeMode = this.plugin.settings.cards?.clozeMode ?? "standard";
@@ -736,19 +737,19 @@ export class GatekeeperModal extends Modal {
     const optsContainer = body.createDiv({ cls: "flex flex-col gap-2 learnkit-widget-section learnkit-widget-section" });
 
     options.forEach((opt: string, idx: number) => {
-      const d = body.ownerDocument.createElement("div");
+      const d = makeEl("div", body.ownerDocument);
       d.className = "px-3 py-1 rounded border border-border hover:bg-secondary learnkit-widget-text learnkit-widget-mcq-option";
       if (!this.reveal) d.classList.add("cursor-pointer");
 
-      const left = body.ownerDocument.createElement("span");
+      const left = makeEl("span", body.ownerDocument);
       left.className = "inline-flex items-center gap-2 min-w-0";
 
-      const key = body.ownerDocument.createElement("kbd");
+      const key = makeEl("kbd", body.ownerDocument);
       key.className = "kbd";
       key.textContent = String(idx + 1);
       left.appendChild(key);
 
-      const textEl = body.ownerDocument.createElement("span");
+      const textEl = makeEl("span", body.ownerDocument);
       textEl.className = "min-w-0 whitespace-pre-wrap break-words learnkit-widget-mcq-text";
       const optText = typeof opt === "string" ? opt : "";
       if (optText.includes("$") || optText.includes("\\(") || optText.includes("\\[") || optText.includes("[[") || this.hasMarkdownList(optText)) {
@@ -856,21 +857,21 @@ export class GatekeeperModal extends Modal {
         listWrap.empty();
         currentOrder.forEach((origIdx, displayIdx) => {
           const stepText = steps[origIdx] || "";
-          const row = body.ownerDocument.createElement("div");
+          const row = makeEl("div", body.ownerDocument);
           row.className = "flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-1 learnkit-oq-step-row";
           row.draggable = true;
 
-          const grip = body.ownerDocument.createElement("span");
+          const grip = makeEl("span", body.ownerDocument);
           grip.className = "learnkit-oq-grip inline-flex items-center justify-center text-muted-foreground cursor-grab";
           setIcon(grip, "grip-vertical");
           row.appendChild(grip);
 
-          const badge = body.ownerDocument.createElement("kbd");
+          const badge = makeEl("kbd", body.ownerDocument);
           badge.className = "kbd";
           badge.textContent = String(displayIdx + 1);
           row.appendChild(badge);
 
-          const textEl = body.ownerDocument.createElement("span");
+          const textEl = makeEl("span", body.ownerDocument);
           textEl.className = "min-w-0 whitespace-pre-wrap break-words flex-1 learnkit-oq-step-text learnkit-widget-text";
           if (stepText.includes("$") || stepText.includes("\\(") || stepText.includes("\\[") || stepText.includes("[[") || this.hasMarkdownList(stepText)) {
             void this.renderMarkdownInto(textEl, forceSingleLineDisplayMathInline(stepText), sourcePath);
@@ -938,7 +939,7 @@ export class GatekeeperModal extends Modal {
     userOrder.forEach((origIdx, displayIdx) => {
       const stepText = steps[origIdx] || "";
       const wasInCorrectPosition = origIdx === displayIdx;
-      const row = body.ownerDocument.createElement("div");
+      const row = makeEl("div", body.ownerDocument);
       row.className = "flex items-center gap-2 rounded-lg border px-3 py-1 learnkit-oq-answer-row";
       if (wasInCorrectPosition) {
         row.classList.add("learnkit-oq-correct", "learnkit-oq-correct", "learnkit-oq-correct-highlight", "learnkit-oq-correct-highlight");
@@ -946,12 +947,12 @@ export class GatekeeperModal extends Modal {
         row.classList.add("learnkit-oq-wrong", "learnkit-oq-wrong", "learnkit-oq-wrong-highlight", "learnkit-oq-wrong-highlight");
       }
 
-      const badge = body.ownerDocument.createElement("kbd");
+      const badge = makeEl("kbd", body.ownerDocument);
       badge.className = "kbd";
       badge.textContent = String(origIdx + 1);
       row.appendChild(badge);
 
-      const textEl = body.ownerDocument.createElement("span");
+      const textEl = makeEl("span", body.ownerDocument);
       textEl.className = "min-w-0 whitespace-pre-wrap break-words flex-1 learnkit-widget-text learnkit-oq-step-text";
       if (stepText.includes("$") || stepText.includes("\\(") || stepText.includes("\\[") || stepText.includes("[[") || this.hasMarkdownList(stepText)) {
         void this.renderMarkdownInto(textEl, forceSingleLineDisplayMathInline(stepText), sourcePath);

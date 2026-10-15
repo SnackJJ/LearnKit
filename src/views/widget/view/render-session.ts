@@ -26,6 +26,7 @@ import { protectCodeFences, FENCE_PH } from "../../reading/reading-flashcard-clo
 import { MarkdownView } from "obsidian";
 import { t } from "../../../platform/translations/translator";
 import { getRatingIntervalPreview } from "../../../platform/core/grade-intervals";
+import { makeEl } from "../../../platform/core/dom-factory";
 
 const tx = (
   view: WidgetViewLike,
@@ -131,7 +132,7 @@ export function renderWidgetSession(view: WidgetViewLike, root: HTMLElement): vo
   // ---- Header -------------------------------------------------------
   const header = el("div", "sprout-widget-header");
 
-  const backBtn = activeDocument.createElement("button");
+  const backBtn = makeEl("button");
   backBtn.type = "button";
   backBtn.className = "learnkit-widget-back-btn";
   setIcon(backBtn, "arrow-left");
@@ -294,7 +295,7 @@ function renderBasicCard(
   if (qActions.childElementCount > 0) body.appendChild(qActions);
 
   const qEl = el("div", "widget-question");
-  const questionLabel = activeDocument.createElement("div");
+  const questionLabel = makeEl("div");
   questionLabel.className = "sprout-widget-question-label";
   questionLabel.textContent = tx(view, "ui.widget.label.question", "Question:");
   qEl.appendChild(questionLabel);
@@ -304,14 +305,14 @@ function renderBasicCard(
   const isOldReversed = card.type === "reversed";
   const qText = (isBackDirection || isOldReversed) ? (card.a || "") : (card.q || "");
   if (qText.includes("$") || qText.includes("[[") || qText.includes("\\(") || qText.includes("\\[") || hasMarkdownTable(qText) || hasMarkdownList(qText)) {
-    const qContainer = activeDocument.createElement("div");
+    const qContainer = makeEl("div");
     qContainer.className = "whitespace-pre-wrap break-words";
     const sourcePath = String(card.sourceNotePath || view.activeFile?.path || "");
     const escaped = escapeAngleBracketsOutsideCode(String(qText || ""));
     void view.renderMarkdownInto(qContainer, convertInlineDisplayMath(escaped), sourcePath);
     qEl.appendChild(qContainer);
   } else {
-    const qDiv = activeDocument.createElement("div");
+    const qDiv = makeEl("div");
     qDiv.className = "whitespace-pre-wrap break-words";
     replaceChildrenWithHTML(qDiv, processMarkdownFeatures(qText.replace(/\n/g, "<br>")));
     qEl.appendChild(qDiv);
@@ -325,7 +326,7 @@ function renderBasicCard(
     if (aActions.childElementCount > 0) body.appendChild(aActions);
 
     const aEl = el("div", "widget-answer");
-    const answerLabel = activeDocument.createElement("div");
+    const answerLabel = makeEl("div");
     answerLabel.className = "sprout-widget-answer-label";
     answerLabel.textContent = tx(view, "ui.widget.label.answer", "Answer:");
     aEl.appendChild(answerLabel);
@@ -333,14 +334,14 @@ function renderBasicCard(
     const rawAnswerText = (isBackDirection || isOldReversed) ? (card.q || "") : (card.a || "");
     const aText = rawAnswerText.trim().replace(/^\s*Answer:\s*/i, "");
     if (aText.includes("$") || aText.includes("[[") || aText.includes("\\(") || aText.includes("\\[") || hasMarkdownTable(aText) || hasMarkdownList(aText)) {
-      const aContainer = activeDocument.createElement("div");
+      const aContainer = makeEl("div");
       aContainer.className = "whitespace-pre-wrap break-words";
       const sourcePath = String(card.sourceNotePath || view.activeFile?.path || "");
       const escaped = escapeAngleBracketsOutsideCode(String(aText || ""));
       void view.renderMarkdownInto(aContainer, convertInlineDisplayMath(escaped), sourcePath);
       aEl.appendChild(aContainer);
     } else {
-      const aDiv = activeDocument.createElement("div");
+      const aDiv = makeEl("div");
       aDiv.className = "whitespace-pre-wrap break-words";
       replaceChildrenWithHTML(aDiv, processMarkdownFeatures(aText.replace(/\n/g, "<br>")));
       aEl.appendChild(aDiv);
@@ -373,12 +374,12 @@ function renderClozeCard(
 
   if (text.includes("$") || text.includes("\\(") || text.includes("\\[") || text.includes("[[") || hasMarkdownTable(text) || hasMarkdownList(text)) {
     const clozeEl = el("div", `sprout-widget-cloze sprout-widget-text w-full ${clozeSectionClass}`);
-    const clozeLabel = activeDocument.createElement("div");
+    const clozeLabel = makeEl("div");
     clozeLabel.className = reveal ? "sprout-widget-answer-label" : "sprout-widget-question-label";
     clozeLabel.textContent = clozeLabelText;
     clozeEl.appendChild(clozeLabel);
 
-    const clozeContent = activeDocument.createElement("div");
+    const clozeContent = makeEl("div");
     clozeEl.appendChild(clozeContent);
     applySectionStyles(clozeEl);
 
@@ -442,7 +443,7 @@ function renderClozeCard(
         }
       },
     });
-    const clozeLabel = activeDocument.createElement("div");
+    const clozeLabel = makeEl("div");
     clozeLabel.className = reveal ? "sprout-widget-answer-label" : "sprout-widget-question-label";
     clozeLabel.textContent = clozeLabelText;
     clozeEl.prepend(clozeLabel);
@@ -468,17 +469,17 @@ function renderMcqCard(
   const stemText = card.stem || "";
   const sourcePath = String(card.sourceNotePath || view.activeFile?.path || "");
   const stemEl = el("div", "sprout-widget-text widget-question");
-  const mcqQuestionLabel = activeDocument.createElement("div");
+  const mcqQuestionLabel = makeEl("div");
   mcqQuestionLabel.className = "sprout-widget-question-label";
   mcqQuestionLabel.textContent = tx(view, "ui.widget.label.question", "Question:");
   stemEl.appendChild(mcqQuestionLabel);
   if (stemText.includes("$") || stemText.includes("\\(") || stemText.includes("\\[") || stemText.includes("[[")) {
-    const stemContent = activeDocument.createElement("div");
+    const stemContent = makeEl("div");
     stemContent.className = "whitespace-pre-wrap break-words";
     void view.renderMarkdownInto(stemContent, convertInlineDisplayMath(stemText), sourcePath);
     stemEl.appendChild(stemContent);
   } else {
-    const stemContent = activeDocument.createElement("div");
+    const stemContent = makeEl("div");
     stemContent.className = "whitespace-pre-wrap break-words";
     replaceChildrenWithHTML(stemContent, processMarkdownFeatures(stemText));
     stemEl.appendChild(stemContent);
@@ -514,7 +515,7 @@ function renderMcqCard(
 
   const optsContainer = el("div", "sprout-widget-section sprout-widget-mcq-options");
 
-  const mcqSectionLabel = activeDocument.createElement("div");
+  const mcqSectionLabel = makeEl("div");
   mcqSectionLabel.className = (view.showAnswer || graded) ? "sprout-widget-answer-label" : "sprout-widget-question-label";
   mcqSectionLabel.textContent = (view.showAnswer || graded)
     ? tx(view, "ui.widget.label.answer", "Answer:")
@@ -538,7 +539,7 @@ function renderMcqCard(
       void view.renderMarkdownInto(textEl, forceSingleLineDisplayMathInline(text), sourcePath);
     } else if (text && text.includes("\n")) {
       text.split(/\n+/).forEach((line: string) => {
-        const p = activeDocument.createElement("div");
+        const p = makeEl("div");
         replaceChildrenWithHTML(p, processMarkdownFeatures(line));
         p.classList.add("learnkit-widget-mcq-line", "learnkit-widget-mcq-line");
         textEl.appendChild(p);
@@ -589,11 +590,11 @@ function renderMcqCard(
   if (isMulti && !graded) {
     const submitBtn = el("button", "btn-primary sprout-widget-btn sprout-widget-btn-full sprout-mcq-submit-btn");
 
-    const submitLabel = activeDocument.createElement("span");
+    const submitLabel = makeEl("span");
     submitLabel.textContent = tx(view, "ui.widget.submit", "Submit");
     submitBtn.appendChild(submitLabel);
 
-    const submitKbd = activeDocument.createElement("kbd");
+    const submitKbd = makeEl("kbd");
     submitKbd.className = "kbd sprout-widget-kbd";
     submitKbd.textContent = "\u21B5";
     submitBtn.appendChild(submitKbd);
@@ -639,7 +640,7 @@ function renderIoCard(
   // Label switches from "Question:" to "Answer:" on reveal
   const sectionClass = reveal ? "widget-answer" : "widget-question";
   const qEl = el("div", sectionClass);
-  const ioLabel = activeDocument.createElement("div");
+  const ioLabel = makeEl("div");
   ioLabel.className = (reveal ? "sprout-widget-answer-label" : "sprout-widget-question-label") + " sprout-widget-io-label";
   ioLabel.textContent = reveal
     ? tx(view, "ui.widget.label.answer", "Answer:")
@@ -719,18 +720,18 @@ function renderOqCard(
 
   // Question text
   const qEl = el("div", "sprout-widget-text widget-question");
-  const oqQuestionLabel = activeDocument.createElement("div");
+  const oqQuestionLabel = makeEl("div");
   oqQuestionLabel.className = "sprout-widget-question-label";
   oqQuestionLabel.textContent = tx(view, "ui.widget.label.question", "Question:");
   qEl.appendChild(oqQuestionLabel);
   const qText = card.q || "";
   if (qText.includes("$") || qText.includes("\\(") || qText.includes("\\[") || qText.includes("[[") || hasMarkdownTable(qText) || hasMarkdownList(qText)) {
-    const qContainer = activeDocument.createElement("div");
+    const qContainer = makeEl("div");
     qContainer.className = "whitespace-pre-wrap break-words";
     void view.renderMarkdownInto(qContainer, convertInlineDisplayMath(qText), sourcePath);
     qEl.appendChild(qContainer);
   } else {
-    const qDiv = activeDocument.createElement("div");
+    const qDiv = makeEl("div");
     qDiv.className = "whitespace-pre-wrap break-words";
     replaceChildrenWithHTML(qDiv, processMarkdownFeatures(qText.replace(/\n/g, "<br>")));
     qEl.appendChild(qDiv);
@@ -747,7 +748,7 @@ function renderOqCard(
     const orderSection = el("div", "sprout-widget-text");
     applySectionStyles(orderSection);
 
-    const orderLabel = activeDocument.createElement("div");
+    const orderLabel = makeEl("div");
     orderLabel.className = "sprout-widget-question-label";
     orderLabel.textContent = tx(view, "ui.widget.label.order", "Order:");
     orderSection.appendChild(orderLabel);
@@ -787,25 +788,25 @@ function renderOqCard(
       listWrap.innerHTML = "";
       currentOrder.forEach((origIdx, displayIdx) => {
         const stepText = steps[origIdx] || "";
-        const row = activeDocument.createElement("div");
+        const row = makeEl("div");
         row.className = "flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-1 learnkit-oq-step-row";
         row.draggable = true;
         row.dataset.oqIdx = String(displayIdx);
 
         // Grip handle
-        const grip = activeDocument.createElement("span");
+        const grip = makeEl("span");
         grip.className = "learnkit-oq-grip inline-flex items-center justify-center text-muted-foreground cursor-grab";
         setIcon(grip, "grip-vertical");
         row.appendChild(grip);
 
         // Step number badge
-        const badge = activeDocument.createElement("kbd");
+        const badge = makeEl("kbd");
         badge.className = "kbd";
         badge.textContent = String(displayIdx + 1);
         row.appendChild(badge);
 
         // Step text
-        const textEl = activeDocument.createElement("span");
+        const textEl = makeEl("span");
         textEl.className = "min-w-0 whitespace-pre-wrap break-words flex-1 learnkit-oq-step-text learnkit-widget-text";
         if (stepText.includes("$") || stepText.includes("\\(") || stepText.includes("\\[") || stepText.includes("[[")) {
           void view.renderMarkdownInto(textEl, forceSingleLineDisplayMathInline(stepText), sourcePath);
@@ -868,7 +869,7 @@ function renderOqCard(
     const answerSection = el("div", "sprout-widget-text");
     applySectionStyles(answerSection);
 
-    const oqAnswerLabel = activeDocument.createElement("div");
+    const oqAnswerLabel = makeEl("div");
     oqAnswerLabel.className = "sprout-widget-answer-label";
     oqAnswerLabel.textContent = tx(view, "ui.widget.label.answer", "Answer:");
     answerSection.appendChild(oqAnswerLabel);
@@ -882,7 +883,7 @@ function renderOqCard(
     displayOrder.forEach((origIdx, displayIdx) => {
       const stepText = steps[origIdx] || "";
       const wasCorrect = origIdx === displayIdx;
-      const row = activeDocument.createElement("div");
+      const row = makeEl("div");
       row.className = "flex items-center gap-2 rounded-lg border px-3 py-1 learnkit-oq-answer-row";
       if (wasCorrect) {
         row.classList.add("learnkit-oq-correct", "learnkit-oq-correct", "learnkit-oq-correct-highlight", "learnkit-oq-correct-highlight");
@@ -890,12 +891,12 @@ function renderOqCard(
         row.classList.add("learnkit-oq-wrong", "learnkit-oq-wrong", "learnkit-oq-wrong-highlight", "learnkit-oq-wrong-highlight");
       }
 
-      const badge = activeDocument.createElement("kbd");
+      const badge = makeEl("kbd");
       badge.className = "kbd";
       badge.textContent = String(origIdx + 1);
       row.appendChild(badge);
 
-      const textEl = activeDocument.createElement("span");
+      const textEl = makeEl("span");
       textEl.className = "min-w-0 whitespace-pre-wrap break-words flex-1 learnkit-widget-text learnkit-oq-step-text";
       if (stepText.includes("$") || stepText.includes("\\(") || stepText.includes("\\[") || stepText.includes("[[")) {
         void view.renderMarkdownInto(textEl, forceSingleLineDisplayMathInline(stepText), sourcePath);
@@ -930,19 +931,19 @@ function renderInfoBlock(
   const rawInfoText = infoText.trim();
   const normalizedInfoText = rawInfoText.replace(/^\s*Extra Information:\s*/i, "");
 
-  const infoLabel = activeDocument.createElement("div");
+  const infoLabel = makeEl("div");
   infoLabel.className = "sprout-widget-extra-info-label";
   infoLabel.textContent = tx(view, "ui.widget.label.extraInformation", "Extra Information:");
   infoEl.appendChild(infoLabel);
 
   if (view && (hasMarkdownTable(normalizedInfoText) || hasMarkdownList(normalizedInfoText))) {
-    const infoContainer = activeDocument.createElement("div");
+    const infoContainer = makeEl("div");
     infoContainer.className = "whitespace-pre-wrap break-words";
     const sourcePath = String(card?.sourceNotePath || view.activeFile?.path || "");
     void view.renderMarkdownInto(infoContainer, normalizedInfoText, sourcePath);
     infoEl.appendChild(infoContainer);
   } else {
-    const infoDiv = activeDocument.createElement("div");
+    const infoDiv = makeEl("div");
     infoDiv.className = "whitespace-pre-wrap break-words";
     replaceChildrenWithHTML(infoDiv, processMarkdownFeatures(normalizedInfoText.replace(/\n/g, "<br>")));
     infoEl.appendChild(infoDiv);
@@ -1166,16 +1167,16 @@ function renderActionRow(view: WidgetViewLike, footer: HTMLElement, card: CardRe
   applyWidgetActionButtonStyles(editBtn);
   actionRow.appendChild(editBtn);
 
-  const moreBtn = activeDocument.createElement("button");
+  const moreBtn = makeEl("button");
   moreBtn.type = "button";
   moreBtn.className = "learnkit-btn-toolbar sprout-widget-btn sprout-widget-btn-half";
   moreBtn.setAttribute("aria-label", tx(view, "ui.widget.more.tooltip", "Open menu"));
   moreBtn.setAttribute("data-tooltip-position", "top");
   applyWidgetHoverDarken(moreBtn);
 
-  const moreText = activeDocument.createElement("span");
+  const moreText = makeEl("span");
   moreText.textContent = tx(view, "ui.widget.more.label", "More");
-  const moreKbd = activeDocument.createElement("kbd");
+  const moreKbd = makeEl("kbd");
   moreKbd.className = "kbd sprout-widget-kbd";
   moreKbd.textContent = "M";
   moreBtn.appendChild(moreText);

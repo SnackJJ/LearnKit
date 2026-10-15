@@ -19,8 +19,8 @@ import type * as IoModule from "./image-occlusion-index";
 import { queryFirst, setCssProps } from "../../platform/core/ui";
 import { scopeModalToWorkspace } from "../../platform/modals/modal-utils";
 import { t } from "../../platform/translations/translator";
+import { makeEl, makeSvgEl } from "../core/dom-factory";
 
-const SVG_NS = "http://www.w3.org/2000/svg";
 const MASK_STROKE_PAD = 1;
 const MASK_STROKE_VIEWBOX = `${-MASK_STROKE_PAD} ${-MASK_STROKE_PAD} ${100 + MASK_STROKE_PAD * 2} ${100 + MASK_STROKE_PAD * 2}`;
 
@@ -236,7 +236,7 @@ function findHotspotAttemptForRect(
 }
 
 function appendHotspotMarker(overlay: HTMLElement, attempt: HotspotAttemptResult): void {
-  const marker = activeDocument.createElement("div");
+  const marker = makeEl("div");
   marker.className = `learnkit-hq-attempt-marker ${attempt.correct ? "is-correct" : "is-incorrect"}`;
   marker.style.left = `${clampUnit(attempt.x) * 100}%`;
   marker.style.top = `${clampUnit(attempt.y) * 100}%`;
@@ -271,7 +271,7 @@ function appendHotspotAttemptLabel(
   }
 
   if (!chip) {
-    chip = activeDocument.createElement("div");
+    chip = makeEl("div");
     overlay.appendChild(chip);
   }
 
@@ -297,18 +297,18 @@ function appendHotspotAttemptPairLabel(
     anchor: { x: number; y: number };
   },
 ): HTMLElement {
-  const pair = activeDocument.createElement("div");
+  const pair = makeEl("div");
   pair.className = "learnkit-hq-attempt-pair";
   pair.dataset.hotspotAnchorX = String(clampUnit(opts.anchor.x));
   pair.dataset.hotspotAnchorY = String(clampUnit(opts.anchor.y));
   pair.style.left = `${clampUnit(opts.anchor.x) * 100}%`;
   pair.style.top = `${clampUnit(opts.anchor.y) * 100}%`;
 
-  const wrong = activeDocument.createElement("span");
+  const wrong = makeEl("span");
   wrong.className = "learnkit-hq-attempt-pair-item is-incorrect";
   wrong.textContent = String(opts.wrongLabel || "Wrong guess").trim() || "Wrong guess";
 
-  const correct = activeDocument.createElement("span");
+  const correct = makeEl("span");
   correct.className = "learnkit-hq-attempt-pair-item is-correct";
   correct.textContent = String(opts.correctLabel || "Correct label").trim() || "Correct label";
 
@@ -328,21 +328,21 @@ function appendHotspotInlineMarkerLabel(
     attemptNumber?: number;
   },
 ): HTMLElement {
-  const group = activeDocument.createElement("div");
+  const group = makeEl("div");
   group.className = `learnkit-hq-attempt-inline ${opts.tone === "correct" ? "is-correct" : "is-incorrect"}`;
   group.dataset.hotspotAnchorX = String(clampUnit(opts.x));
   group.dataset.hotspotAnchorY = String(clampUnit(opts.y));
   group.style.left = `${clampUnit(opts.x) * 100}%`;
   group.style.top = `${clampUnit(opts.y) * 100}%`;
 
-  const marker = activeDocument.createElement("span");
+  const marker = makeEl("span");
   marker.className = `learnkit-hq-attempt-inline-dot ${opts.tone === "correct" ? "is-correct" : "is-incorrect"}`;
   const attemptNum = typeof opts.attemptNumber === "number" && Number.isFinite(opts.attemptNumber)
     ? Math.max(1, Math.floor(opts.attemptNumber))
     : 0;
   if (attemptNum > 0) {
     marker.classList.add("learnkit-hq-attempt-inline-dot-numbered");
-    const numSpan = activeDocument.createElement("span");
+    const numSpan = makeEl("span");
     numSpan.className = "learnkit-hq-attempt-inline-dot-num";
     numSpan.textContent = String(attemptNum);
     marker.appendChild(numSpan);
@@ -351,7 +351,7 @@ function appendHotspotInlineMarkerLabel(
 
   const text = String(opts.label || "").trim();
   if (text) {
-    const label = activeDocument.createElement("span");
+    const label = makeEl("span");
     label.className = `learnkit-hq-attempt-inline-label is-right ${opts.tone === "correct" ? "is-correct" : "is-incorrect"}`;
     label.textContent = text;
     group.appendChild(label);
@@ -440,7 +440,7 @@ function appendPolygonMaskStroke(
 ): SVGSVGElement | null {
   if (!Array.isArray(rect.points) || rect.points.length < 3) return null;
 
-  const stroke = activeDocument.createElementNS(SVG_NS, "svg");
+  const stroke = makeSvgEl("svg");
   stroke.classList.add("learnkit-io-mask-polygon-stroke", `is-${tone}`);
   setCssProps(stroke as unknown as HTMLElement, "--learnkit-io-x", `${Math.max(0, Math.min(1, x)) * 100}%`);
   setCssProps(stroke as unknown as HTMLElement, "--learnkit-io-y", `${Math.max(0, Math.min(1, y)) * 100}%`);
@@ -449,7 +449,7 @@ function appendPolygonMaskStroke(
   stroke.setAttribute("viewBox", MASK_STROKE_VIEWBOX);
   stroke.setAttribute("preserveAspectRatio", "none");
 
-  const polygon = activeDocument.createElementNS(SVG_NS, "polygon");
+  const polygon = makeSvgEl("polygon");
   polygon.setAttribute(
     "points",
     rect.points
@@ -478,7 +478,7 @@ function appendCircleMaskStroke(
   h: number,
   tone: "target" | "other" | "hq-correct" | "hq-incorrect" | "hint",
 ): SVGSVGElement {
-  const stroke = activeDocument.createElementNS(SVG_NS, "svg");
+  const stroke = makeSvgEl("svg");
   stroke.classList.add("learnkit-io-mask-circle-stroke", `is-${tone}`);
   setCssProps(stroke as unknown as HTMLElement, "--learnkit-io-x", `${Math.max(0, Math.min(1, x)) * 100}%`);
   setCssProps(stroke as unknown as HTMLElement, "--learnkit-io-y", `${Math.max(0, Math.min(1, y)) * 100}%`);
@@ -487,7 +487,7 @@ function appendCircleMaskStroke(
   stroke.setAttribute("viewBox", MASK_STROKE_VIEWBOX);
   stroke.setAttribute("preserveAspectRatio", "none");
 
-  const ellipse = activeDocument.createElementNS(SVG_NS, "ellipse");
+  const ellipse = makeSvgEl("ellipse");
   ellipse.setAttribute("cx", "50");
   ellipse.setAttribute("cy", "50");
   ellipse.setAttribute("rx", "50");
@@ -514,7 +514,7 @@ function appendRectMaskStroke(
   h: number,
   tone: "target" | "other" | "hq-correct" | "hq-incorrect" | "hint",
 ): SVGSVGElement {
-  const stroke = activeDocument.createElementNS(SVG_NS, "svg");
+  const stroke = makeSvgEl("svg");
   stroke.classList.add("learnkit-io-mask-rect-stroke", `is-${tone}`);
   setCssProps(stroke as unknown as HTMLElement, "--learnkit-io-x", `${Math.max(0, Math.min(1, x)) * 100}%`);
   setCssProps(stroke as unknown as HTMLElement, "--learnkit-io-y", `${Math.max(0, Math.min(1, y)) * 100}%`);
@@ -523,7 +523,7 @@ function appendRectMaskStroke(
   stroke.setAttribute("viewBox", MASK_STROKE_VIEWBOX);
   stroke.setAttribute("preserveAspectRatio", "none");
 
-  const rect = activeDocument.createElementNS(SVG_NS, "rect");
+  const rect = makeSvgEl("rect");
   rect.setAttribute("x", "0");
   rect.setAttribute("y", "0");
   rect.setAttribute("width", "100");
@@ -704,7 +704,7 @@ export function renderImageOcclusionReviewInto(args: {
   // Get image reference
   const imageRef = String(card.imageRef || "").trim();
   if (!imageRef) {
-    const msg = activeDocument.createElement("div");
+    const msg = makeEl("div");
     msg.className = "text-muted-foreground text-sm";
     msg.textContent = "Image occlusion card missing image reference.";
     containerEl.appendChild(msg);
@@ -714,7 +714,7 @@ export function renderImageOcclusionReviewInto(args: {
   // Resolve image file
   const imageFile = resolveImageFile(app, sourcePath, imageRef);
   if (!imageFile) {
-    const msg = activeDocument.createElement("div");
+    const msg = makeEl("div");
     msg.className = "text-muted-foreground text-sm";
     msg.textContent = `Image not found: ${imageRef}`;
     containerEl.appendChild(msg);
@@ -752,12 +752,12 @@ export function renderImageOcclusionReviewInto(args: {
     }
   }
 
-  const host = widgetMode ? containerEl : activeDocument.createElement("div");
+  const host = widgetMode ? containerEl : makeEl("div");
   if (!widgetMode) {
     host.className = "learnkit-io-host-card";
   }
 
-  const img = activeDocument.createElement("img");
+  const img = makeEl("img");
   img.src = imageSrc;
   img.alt = card.title || "Card image";
   img.classList.add("learnkit-io-image", "learnkit-io-image");
@@ -839,7 +839,7 @@ export function renderImageOcclusionReviewInto(args: {
           installSmoothZoomInteractions(zoomHost, zoomSurface);
         }
 
-        const closeBtn = activeDocument.createElement("button");
+        const closeBtn = makeEl("button");
         closeBtn.type = "button";
         closeBtn.setAttribute("aria-label", t(plugin.settings?.general?.interfaceLanguage, "ui.common.close", "Close"));
         closeBtn.setAttribute("data-learnkit-expand-collapse", "true");
@@ -854,7 +854,7 @@ export function renderImageOcclusionReviewInto(args: {
           "learnkit-zoom-close", "learnkit-zoom-close",
         );
 
-        const closeIcon = activeDocument.createElement("span");
+        const closeIcon = makeEl("span");
         closeIcon.className = "inline-flex items-center justify-center";
         setIcon(closeIcon, "x");
         closeBtn.appendChild(closeIcon);
@@ -1042,14 +1042,14 @@ export function renderImageOcclusionReviewInto(args: {
   let hotspotControlTray: HTMLElement | null = null;
 
   if (masksForOverlay.length > 0 || interactiveHotspotFront) {
-    const overlay = activeDocument.createElement("div");
+    const overlay = makeEl("div");
     overlay.classList.add("learnkit-io-overlay", "learnkit-io-overlay");
     const hintSizeUpdaters: Array<() => void> = [];
 
     if (interactiveHotspotFront) {
       overlay.classList.add("learnkit-hq-review-overlay", "learnkit-hq-review-overlay");
       if (!widgetMode) {
-        const instruction = activeDocument.createElement("div");
+        const instruction = makeEl("div");
         instruction.className = "learnkit-hq-review-pill";
         instruction.textContent = hotspotInteractionMode === "drag-drop"
           ? t(
@@ -1116,7 +1116,7 @@ export function renderImageOcclusionReviewInto(args: {
       const showHotspotOutline = showDragDropHintMasks && !reveal;
       const hotspotRectKey = isHotspot ? getHotspotRectKey(rect, hotspotRectIndex) : "";
 
-      const mask = activeDocument.createElement("div");
+      const mask = makeEl("div");
       mask.classList.add("learnkit-io-mask", "learnkit-io-mask");
       setCssProps(mask, "--learnkit-io-x", `${Math.max(0, Math.min(1, x)) * 100}%`);
       setCssProps(mask, "--learnkit-io-y", `${Math.max(0, Math.min(1, y)) * 100}%`);
@@ -1415,12 +1415,12 @@ export function renderImageOcclusionReviewInto(args: {
           overlay.removeEventListener("click", onOverlayClick);
         };
       } else {
-        const preview = activeDocument.createElement("div");
+        const preview = makeEl("div");
         preview.className = "learnkit-hq-drop-preview is-floating";
         const previewHost = activeDocument.body || overlay;
         previewHost.appendChild(preview);
 
-        const removeChip = activeDocument.createElement("button");
+        const removeChip = makeEl("button");
         removeChip.type = "button";
         removeChip.className = "learnkit-hq-remove-chip";
         removeChip.textContent = "×";
@@ -1454,7 +1454,7 @@ export function renderImageOcclusionReviewInto(args: {
           setCssProps(removeChip, "top", `${clampUnit(Number(centerY ?? 0.5)) * 100}%`);
         };
 
-        hotspotControlTray = activeDocument.createElement("div");
+        hotspotControlTray = makeEl("div");
         hotspotControlTray.className = "learnkit-hq-drop-tray";
 
         const buttonLabelFallback = t(
@@ -1465,7 +1465,7 @@ export function renderImageOcclusionReviewInto(args: {
 
         let activeTarget: HotspotTargetGroup | null = null;
         const buildTargetButton = (target: HotspotTargetGroup) => {
-          const dragButton = activeDocument.createElement("button");
+          const dragButton = makeEl("button");
           dragButton.type = "button";
           dragButton.className = "learnkit-hq-drop-button";
           dragButton.textContent = target.label || buttonLabelFallback;

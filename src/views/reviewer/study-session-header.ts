@@ -11,6 +11,7 @@ import { setIcon } from "obsidian";
 import { refreshAOS } from "../../platform/core/aos-loader";
 import { queryFirst } from "../../platform/core/ui";
 import { t } from "../../platform/translations/translator";
+import { makeEl } from "../../platform/core/dom-factory";
 
 export interface TimerState {
   timerRunning: boolean;
@@ -49,7 +50,7 @@ export function renderStudySessionHeader(
   }
 
   // ===== Create Study Session header =====
-  studySessionHeader = activeDocument.createElement("div");
+  studySessionHeader = makeEl("div");
   studySessionHeader.className = "flex items-baseline justify-between";
   studySessionHeader.setAttribute("data-study-session-header", "true");
   if (applyAOS) {
@@ -58,10 +59,10 @@ export function renderStudySessionHeader(
   }
 
   // Left column: title and timer stacked
-  const leftColumn = activeDocument.createElement("div");
+  const leftColumn = makeEl("div");
   leftColumn.className = "flex flex-col lk-session-header-left";
 
-  const studySessionLabel = activeDocument.createElement("div");
+  const studySessionLabel = makeEl("div");
   studySessionLabel.className = "text-xl font-semibold tracking-tight";
   studySessionLabel.textContent = tx(
     interfaceLanguage,
@@ -71,22 +72,22 @@ export function renderStudySessionHeader(
   leftColumn.appendChild(studySessionLabel);
 
   // Timer and controls
-  const timerContainer = activeDocument.createElement("div");
+  const timerContainer = makeEl("div");
   timerContainer.className = "flex items-center gap-3";
   timerContainer.setAttribute("data-study-session-timer-row", "true");
 
   // Standalone timer controls (display, play, pause)
-  const timerGroup = activeDocument.createElement("div");
+  const timerGroup = makeEl("div");
   timerGroup.className = "flex items-center gap-2 lk-session-timer-group";
 
-  const timerDisplay = activeDocument.createElement("button");
+  const timerDisplay = makeEl("button");
   timerDisplay.type = "button";
   timerDisplay.disabled = true;
   timerDisplay.className =
     "learnkit-btn-toolbar learnkit-btn-accent h-9 w-full md:w-auto inline-flex items-center gap-2 equal-height-btn learnkit-btn-timer-display";
   timerDisplay.setAttribute("aria-label", tx(interfaceLanguage, "ui.reviewer.session.header.timerControls", "Timer controls"));
 
-  const timerText = activeDocument.createElement("span");
+  const timerText = makeEl("span");
   timerText.className = "truncate lk-session-timer-text";
   timerText.textContent = "00:00";
   timerDisplay.appendChild(timerText);
@@ -149,34 +150,34 @@ export function renderStudySessionHeader(
   };
 
   // Play button
-  const playBtn = activeDocument.createElement("button");
+  const playBtn = makeEl("button");
   playBtn.type = "button";
   playBtn.className =
     "h-9 flex items-center gap-2 equal-height-btn learnkit-btn-outline-muted";
   playBtn.setAttribute("aria-label", tx(interfaceLanguage, "ui.reviewer.session.header.playTooltip", "Start timer"));
-  const playIconWrap = activeDocument.createElement("span");
+  const playIconWrap = makeEl("span");
   playIconWrap.className = "inline-flex items-center justify-center learnkit-btn-icon";
   setIcon(playIconWrap, "play");
   queryFirst(playIconWrap, "svg")?.classList.add("shrink-0");
   playBtn.appendChild(playIconWrap);
-  const playLabel = activeDocument.createElement("span");
+  const playLabel = makeEl("span");
   playLabel.textContent = tx(interfaceLanguage, "ui.reviewer.session.header.play", "Start");
   playBtn.appendChild(playLabel);
   playBtn.addEventListener("click", startTimer);
   timerGroup.appendChild(playBtn);
 
   // Pause button
-  const pauseBtn = activeDocument.createElement("button");
+  const pauseBtn = makeEl("button");
   pauseBtn.type = "button";
   pauseBtn.className =
     "h-9 flex items-center gap-2 equal-height-btn learnkit-btn-outline-muted";
   pauseBtn.setAttribute("aria-label", tx(interfaceLanguage, "ui.reviewer.session.header.pauseTooltip", "Pause timer"));
-  const pauseIconWrap = activeDocument.createElement("span");
+  const pauseIconWrap = makeEl("span");
   pauseIconWrap.className = "inline-flex items-center justify-center learnkit-btn-icon";
   setIcon(pauseIconWrap, "pause");
   queryFirst(pauseIconWrap, "svg")?.classList.add("shrink-0");
   pauseBtn.appendChild(pauseIconWrap);
-  const pauseLabel = activeDocument.createElement("span");
+  const pauseLabel = makeEl("span");
   pauseLabel.textContent = tx(interfaceLanguage, "ui.reviewer.session.header.pause", "Pause");
   pauseBtn.appendChild(pauseLabel);
   pauseBtn.addEventListener("click", pauseTimer);

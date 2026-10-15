@@ -70,6 +70,7 @@ import {
 
 // ✅ shared header import (like browser.ts)
 import { type SproutHeader, createViewHeader } from "../../platform/core/header";
+import { makeEl } from "../../platform/core/dom-factory";
 
 function isFourButtonMode(plugin: LearnKitPlugin): boolean {
   return !!(plugin.settings?.study?.fourButtonMode);
@@ -561,7 +562,7 @@ export class SproutReviewerView extends ItemView {
       return;
     }
 
-    const timerHost = activeDocument.createElement("div");
+    const timerHost = makeEl("div");
     timerHost.className = "lk-review-title-timer-host";
     right.appendChild(timerHost);
 
@@ -2969,7 +2970,7 @@ export class SproutReviewerView extends ItemView {
 
     let contentHost: HTMLElement = root;
     if (this.mode === "deck" || this.mode === "session") {
-      const contentShell = activeDocument.createElement("div");
+      const contentShell = makeEl("div");
       contentShell.className = `${SPROUT_HOME_CONTENT_SHELL_CLASS} lk-review-content-shell`;
       root.appendChild(contentShell);
       contentHost = contentShell;
@@ -2977,7 +2978,7 @@ export class SproutReviewerView extends ItemView {
 
     let sessionColumn: HTMLElement | null = null;
     if (this.mode === "session") {
-      sessionColumn = activeDocument.createElement("div");
+      sessionColumn = makeEl("div");
       sessionColumn.className = "learnkit-study-column lk-session-column flex flex-col min-h-0";
       contentHost.appendChild(sessionColumn);
     }

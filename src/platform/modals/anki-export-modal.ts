@@ -18,6 +18,7 @@ import { buildDeckTree, type DeckNode } from "../../engine/deck/deck-tree";
 import { naturalCompare } from "../core/shared-utils";
 import { t } from "../translations/translator";
 import { txCommon } from "../translations/ui-common";
+import { makeEl } from "../core/dom-factory";
 
 // ── Local helpers ─────────────────────────────────────────────────────────────
 
@@ -135,26 +136,26 @@ export class AnkiExportModal extends Modal {
 
     let selectedDeck = "";
 
-    const container = activeDocument.createElement("div");
+    const container = makeEl("div");
     container.className = "relative learnkit-deck-picker";
 
-    const input = activeDocument.createElement("input");
+    const input = makeEl("input");
     input.type = "text";
     input.className = "input w-full";
     input.placeholder = "Search decks…";
     container.appendChild(input);
 
     // Popover
-    const popover = activeDocument.createElement("div");
+    const popover = makeEl("div");
     popover.className = "learnkit-popover-dropdown";
     popover.setAttribute("aria-hidden", "true");
     container.appendChild(popover);
 
-    const panel = activeDocument.createElement("div");
+    const panel = makeEl("div");
     panel.className = "rounded-md border border-border bg-popover text-popover-foreground p-0 flex flex-col learnkit-pointer-auto";
     popover.appendChild(panel);
 
-    const list = activeDocument.createElement("div");
+    const list = makeEl("div");
     list.className = "flex flex-col max-h-60 overflow-auto p-1";
     panel.appendChild(list);
 
@@ -164,7 +165,7 @@ export class AnkiExportModal extends Modal {
       const filtered = deckPaths.filter((d) => d.path.toLowerCase().includes(q) || d.label.toLowerCase().includes(q));
 
       if (filtered.length === 0) {
-        const empty = activeDocument.createElement("div");
+        const empty = makeEl("div");
         empty.className = "px-2 py-2 text-sm text-muted-foreground";
         empty.textContent = this.tx("ui.anki.export.noDecksFound", "No decks found");
         list.appendChild(empty);
@@ -172,24 +173,24 @@ export class AnkiExportModal extends Modal {
       }
 
       for (const deck of filtered) {
-        const row = activeDocument.createElement("div");
+        const row = makeEl("div");
         row.setAttribute("role", "menuitem");
         row.setAttribute("aria-checked", deck.path === selectedDeck ? "true" : "false");
         row.tabIndex = 0;
         row.className =
           "group flex items-center gap-2 rounded-md px-2 py-1.5 text-sm cursor-pointer select-none outline-none hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground justify-between";
 
-        const txt = activeDocument.createElement("span");
+        const txt = makeEl("span");
         txt.textContent = deck.label;
         row.appendChild(txt);
 
         if (deck.path === selectedDeck) {
-          const check = activeDocument.createElement("span");
+          const check = makeEl("span");
           check.className = "inline-flex items-center justify-center [&_svg]:size-3 text-muted-foreground";
           setIcon(check, "check");
           row.appendChild(check);
         } else {
-          const spacer = activeDocument.createElement("span");
+          const spacer = makeEl("span");
           spacer.className = "inline-flex items-center justify-center [&_svg]:size-3 opacity-0";
           setIcon(spacer, "check");
           row.appendChild(spacer);
@@ -250,61 +251,61 @@ export class AnkiExportModal extends Modal {
 
     let selected: string[] = [];
 
-    const container = activeDocument.createElement("div");
+    const container = makeEl("div");
     container.className = "relative learnkit-group-picker";
 
-    const tagBox = activeDocument.createElement("div");
+    const tagBox = makeEl("div");
     tagBox.className = "textarea w-full learnkit-tag-box learnkit-export-tag-box";
     container.appendChild(tagBox);
 
     // Popover
-    const popover = activeDocument.createElement("div");
+    const popover = makeEl("div");
     popover.className = "learnkit-popover-dropdown";
     popover.setAttribute("aria-hidden", "true");
     container.appendChild(popover);
 
-    const panel = activeDocument.createElement("div");
+    const panel = makeEl("div");
     panel.className = "rounded-md border border-border bg-popover text-popover-foreground p-0 flex flex-col learnkit-pointer-auto";
     popover.appendChild(panel);
 
-    const searchWrap = activeDocument.createElement("div");
+    const searchWrap = makeEl("div");
     searchWrap.className = "flex items-center gap-1 border-b border-border pl-1 pr-0 w-full lk-browser-search-wrap min-h-[38px]";
     panel.appendChild(searchWrap);
 
-    const searchIcon = activeDocument.createElement("span");
+    const searchIcon = makeEl("span");
     searchIcon.className = "inline-flex items-center justify-center [&_svg]:size-3 text-muted-foreground learnkit-search-icon";
     searchIcon.setAttribute("aria-hidden", "true");
     setIcon(searchIcon, "search");
     searchWrap.appendChild(searchIcon);
 
-    const search = activeDocument.createElement("input");
+    const search = makeEl("input");
     search.type = "text";
     search.className = "bg-transparent text-sm flex-1 h-9 min-w-0 w-full learnkit-search-naked";
     search.placeholder = "Search groups";
     searchWrap.appendChild(search);
 
-    const listEl = activeDocument.createElement("div");
+    const listEl = makeEl("div");
     listEl.className = "flex flex-col max-h-60 overflow-auto p-1 learnkit-group-picker-results";
     panel.appendChild(listEl);
 
     const renderBadges = () => {
       clearNode(tagBox);
       if (!selected.length) {
-        const placeholder = activeDocument.createElement("span");
+        const placeholder = makeEl("span");
         placeholder.className = "badge inline-flex items-center gap-1 px-2 py-0.5 text-xs whitespace-nowrap group h-6 learnkit-badge-placeholder";
         placeholder.textContent = this.tx("ui.anki.export.noGroupsSelected", "No groups selected");
         tagBox.appendChild(placeholder);
         return;
       }
       for (const tag of selected) {
-        const badge = activeDocument.createElement("span");
+        const badge = makeEl("span");
         badge.className = "badge inline-flex items-center gap-1 px-2 py-0.5 text-xs whitespace-nowrap group h-6 learnkit-badge-inline lk-browser-tag-badge";
 
-        const txt = activeDocument.createElement("span");
+        const txt = makeEl("span");
         txt.textContent = formatGroupDisplay(tag);
         badge.appendChild(txt);
 
-        const removeBtn = activeDocument.createElement("span");
+        const removeBtn = makeEl("span");
         removeBtn.className = "ml-0 inline-flex items-center justify-center [&_svg]:size-[0.6rem] opacity-100 cursor-pointer text-white";
         setIcon(removeBtn, "x");
         removeBtn.addEventListener("pointerdown", (ev) => { ev.preventDefault(); ev.stopPropagation(); });
@@ -335,7 +336,7 @@ export class AnkiExportModal extends Modal {
       const options = allOptions.filter((t) => formatGroupDisplay(t).toLowerCase().includes(q));
 
       if (options.length === 0) {
-        const empty = activeDocument.createElement("div");
+        const empty = makeEl("div");
         empty.className = "px-2 py-2 text-sm text-muted-foreground";
         empty.textContent = this.tx("ui.anki.export.noGroupsFound", "No groups found");
         listEl.appendChild(empty);
@@ -343,24 +344,24 @@ export class AnkiExportModal extends Modal {
       }
 
       for (const opt of options) {
-        const row = activeDocument.createElement("div");
+        const row = makeEl("div");
         row.setAttribute("role", "menuitem");
         row.setAttribute("aria-checked", selected.includes(opt) ? "true" : "false");
         row.tabIndex = 0;
         row.className =
           "group flex items-center gap-2 rounded-md px-2 py-1.5 text-sm cursor-pointer select-none outline-none hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground justify-between";
 
-        const text = activeDocument.createElement("span");
+        const text = makeEl("span");
         text.textContent = formatGroupDisplay(opt);
         row.appendChild(text);
 
         if (selected.includes(opt)) {
-          const check = activeDocument.createElement("span");
+          const check = makeEl("span");
           check.className = "inline-flex items-center justify-center [&_svg]:size-3 text-muted-foreground";
           setIcon(check, "check");
           row.appendChild(check);
         } else {
-          const spacer = activeDocument.createElement("span");
+          const spacer = makeEl("span");
           spacer.className = "inline-flex items-center justify-center [&_svg]:size-3 opacity-0";
           setIcon(spacer, "check");
           row.appendChild(spacer);
@@ -631,7 +632,7 @@ export class AnkiExportModal extends Modal {
     downloadBtn.onclick = () => {
       const blob = new Blob([apkgBuffer], { type: "application/octet-stream" });
       const url = URL.createObjectURL(blob);
-      const a = activeDocument.createElement("a");
+      const a = makeEl("a");
       const timestamp = new Date().toISOString().slice(0, 10);
       a.href = url;
       a.download = `LearnKit-Export-${timestamp}.apkg`;

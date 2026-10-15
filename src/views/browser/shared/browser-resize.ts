@@ -15,6 +15,7 @@ import {  } from "obsidian";
 import type { ColKey } from "../browser-helpers";
 import { setCssProps } from "../../../platform/core/ui";
 import { t } from "../../../platform/translations/translator";
+import { makeEl } from "../../../platform/core/dom-factory";
 
 export interface ResizeContext {
   colWidths: Record<string, number>;
@@ -37,7 +38,7 @@ export function makeResizableTh(
 
   const RESIZE_ZONE_PX = 14;
 
-  const handle = activeDocument.createElement("div");
+  const handle = makeEl("div");
   handle.className = "learnkit-col-resize learnkit-col-resize-handle";
   handle.setAttribute("aria-label", t(undefined, "ui.browser.resize.drag", "Drag to resize"));
   setCssProps(handle, "--learnkit-resize-zone", `${RESIZE_ZONE_PX}px`);

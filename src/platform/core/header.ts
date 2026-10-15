@@ -22,6 +22,7 @@ import { LearnKitCommandPalette } from "./command-palette";
 import type LearnKitPlugin from "../../main";
 import { LearnKitSettingsView } from "../../views/settings/view/settings-view";
 import { t } from "../translations/translator";
+import { makeEl, makeSvgEl } from "./dom-factory";
 
 export type SproutHeaderPage = "home" | "cards" | "notes" | "exam" | "coach" | "analytics" | "library" | "settings";
 
@@ -117,7 +118,7 @@ export class SproutHeader {
       queryFirst<HTMLElement>(viewHeader, ".learnkit-header-center-brand");
 
     if (!brandHost) {
-      brandHost = this.deps.containerEl.ownerDocument.createElement("div");
+      brandHost = makeEl("div", this.deps.containerEl.ownerDocument);
       brandHost.className = "learnkit-header-center-brand";
 
       const actionsHost =
@@ -129,13 +130,13 @@ export class SproutHeader {
 
     clearChildren(brandHost);
 
-    const homeLink = this.deps.containerEl.ownerDocument.createElement("a");
+    const homeLink = makeEl("a", this.deps.containerEl.ownerDocument);
     homeLink.className = "learnkit-header-center-brand-link";
     homeLink.href = "#";
     homeLink.setAttribute("role", "link");
     brandHost.appendChild(homeLink);
 
-    const logo = this.deps.containerEl.ownerDocument.createElement("span");
+    const logo = makeEl("span", this.deps.containerEl.ownerDocument);
     logo.className = "learnkit-header-center-brand-icon";
     setIcon(logo, "learnkit-brand-horizontal");
 
@@ -384,7 +385,7 @@ export class SproutHeader {
       viewHeader.classList.add("learnkit-header", "learnkit-header");
       // Wrap header in a transparent container if not already wrapped
       if (!viewHeader.parentElement?.classList.contains("learnkit-header-wrap")) {
-        const wrap = this.deps.containerEl.ownerDocument.createElement("div");
+        const wrap = makeEl("div", this.deps.containerEl.ownerDocument);
         wrap.className = "learnkit-header-wrap";
         viewHeader.parentElement?.insertBefore(wrap, viewHeader);
         wrap.appendChild(viewHeader);
@@ -541,24 +542,24 @@ export class SproutHeader {
     this.closeTopNavPopover();
     trigger.setAttribute("aria-expanded", "true");
 
-    const sproutWrapper = this.deps.containerEl.ownerDocument.createElement("div");
+    const sproutWrapper = makeEl("div", this.deps.containerEl.ownerDocument);
     sproutWrapper.className = "learnkit";
-    const root = this.deps.containerEl.ownerDocument.createElement("div");
+    const root = makeEl("div", this.deps.containerEl.ownerDocument);
     root.className = "dropdown-menu";
     root.classList.add("learnkit-popover-overlay", "learnkit-popover-overlay");
     sproutWrapper.appendChild(root);
 
-    const panel = this.deps.containerEl.ownerDocument.createElement("div");
+    const panel = makeEl("div", this.deps.containerEl.ownerDocument);
     panel.className = "min-w-56 rounded-md border border-border bg-popover text-popover-foreground shadow-lg p-1 learnkit-pointer-auto learnkit-header-menu-panel";
     root.appendChild(panel);
 
-    const menu = this.deps.containerEl.ownerDocument.createElement("div");
+    const menu = makeEl("div", this.deps.containerEl.ownerDocument);
     menu.setAttribute("role", "menu");
     menu.className = "flex flex-col";
     panel.appendChild(menu);
 
     const mkNavItem = (label: string, page: SproutHeaderPage, icon?: string, showBeta = false) => {
-      const item = this.deps.containerEl.ownerDocument.createElement("div");
+      const item = makeEl("div", this.deps.containerEl.ownerDocument);
       item.className =
         "group flex items-center gap-2 rounded-md px-2 py-1.5 text-sm cursor-pointer select-none outline-none hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground";
       item.setAttribute("role", "menuitem");
@@ -566,7 +567,7 @@ export class SproutHeader {
       item.tabIndex = 0;
 
       if (icon) {
-        const ic = this.deps.containerEl.ownerDocument.createElement("span");
+        const ic = makeEl("span", this.deps.containerEl.ownerDocument);
         ic.className =
           "inline-flex items-center justify-center [&_svg]:size-4 text-muted-foreground group-hover:text-inherit group-focus:text-inherit";
         ic.setAttribute("aria-hidden", "true");
@@ -574,12 +575,12 @@ export class SproutHeader {
         item.appendChild(ic);
       }
 
-      const txt = this.deps.containerEl.ownerDocument.createElement("span");
+      const txt = makeEl("span", this.deps.containerEl.ownerDocument);
       txt.textContent = label;
       item.appendChild(txt);
 
       if (showBeta) {
-        const beta = this.deps.containerEl.ownerDocument.createElement("em");
+        const beta = makeEl("em", this.deps.containerEl.ownerDocument);
         beta.className = "text-xs text-muted-foreground group-hover:text-inherit group-focus:text-inherit";
         beta.textContent = this.tx("ui.common.beta", "Beta");
         item.appendChild(beta);
@@ -614,14 +615,14 @@ export class SproutHeader {
     };
 
     const mkActionItem = (label: string, onActivate: () => void, icon?: string) => {
-      const item = this.deps.containerEl.ownerDocument.createElement("div");
+      const item = makeEl("div", this.deps.containerEl.ownerDocument);
       item.className =
         "group flex items-center gap-2 rounded-md px-2 py-1.5 text-sm cursor-pointer select-none outline-none hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground";
       item.setAttribute("role", "menuitem");
       item.tabIndex = 0;
 
       if (icon) {
-        const ic = this.deps.containerEl.ownerDocument.createElement("span");
+        const ic = makeEl("span", this.deps.containerEl.ownerDocument);
         ic.className =
           "inline-flex items-center justify-center [&_svg]:size-4 text-muted-foreground group-hover:text-inherit group-focus:text-inherit";
         ic.setAttribute("aria-hidden", "true");
@@ -629,7 +630,7 @@ export class SproutHeader {
         item.appendChild(ic);
       }
 
-      const txt = this.deps.containerEl.ownerDocument.createElement("span");
+      const txt = makeEl("span", this.deps.containerEl.ownerDocument);
       txt.textContent = label;
       item.appendChild(txt);
 
@@ -662,7 +663,7 @@ export class SproutHeader {
     };
 
     const mkSection = (label: string) => {
-      const item = this.deps.containerEl.ownerDocument.createElement("div");
+      const item = makeEl("div", this.deps.containerEl.ownerDocument);
       item.className = "px-2 py-1.5 text-sm text-muted-foreground";
       item.textContent = label;
       item.setAttribute("role", "presentation");
@@ -670,7 +671,7 @@ export class SproutHeader {
     };
 
     const mkSep = () => {
-      const sep = this.deps.containerEl.ownerDocument.createElement("div");
+      const sep = makeEl("div", this.deps.containerEl.ownerDocument);
       sep.className = "my-1 h-px bg-border";
       sep.setAttribute("role", "separator");
       menu.appendChild(sep);
@@ -759,13 +760,13 @@ export class SproutHeader {
     clearNode(navHost);
     navHost.classList.add("learnkit-nav-host", "learnkit-nav-host");
 
-    const navRoot = this.deps.containerEl.ownerDocument.createElement("div");
+    const navRoot = makeEl("div", this.deps.containerEl.ownerDocument);
     navRoot.id = this.headerNavId;
     navRoot.className = "dropdown-menu";
     navRoot.classList.add("learnkit-dropdown-root", "learnkit-dropdown-root");
     navHost.appendChild(navRoot);
 
-    const navTrigger = this.deps.containerEl.ownerDocument.createElement("button");
+    const navTrigger = makeEl("button", this.deps.containerEl.ownerDocument);
     navTrigger.type = "button";
     navTrigger.id = `${this.headerNavId}-trigger`;
     navTrigger.className = "learnkit-btn-toolbar h-7 px-2 text-xs inline-flex items-center gap-2";
@@ -777,13 +778,13 @@ export class SproutHeader {
     navRoot.appendChild(navTrigger);
 
     if (!isMobile) {
-      const trigText = this.deps.containerEl.ownerDocument.createElement("span");
+      const trigText = makeEl("span", this.deps.containerEl.ownerDocument);
       trigText.className = "truncate";
       trigText.textContent = this.pageLabel(active);
       navTrigger.appendChild(trigText);
     }
 
-    const trigIcon = this.deps.containerEl.ownerDocument.createElement("span");
+    const trigIcon = makeEl("span", this.deps.containerEl.ownerDocument);
     trigIcon.className = "inline-flex items-center justify-center [&_svg]:size-4";
     trigIcon.setAttribute("aria-hidden", "true");
     setIcon(trigIcon, isMobile ? "menu" : "chevron-down");
@@ -807,7 +808,7 @@ export class SproutHeader {
   // ---------------------------
 
   private installCommandPaletteButton(navHost: HTMLElement, beforeEl: HTMLElement) {
-    const btn = this.deps.containerEl.ownerDocument.createElement("button");
+    const btn = makeEl("button", this.deps.containerEl.ownerDocument);
     btn.type = "button";
     btn.className = "learnkit-btn-toolbar learnkit-cmd-palette-trigger inline-flex items-center justify-center";
     btn.setAttribute("aria-label", this.tx("ui.commandPalette.title", "Command palette"));
@@ -815,7 +816,7 @@ export class SproutHeader {
     btn.setAttribute("aria-haspopup", "dialog");
     btn.setAttribute("aria-expanded", "false");
 
-    const ic = this.deps.containerEl.ownerDocument.createElement("span");
+    const ic = makeEl("span", this.deps.containerEl.ownerDocument);
     ic.className = "inline-flex items-center justify-center [&_svg]:size-4";
     ic.setAttribute("aria-hidden", "true");
     setIcon(ic, "command");
@@ -877,25 +878,25 @@ export class SproutHeader {
     this.moreTriggerEl = trigger as HTMLButtonElement;
     trigger.setAttribute("aria-expanded", "true");
 
-    const sproutWrapper = this.deps.containerEl.ownerDocument.createElement("div");
+    const sproutWrapper = makeEl("div", this.deps.containerEl.ownerDocument);
     sproutWrapper.className = "learnkit";
-    const root = this.deps.containerEl.ownerDocument.createElement("div");
+    const root = makeEl("div", this.deps.containerEl.ownerDocument);
     root.className = "dropdown-menu";
     root.classList.add("learnkit-popover-overlay", "learnkit-popover-overlay");
     sproutWrapper.appendChild(root);
 
-    const panel = this.deps.containerEl.ownerDocument.createElement("div");
+    const panel = makeEl("div", this.deps.containerEl.ownerDocument);
     panel.className = "min-w-56 rounded-md border border-border bg-popover text-popover-foreground shadow-lg p-1 learnkit-pointer-auto learnkit-header-menu-panel";
     root.appendChild(panel);
 
-    const menu = this.deps.containerEl.ownerDocument.createElement("div");
+    const menu = makeEl("div", this.deps.containerEl.ownerDocument);
     menu.setAttribute("role", "menu");
     menu.className = "flex flex-col";
     panel.appendChild(menu);
 
     for (const it of items) {
       if (it.type === "separator") {
-        const separator = this.deps.containerEl.ownerDocument.createElement("div");
+        const separator = makeEl("div", this.deps.containerEl.ownerDocument);
         separator.className = "my-1 h-px bg-border";
         separator.setAttribute("role", "separator");
         menu.appendChild(separator);
@@ -903,7 +904,7 @@ export class SproutHeader {
       }
 
       if (it.type === "section") {
-        const heading = this.deps.containerEl.ownerDocument.createElement("div");
+        const heading = makeEl("div", this.deps.containerEl.ownerDocument);
         heading.className = "px-2 py-1.5 text-sm text-muted-foreground";
         heading.setAttribute("role", "presentation");
         heading.textContent = it.label;
@@ -911,7 +912,7 @@ export class SproutHeader {
         continue;
       }
 
-      const row = this.deps.containerEl.ownerDocument.createElement("div");
+      const row = makeEl("div", this.deps.containerEl.ownerDocument);
       row.setAttribute("role", "menuitem");
       row.tabIndex = 0;
 
@@ -919,13 +920,13 @@ export class SproutHeader {
         "group flex items-center gap-2 rounded-md px-2 py-1.5 text-sm cursor-pointer select-none outline-none hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground";
 
       if (it.icon) {
-        const ic = this.deps.containerEl.ownerDocument.createElement("span");
+        const ic = makeEl("span", this.deps.containerEl.ownerDocument);
         ic.className =
           "inline-flex items-center justify-center [&_svg]:size-4 text-muted-foreground group-hover:text-inherit";
         ic.setAttribute("aria-hidden", "true");
         if (it.icon === "life-buoy") {
           const svgNs = "http://www.w3.org/2000/svg";
-          const svg = this.deps.containerEl.ownerDocument.createElementNS(svgNs, "svg");
+          const svg = makeSvgEl("svg", this.deps.containerEl.ownerDocument);
           svg.setAttribute("xmlns", svgNs);
           svg.setAttribute("width", "24");
           svg.setAttribute("height", "24");
@@ -937,29 +938,29 @@ export class SproutHeader {
           svg.setAttribute("stroke-linejoin", "round");
           svg.setAttribute("class", "svg-icon lucide-life-buoy");
 
-          const circleOuter = this.deps.containerEl.ownerDocument.createElementNS(svgNs, "circle");
+          const circleOuter = makeSvgEl("circle", this.deps.containerEl.ownerDocument);
           circleOuter.setAttribute("cx", "12");
           circleOuter.setAttribute("cy", "12");
           circleOuter.setAttribute("r", "10");
           svg.appendChild(circleOuter);
 
-          const p1 = this.deps.containerEl.ownerDocument.createElementNS(svgNs, "path");
+          const p1 = makeSvgEl("path", this.deps.containerEl.ownerDocument);
           p1.setAttribute("d", "m4.93 4.93 4.24 4.24");
           svg.appendChild(p1);
 
-          const p2 = this.deps.containerEl.ownerDocument.createElementNS(svgNs, "path");
+          const p2 = makeSvgEl("path", this.deps.containerEl.ownerDocument);
           p2.setAttribute("d", "m14.83 9.17 4.24-4.24");
           svg.appendChild(p2);
 
-          const p3 = this.deps.containerEl.ownerDocument.createElementNS(svgNs, "path");
+          const p3 = makeSvgEl("path", this.deps.containerEl.ownerDocument);
           p3.setAttribute("d", "m14.83 14.83 4.24 4.24");
           svg.appendChild(p3);
 
-          const p4 = this.deps.containerEl.ownerDocument.createElementNS(svgNs, "path");
+          const p4 = makeSvgEl("path", this.deps.containerEl.ownerDocument);
           p4.setAttribute("d", "m9.17 14.83-4.24 4.24");
           svg.appendChild(p4);
 
-          const circleInner = this.deps.containerEl.ownerDocument.createElementNS(svgNs, "circle");
+          const circleInner = makeSvgEl("circle", this.deps.containerEl.ownerDocument);
           circleInner.setAttribute("cx", "12");
           circleInner.setAttribute("cy", "12");
           circleInner.setAttribute("r", "4");
@@ -972,7 +973,7 @@ export class SproutHeader {
         row.appendChild(ic);
       }
 
-      const txt = this.deps.containerEl.ownerDocument.createElement("span");
+      const txt = makeEl("span", this.deps.containerEl.ownerDocument);
       txt.textContent = it.label;
       row.appendChild(txt);
 
@@ -1087,7 +1088,7 @@ export class SproutHeader {
     actionsHost.classList.add("learnkit-actions-host", "learnkit-actions-host");
 
     // Collapse/Expand
-    const widthBtn = this.deps.containerEl.ownerDocument.createElement("button");
+    const widthBtn = makeEl("button", this.deps.containerEl.ownerDocument);
     widthBtn.type = "button";
     widthBtn.className = "learnkit-btn-toolbar inline-flex items-center gap-2";
     widthBtn.setAttribute("data-learnkit-expand-collapse", "true");
@@ -1098,7 +1099,7 @@ export class SproutHeader {
       this.updateWidthButtonLabel();
     });
 
-    const widthIcon = this.deps.containerEl.ownerDocument.createElement("span");
+    const widthIcon = makeEl("span", this.deps.containerEl.ownerDocument);
     widthIcon.className = "inline-flex items-center justify-center [&_svg]:size-4";
     widthIcon.setAttribute("aria-hidden", "true");
     widthBtn.appendChild(widthIcon);
@@ -1125,7 +1126,7 @@ export class SproutHeader {
     }
 
     // Sync
-    const syncBtn = this.deps.containerEl.ownerDocument.createElement("button");
+    const syncBtn = makeEl("button", this.deps.containerEl.ownerDocument);
     syncBtn.type = "button";
     syncBtn.className = "learnkit-btn-toolbar inline-flex items-center gap-2";
     syncBtn.setAttribute("aria-label", this.tx("ui.header.syncFlashcards", "Sync flashcards"));
@@ -1137,7 +1138,7 @@ export class SproutHeader {
       this.deps.runSync();
     });
 
-    const syncIcon = this.deps.containerEl.ownerDocument.createElement("span");
+    const syncIcon = makeEl("span", this.deps.containerEl.ownerDocument);
     syncIcon.className = "inline-flex items-center justify-center [&_svg]:size-4";
     syncIcon.setAttribute("aria-hidden", "true");
     syncBtn.appendChild(syncIcon);
@@ -1148,12 +1149,12 @@ export class SproutHeader {
     // Theme toggle removed; now handled by Obsidian
 
     // More
-    const moreWrap = this.deps.containerEl.ownerDocument.createElement("div");
+    const moreWrap = makeEl("div", this.deps.containerEl.ownerDocument);
     moreWrap.id = this.moreId;
     moreWrap.className = "lk-more-wrap";
     actionsHost.appendChild(moreWrap);
 
-    const moreBtn = this.deps.containerEl.ownerDocument.createElement("button");
+    const moreBtn = makeEl("button", this.deps.containerEl.ownerDocument);
     moreBtn.type = "button";
     moreBtn.id = `${this.moreId}-trigger`;
     moreBtn.className = "btn-icon-outline learnkit-btn-toolbar";
@@ -1163,7 +1164,7 @@ export class SproutHeader {
     moreBtn.setAttribute("data-tooltip-position", "bottom");
     moreWrap.appendChild(moreBtn);
 
-    const moreIcon = this.deps.containerEl.ownerDocument.createElement("span");
+    const moreIcon = makeEl("span", this.deps.containerEl.ownerDocument);
     moreIcon.className = "inline-flex items-center justify-center [&_svg]:size-4";
     moreIcon.setAttribute("aria-hidden", "true");
     setIcon(moreIcon, "more-vertical");

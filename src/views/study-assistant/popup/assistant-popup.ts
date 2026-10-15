@@ -121,6 +121,7 @@ import {
   SUPPORTED_FILE_ACCEPT,
 } from "../../../platform/integrations/ai/attachment-helpers";
 import { formatAttachmentChipLabel } from "../../shared/attachment-chip-label";
+import { makeEl } from "../../../platform/core/dom-factory";
 
 const ASSISTANT_POPUP_SIZE_STORAGE_KEY = "learnkit.assistant.popup.size.v1";
 const ASSISTANT_POPUP_PREFS_ROOT_KEY = "assistantPopupSize";
@@ -917,7 +918,7 @@ export class SproutAssistantPopup {
     this._registerEditProposalResolutionListener();
 
     // Trigger button
-    const btn = activeDocument.createElement("button");
+    const btn = makeEl("button");
     btn.className = "learnkit-assistant-trigger";
     const openCompanionLabel = this._tx("ui.studyAssistant.chat.openCompanion", "Open LearnKit Companion");
     btn.setAttribute("aria-label", openCompanionLabel);
@@ -1015,7 +1016,7 @@ export class SproutAssistantPopup {
     this._isTriggerButtonHovered = false;
 
     if (!this.popupEl) {
-      const popup = activeDocument.createElement("div");
+      const popup = makeEl("div");
       popup.className = "learnkit learnkit-assistant-popup learnkit-assistant-popup-embedded";
       host.appendChild(popup);
       this.popupEl = popup as unknown as HTMLDivElement;
@@ -2251,7 +2252,7 @@ export class SproutAssistantPopup {
   }
 
   private _buildTriggerHotzone(): HTMLDivElement {
-    const zone = activeDocument.createElement("div");
+    const zone = makeEl("div");
     zone.className = "learnkit-assistant-trigger-hotzone";
     zone.setAttribute("aria-hidden", "true");
     // Hover detection is handled via host-level pointermove (see _attachHostProximityHover)
@@ -5419,7 +5420,7 @@ export class SproutAssistantPopup {
 
   private ensurePopup(): void {
     if (this.popupEl) return;
-    const popup = activeDocument.createElement("div");
+    const popup = makeEl("div");
     popup.className = "learnkit learnkit-assistant-popup is-hidden";
     this._attachToBestHost(popup);
     this.popupEl = popup as unknown as HTMLDivElement;
@@ -5672,9 +5673,9 @@ export class SproutAssistantPopup {
       this.render();
     });
 
-    const menuPortalRoot = activeDocument.createElement("div");
+    const menuPortalRoot = makeEl("div");
     menuPortalRoot.className = "learnkit";
-    const menuPopover = activeDocument.createElement("div");
+    const menuPopover = makeEl("div");
     menuPopover.className = "learnkit-assistant-popup-header-popover learnkit-popover-overlay dropdown-menu min-w-56 rounded-md border border-border bg-popover text-popover-foreground shadow-lg p-1 learnkit-pointer-auto learnkit-header-menu-panel";
     menuPortalRoot.appendChild(menuPopover);
     this._headerMenuPortalRoot = menuPortalRoot;
@@ -6573,7 +6574,7 @@ class AttachmentPickerModal extends Modal {
   }
 
   private _pickSystemFile(): void {
-    const input = activeDocument.createElement("input");
+    const input = makeEl("input");
     input.type = "file";
     input.multiple = true;
     input.accept = SUPPORTED_FILE_ACCEPT;

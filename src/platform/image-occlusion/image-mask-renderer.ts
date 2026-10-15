@@ -31,6 +31,7 @@ import {
   type IoEditorOpenOpts,
 } from "./io-helpers";
 import { scopeModalToWorkspace } from "../../platform/modals/modal-utils";
+import { makeEl } from "../core/dom-factory";
 
 export class ImageOcclusionEditorModal extends Modal {
   private plugin: LearnKitPlugin;
@@ -622,7 +623,7 @@ export class ImageOcclusionEditorModal extends Modal {
       const p = clientToStage(this.stageEl, this.t, e.clientX, e.clientY);
       this.drawStart = p;
 
-      this.previewEl = activeDocument.createElement("div");
+      this.previewEl = makeEl("div");
       this.previewEl.className = "learnkit-io-preview";
       this.overlayEl.appendChild(this.previewEl);
 

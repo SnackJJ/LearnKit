@@ -14,6 +14,7 @@ import type { Session } from "./types";
 import type { SproutReviewerView } from "./review-view";
 import { scopeModalToWorkspace } from "../../platform/modals/modal-utils";
 import { t } from "../../platform/translations/translator";
+import { makeEl } from "../../platform/core/dom-factory";
 
 export function isSkipEnabled(plugin: LearnKitPlugin): boolean {
   return !!plugin.settings.study?.enableSkipButton;
@@ -54,7 +55,7 @@ class ConfirmBuryForTodayModal extends Modal {
 
     head.createEl("h3", { text: tx("ui.reviewer.skip.modal.title", "Bury for today?") });
 
-    const xBtn = activeDocument.createElement("button");
+    const xBtn = makeEl("button");
     xBtn.type = "button";
     xBtn.className = "clickable-icon";
     xBtn.setAttribute("aria-label", tx("ui.reviewer.skip.modal.close", "Close (Esc)"));

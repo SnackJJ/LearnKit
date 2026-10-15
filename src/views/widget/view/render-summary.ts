@@ -15,6 +15,7 @@ import type { WidgetViewLike } from "../core/widget-helpers";
 import { makeTextButton, applyWidgetActionButtonStyles } from "../ui/widget-buttons";
 import { isFolderNote, getCardsInActiveScope, computeCounts, folderNotesAsDecksEnabled } from "../scope/scope-helpers";
 import { t } from "../../../platform/translations/translator";
+import { makeEl } from "../../../platform/core/dom-factory";
 
 /* ------------------------------------------------------------------ */
 /*  renderWidgetSummary                                                */
@@ -157,7 +158,7 @@ export function renderWidgetSummary(view: WidgetViewLike, root: HTMLElement): vo
   });
   applyWidgetActionButtonStyles(studyBtn);
 
-  const studyKbd = activeDocument.createElement("kbd");
+  const studyKbd = makeEl("kbd");
   studyKbd.className = "kbd sprout-widget-kbd";
   studyKbd.textContent = "↵";
   studyBtn.appendChild(studyKbd);

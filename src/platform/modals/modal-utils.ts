@@ -344,6 +344,7 @@ export function focusFirstField(el: HTMLElement) {
 
 import { escapeDelimiterText, formatDelimitedField } from "../core/delimiter";
 import { normalizeGroups } from "../../engine/indexing/group-format";
+import { makeEl } from "../core/dom-factory";
 
 /** Escape delimiter characters for the Sprout delimited format. */
 export function escapePipeText(s: string): string {
@@ -508,13 +509,13 @@ export function hasClozeToken(s: string): boolean {
  * Returns the container element and a `getOptions()` accessor.
  */
 export function createModalMcqSection() {
-  const container = activeDocument.createElement("div");
+  const container = makeEl("div");
   container.className = "flex flex-col gap-2";
 
-  const label = activeDocument.createElement("label");
+  const label = makeEl("label");
   label.className = "text-sm font-medium inline-flex items-center gap-1";
   label.textContent = "Answers and options";
-  const mcqInfoIcon = activeDocument.createElement("span");
+  const mcqInfoIcon = makeEl("span");
   mcqInfoIcon.className = "inline-flex items-center justify-center [&_svg]:size-3 text-muted-foreground learnkit-info-icon-elevated";
   mcqInfoIcon.setAttribute("aria-label", t(undefined, "ui.modal.mcq.description", "Check the box next to each correct answer. At least one correct and one incorrect option required."));
   mcqInfoIcon.setAttribute("data-tooltip-position", "top");
@@ -522,7 +523,7 @@ export function createModalMcqSection() {
   label.appendChild(mcqInfoIcon);
   container.appendChild(label);
 
-  const optionsContainer = activeDocument.createElement("div");
+  const optionsContainer = makeEl("div");
   optionsContainer.className = "flex flex-col gap-2";
   container.appendChild(optionsContainer);
 
@@ -539,10 +540,10 @@ export function createModalMcqSection() {
   };
 
   const addOptionRow = (value: string, isCorrect: boolean) => {
-    const row = activeDocument.createElement("div");
+    const row = makeEl("div");
     row.className = "flex items-center gap-2 learnkit-edit-mcq-option-row";
 
-    const checkbox = activeDocument.createElement("input");
+    const checkbox = makeEl("input");
     checkbox.type = "checkbox";
     checkbox.checked = isCorrect;
     checkbox.className = "learnkit-mcq-correct-checkbox";
@@ -550,19 +551,19 @@ export function createModalMcqSection() {
     checkbox.setAttribute("data-tooltip-position", "top");
     row.appendChild(checkbox);
 
-    const input = activeDocument.createElement("input");
+    const input = makeEl("input");
     input.type = "text";
     input.className = "input flex-1 text-sm learnkit-input-fixed";
     input.placeholder = "Enter an answer option";
     input.value = value;
     row.appendChild(input);
 
-    const removeBtn = activeDocument.createElement("button");
+    const removeBtn = makeEl("button");
     removeBtn.type = "button";
     removeBtn.className = "inline-flex items-center justify-center h-9 w-9 p-0 learnkit-remove-btn-ghost";
     removeBtn.setAttribute("aria-label", t(undefined, "ui.modal.mcq.removeOption", "Remove option"));
     removeBtn.setAttribute("data-tooltip-position", "top");
-    const xIcon = activeDocument.createElement("span");
+    const xIcon = makeEl("span");
     xIcon.className = "inline-flex items-center justify-center [&_svg]:size-4";
     setIcon(xIcon, "x");
     removeBtn.appendChild(xIcon);
@@ -583,7 +584,7 @@ export function createModalMcqSection() {
     updateRemoveButtons();
   };
 
-  const addInput = activeDocument.createElement("input");
+  const addInput = makeEl("input");
   addInput.type = "text";
   addInput.className = "input flex-1 text-sm learnkit-input-fixed";
   addInput.placeholder = "Add another option (press enter)";
@@ -604,7 +605,7 @@ export function createModalMcqSection() {
     addInput.value = "";
   });
 
-  const addInputWrap = activeDocument.createElement("div");
+  const addInputWrap = makeEl("div");
   addInputWrap.className = "flex items-center gap-2";
   addInputWrap.appendChild(addInput);
   container.appendChild(addInputWrap);
@@ -681,7 +682,7 @@ export function createThemedDropdown(
   const buttonSize = config?.buttonSize ?? "md";
   const buttonJustify = config?.buttonJustify ?? (fullWidth ? "between" : "start");
 
-  const container = activeDocument.createElement("div");
+  const container = makeEl("div");
   container.className = [
     "sprout relative inline-flex",
     fullWidth ? "w-full" : "",
@@ -690,7 +691,7 @@ export function createThemedDropdown(
   ].filter(Boolean).join(" ");
 
   // Trigger button
-  const btn = activeDocument.createElement("button");
+  const btn = makeEl("button");
   btn.type = "button";
   btn.className = [
     "learnkit-btn-toolbar text-sm inline-flex items-center gap-2",
@@ -705,26 +706,26 @@ export function createThemedDropdown(
   btn.setAttribute("aria-expanded", "false");
   container.appendChild(btn);
 
-  const btnText = activeDocument.createElement("span");
+  const btnText = makeEl("span");
   btnText.className = "truncate";
   btn.appendChild(btnText);
 
-  const btnIcon = activeDocument.createElement("span");
+  const btnIcon = makeEl("span");
   btnIcon.className = "inline-flex items-center justify-center [&_svg]:size-3";
   setIcon(btnIcon, "chevron-down");
   btn.appendChild(btnIcon);
 
   // Popover dropdown
-  const popover = activeDocument.createElement("div");
+  const popover = makeEl("div");
   popover.className = "learnkit-popover-dropdown learnkit-popover-dropdown-below";
   popover.setAttribute("aria-hidden", "true");
   container.appendChild(popover);
 
-  const panel = activeDocument.createElement("div");
+  const panel = makeEl("div");
   panel.className = "rounded-md border border-border bg-popover text-popover-foreground shadow-lg p-1 learnkit-pointer-auto";
   popover.appendChild(panel);
 
-  const menu = activeDocument.createElement("div");
+  const menu = makeEl("div");
   menu.setAttribute("role", "menu");
   menu.className = "flex flex-col";
   panel.appendChild(menu);
@@ -746,23 +747,23 @@ export function createThemedDropdown(
   const buildMenu = () => {
     while (menu.firstChild) menu.removeChild(menu.firstChild);
     for (const opt of options) {
-      const item = activeDocument.createElement("div");
+      const item = makeEl("div");
       item.setAttribute("role", "menuitemradio");
       item.setAttribute("aria-checked", opt.value === currentValue ? "true" : "false");
       item.tabIndex = 0;
       item.className =
         "group flex items-center gap-2 rounded-md px-2 py-1.5 text-sm cursor-pointer select-none outline-none hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground";
 
-      const dotWrap = activeDocument.createElement("div");
+      const dotWrap = makeEl("div");
       dotWrap.className = "size-4 flex items-center justify-center";
       item.appendChild(dotWrap);
 
-      const dot = activeDocument.createElement("div");
+      const dot = makeEl("div");
       dot.className = "size-2 rounded-full bg-foreground invisible group-aria-checked:visible";
       dot.setAttribute("aria-hidden", "true");
       dotWrap.appendChild(dot);
 
-      const txt = activeDocument.createElement("span");
+      const txt = makeEl("span");
       txt.className = "";
       txt.textContent = opt.label;
       item.appendChild(txt);

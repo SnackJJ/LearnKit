@@ -11,6 +11,7 @@
 import {  } from "obsidian";
 
 import { el } from "../../platform/core/ui";
+import { makeEl } from "../../platform/core/dom-factory";
 
 export function keySymbol(label: string): string {
   if (label.toLowerCase() === "enter") return "⏎";
@@ -36,7 +37,7 @@ export function makePlainButton(
   onClick: () => void,
   className = "learnkit-btn",
 ): HTMLButtonElement {
-  const b = activeDocument.createElement("button");
+  const b = makeEl("button");
   b.type = "button";
   b.className = className;
   b.setAttribute("aria-label", label);

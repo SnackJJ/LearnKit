@@ -13,6 +13,7 @@ import { el, setCssProps } from "../../platform/core/ui";
 import { getClozeRenderOccurrences, parseClozeTokens, resolveNestedClozeAnswers } from "../../platform/core/shared-utils";
 import { applyInlineMarkdown } from "../../platform/integrations/anki/anki-mapper";
 import { hydrateCircleFlagsInElement, processCircleFlagsInMarkdown } from "../../platform/flags/flag-tokens";
+import { makeEl } from "../../platform/core/dom-factory";
 
 /** Options bag for cloze rendering. */
 export type ClozeRenderOptions = {
@@ -64,7 +65,7 @@ function measureClozeTextWidthPx(host: HTMLElement, text: string): number {
   const normalizedText = text.trim();
   if (!normalizedText) return 0;
 
-  const ctx = activeDocument.createElement("canvas").getContext("2d");
+  const ctx = makeEl("canvas").getContext("2d");
   if (!ctx) return normalizedText.length * 8;
 
   ctx.font = `500 14px ${getComputedStyle(host).fontFamily}`;
@@ -84,10 +85,10 @@ function buildTypedClozeInput(
   const plainHint = stripInlineMarkdown(hint || "");
   const answerKey = makeTypedAnswerKey(clozeIndex, occurrence);
 
-  const wrap = activeDocument.createElement("span");
+  const wrap = makeEl("span");
   wrap.className = "learnkit-cloze-typed-wrap";
 
-  const input = activeDocument.createElement("input");
+  const input = makeEl("input");
   input.type = "text";
   input.className = "learnkit-cloze-typed-input";
   input.setAttribute("autocomplete", "off");
@@ -191,7 +192,7 @@ export function renderClozeFront(
 
   // Wrap cloze content in a <p dir="auto"> so it matches MarkdownRenderer output
   // (and therefore matches spacing/margins between basic vs cloze cards).
-  const p = activeDocument.createElement("p");
+  const p = makeEl("p");
   p.setAttribute("dir", "auto");
   p.className = "whitespace-pre-wrap break-words";
   container.appendChild(p);
@@ -199,7 +200,7 @@ export function renderClozeFront(
   const clozeOccurrences = new Map<number, number>();
 
   const measureChPx = (): number => {
-    const probe = activeDocument.createElement("span");
+    const probe = makeEl("span");
     probe.className = "learnkit-cloze-probe";
     probe.textContent = "0000000000";
     p.appendChild(probe);
@@ -235,7 +236,7 @@ export function renderClozeFront(
 
   /** Append a text segment with inline markdown formatting (bold, italic, etc.) */
   const appendFormattedText = (parent: HTMLElement, text: string) => {
-    const span = activeDocument.createElement("span");
+    const span = makeEl("span");
     applyInlineMarkdownWithFlags(span, text);
     parent.appendChild(span);
   };
@@ -271,24 +272,24 @@ export function renderClozeFront(
           const isCorrect = normalizeTypedClozeForCompare(typed) === normalizeTypedClozeForCompare(plainAns);
 
           if (isCorrect) {
-            const span = activeDocument.createElement("span");
+            const span = makeEl("span");
             span.className = "learnkit-cloze-revealed learnkit-cloze-typed-correct";
             applyInlineMarkdownWithFlags(span, resolvedAnswer);
             parent.appendChild(span);
           } else {
-            const wrongSpan = activeDocument.createElement("span");
+            const wrongSpan = makeEl("span");
             wrongSpan.className = "learnkit-cloze-revealed learnkit-cloze-typed-wrong";
             wrongSpan.textContent = typed || "\u00A0\u00A0\u00A0";
             parent.appendChild(wrongSpan);
             parent.appendChild(activeDocument.createTextNode(" "));
 
-            const correctSpan = activeDocument.createElement("span");
+            const correctSpan = makeEl("span");
             correctSpan.className = "learnkit-cloze-revealed learnkit-cloze-typed-correct";
             applyInlineMarkdownWithFlags(correctSpan, resolvedAnswer);
             parent.appendChild(correctSpan);
           }
         } else {
-          const answerSpan = activeDocument.createElement("span");
+          const answerSpan = makeEl("span");
           answerSpan.className = "learnkit-cloze-revealed";
           applyInlineMarkdownWithFlags(answerSpan, resolvedAnswer);
 
@@ -319,7 +320,7 @@ export function renderClozeFront(
 
           if (!firstTypedInput) firstTypedInput = wrap.querySelector<HTMLInputElement>("input");
         } else if (hint) {
-          const hintSpan = activeDocument.createElement("span");
+          const hintSpan = makeEl("span");
           hintSpan.className = "learnkit-cloze-hint";
           applyInlineMarkdownWithFlags(hintSpan, hint);
           const answerWidth = computeBlankWidthPx(plainAns);
@@ -329,7 +330,7 @@ export function renderClozeFront(
         } else {
           ensureSpaceBeforeBlank();
 
-          const blank = activeDocument.createElement("span");
+          const blank = makeEl("span");
           blank.className = "learnkit-cloze-blank hidden-cloze";
           blank.textContent = "";
           setCssProps(blank, "--learnkit-cloze-width", `${computeBlankWidthPx(plainAns)}px`);

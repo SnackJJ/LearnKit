@@ -48,6 +48,7 @@ import {
   extractImageRefs,
   renderMarkdownWithImages,
 } from "./browser-helpers";
+import { makeEl } from "../../platform/core/dom-factory";
 
 // ── Context interface ─────────────────────────────────────
 
@@ -104,7 +105,7 @@ export function buildPageTableBody(
   pageRows: BrowserRow[],
   ctx: RowRendererContext,
 ): HTMLTableSectionElement {
-  const tbody = activeDocument.createElement("tbody");
+  const tbody = makeEl("tbody");
   tbody.className = "";
 
   const quarantine = (ctx.plugin.store.data.quarantine || {});
@@ -121,17 +122,17 @@ export function buildPageTableBody(
 
   for (const [rowIndex, { card, state, dueMs }] of pageRows.entries()) {
     const isQuarantined = !!quarantine[String(card.id)];
-    const tr = activeDocument.createElement("tr");
+    const tr = makeEl("tr");
     tr.className = "lk-browser-row";
     setCssProps(tr, "--learnkit-row-height", `${ctx.rowHeightPx}px`);
 
     // ── Checkbox cell ──
-    const selTd = activeDocument.createElement("td");
+    const selTd = makeEl("td");
     selTd.className = `align-middle flex items-center justify-center text-center ${ctx.cellWrapClass} lk-browser-cell lk-browser-select-cell`;
     forceCellClip(selTd);
     forceWrapStyles(selTd);
 
-    const checkbox = activeDocument.createElement("input");
+    const checkbox = makeEl("input");
     checkbox.type = "checkbox";
     checkbox.setAttribute("data-card-id", String(card.id));
     checkbox.className = "cursor-pointer accent-[var(--text-normal)]";
@@ -169,7 +170,7 @@ export function buildPageTableBody(
 
     // ── Muted text cell helper ──
     const tdMuted = (txt: string, col: ColKey, title?: string) => {
-      const td = activeDocument.createElement("td");
+      const td = makeEl("td");
       td.className = `align-top ${ctx.readonlyTextClass} ${ctx.cellWrapClass} text-muted-foreground lk-browser-cell`;
       td.textContent = txt;
       if (title) td.setAttribute("aria-label", title);
@@ -180,7 +181,7 @@ export function buildPageTableBody(
     };
 
     // ── ID cell ──
-    const idTd = activeDocument.createElement("td");
+    const idTd = makeEl("td");
     idTd.className = `align-top ${ctx.cellWrapClass} lk-browser-cell`;
     forceCellClip(idTd);
     forceWrapStyles(idTd);
@@ -189,7 +190,7 @@ export function buildPageTableBody(
     const isSuspended = String(state?.stage || "") === "suspended";
     const sourceLink = `${card.sourceNotePath}#${buildPrimaryCardAnchor(String(card.id))}`;
 
-    const idLink = activeDocument.createElement("a");
+    const idLink = makeEl("a");
     idLink.href = sourceLink;
     idLink.className = "text-[var(--learnkit-font-2xs)] leading-none inline-flex items-center gap-1 text-normal relative z-0 lk-browser-id-link";
 
@@ -200,11 +201,11 @@ export function buildPageTableBody(
       idLink.classList.add("text-red-500");
     }
 
-    const idValue = activeDocument.createElement("span");
+    const idValue = makeEl("span");
     idValue.textContent = String(card.id);
     idLink.appendChild(idValue);
 
-    const linkIcon = activeDocument.createElement("span");
+    const linkIcon = makeEl("span");
     linkIcon.setAttribute("aria-hidden", "true");
     linkIcon.className = "inline-flex items-center justify-center";
     let iconName = "link";
@@ -233,12 +234,12 @@ export function buildPageTableBody(
     // ── Stage cell ──
     const stage = isQuarantined ? "quarantined" : String(state?.stage || "new");
     if (stage === "suspended") {
-      const td = activeDocument.createElement("td");
+      const td = makeEl("td");
       td.className = `align-top ${ctx.readonlyTextClass} ${ctx.cellWrapClass} text-muted-foreground lk-browser-cell`;
       forceWrapStyles(td);
       forceCellClip(td);
       setColAttr(td, "stage");
-      const label = activeDocument.createElement("div");
+      const label = makeEl("div");
       label.textContent = stageLabelTx(makeTx(ctx), stage);
       td.appendChild(label);
       tr.appendChild(td);
@@ -343,7 +344,7 @@ export function renderEmptyState(
 
   if (!wrap) return { cleanup: null };
 
-  const msg = activeDocument.createElement("div");
+  const msg = makeEl("div");
   msg.className =
     "lk-browser-empty-message flex items-center justify-center text-center text-muted-foreground text-base py-8 px-4 w-full";
   msg.textContent = total === 0 ? "No cards match your filters." : "No rows on this page.";
@@ -395,7 +396,7 @@ function makeReadOnlyFieldCell(
   title?: string,
 ): HTMLTableCellElement {
   if (col === "due") {
-    const td = activeDocument.createElement("td");
+    const td = makeEl("td");
     td.className = `align-top ${ctx.readonlyTextClass} ${ctx.cellWrapClass} text-muted-foreground lk-browser-cell`;
     td.textContent = value;
     if (title) td.setAttribute("aria-label", title);
@@ -405,13 +406,13 @@ function makeReadOnlyFieldCell(
     return td;
   }
 
-  const td = activeDocument.createElement("td");
+  const td = makeEl("td");
   td.className = `align-top ${ctx.cellWrapClass} lk-browser-cell`;
   forceCellClip(td);
   forceWrapStyles(td);
   setColAttr(td, col);
 
-  const ta = activeDocument.createElement("textarea");
+  const ta = makeEl("textarea");
   ta.className = `textarea w-full ${ctx.readonlyTextClass} lk-browser-textarea lk-browser-textarea--readonly`;
   ta.value = value;
   ta.readOnly = true;
@@ -431,7 +432,7 @@ function makeImageEditorCell(
   ctx: RowRendererContext,
   initial: string,
 ): HTMLTableCellElement {
-  const td = activeDocument.createElement("td");
+  const td = makeEl("td");
   td.className = `align-top ${ctx.cellWrapClass} lk-browser-cell lk-browser-cell-with-images`;
   forceCellClip(td);
   setColAttr(td, col);
@@ -440,19 +441,19 @@ function makeImageEditorCell(
   const sourcePath = String(card.sourceNotePath || "");
 
   /* ── wrapper that stacks textarea behind overlay ── */
-  const wrap = activeDocument.createElement("div");
+  const wrap = makeEl("div");
   wrap.className = "lk-browser-img-editor-wrap";
   setCssProps(wrap, "--learnkit-editor-height", h);
 
   /* ── real textarea (holds raw markdown, shown when focused) ── */
-  const ta = activeDocument.createElement("textarea");
+  const ta = makeEl("textarea");
   ta.className = `textarea w-full ${ctx.cellTextClass} lk-browser-textarea lk-browser-textarea--editable lk-browser-img-textarea`;
   ta.value = initial;
   applyBrowserEditorBackground(ta);
   setCssProps(ta, "--learnkit-editor-height", h);
 
   /* ── overlay (rendered HTML with images, shown when NOT focused) ── */
-  const overlay = activeDocument.createElement("div");
+  const overlay = makeEl("div");
   overlay.className = `lk-browser-img-overlay`;
   const renderOverlay = (md: string) => {
     replaceChildrenWithHTML(
@@ -518,10 +519,10 @@ function makeImageEditorCell(
 }
 
 function wrapBrowserFlagPreviewInput(input: HTMLInputElement): HTMLElement {
-  const wrap = activeDocument.createElement("div");
+  const wrap = makeEl("div");
   wrap.className = "lk-browser-flag-editor-wrap";
 
-  const overlay = activeDocument.createElement("div");
+  const overlay = makeEl("div");
   overlay.className = "lk-browser-flag-overlay";
 
   const renderOverlay = () => {
@@ -557,23 +558,23 @@ function makeFlagPreviewEditorCell(
   ctx: RowRendererContext,
   initial: string,
 ): HTMLTableCellElement {
-  const td = activeDocument.createElement("td");
+  const td = makeEl("td");
   td.className = `align-top ${ctx.cellWrapClass} lk-browser-cell`;
   forceCellClip(td);
   setColAttr(td, col);
 
   const h = `${ctx.editorHeightPx}px`;
-  const wrap = activeDocument.createElement("div");
+  const wrap = makeEl("div");
   wrap.className = "lk-browser-flag-editor-wrap lk-browser-flag-editor-wrap--multiline";
   setCssProps(wrap, "--learnkit-editor-height", h);
 
-  const ta = activeDocument.createElement("textarea");
+  const ta = makeEl("textarea");
   ta.className = `textarea w-full ${ctx.cellTextClass} lk-browser-textarea lk-browser-textarea--editable lk-browser-flag-textarea`;
   ta.value = initial;
   applyBrowserEditorBackground(ta);
   setCssProps(ta, "--learnkit-editor-height", h);
 
-  const overlay = activeDocument.createElement("div");
+  const overlay = makeEl("div");
   overlay.className = "lk-browser-flag-overlay lk-browser-flag-overlay--multiline";
   const renderOverlay = (txt: string) => {
     renderMarkdownPreviewInElement(overlay, txt);
@@ -641,7 +642,7 @@ function makeMcqAnswerCell(
   isQuarantined: boolean,
   ctx: RowRendererContext,
 ): HTMLTableCellElement {
-  const td = activeDocument.createElement("td");
+  const td = makeEl("td");
   td.className = `align-top ${ctx.cellWrapClass} lk-browser-cell`;
   forceCellClip(td);
   setColAttr(td, "answer");
@@ -656,7 +657,7 @@ function makeMcqAnswerCell(
   const options = normalizeCardOptions(card.options);
   const correctIdxSet = new Set(getCorrectIndices(card));
 
-  const wrap = activeDocument.createElement("div");
+  const wrap = makeEl("div");
   wrap.className = "flex flex-col gap-1 lk-browser-mcq-cell";
   const h = `${ctx.editorHeightPx}px`;
   setCssProps(wrap, "--learnkit-editor-height", h);
@@ -732,10 +733,10 @@ function makeMcqAnswerCell(
   };
 
   const addMcqInputRow = (value: string, isCorrect: boolean) => {
-    const row = activeDocument.createElement("div");
+    const row = makeEl("div");
     row.className = "flex items-center gap-1 lk-browser-mcq-row";
 
-    const checkbox = activeDocument.createElement("input");
+    const checkbox = makeEl("input");
     checkbox.type = "checkbox";
     checkbox.checked = isCorrect;
     checkbox.className = "learnkit-mcq-correct-checkbox";
@@ -748,7 +749,7 @@ function makeMcqAnswerCell(
       void commitMcq();
     });
 
-    const input = activeDocument.createElement("input");
+    const input = makeEl("input");
     input.type = "text";
     input.className = "input flex-1 learnkit-input-fixed lk-browser-mcq-input";
     input.placeholder = txFromCtx(ctx, "ui.browser.row.mcq.answerOption", "Answer option");
@@ -780,7 +781,7 @@ function makeMcqAnswerCell(
   }
 
   // "Add option" input at bottom
-  const addInput = activeDocument.createElement("input");
+  const addInput = makeEl("input");
   addInput.type = "text";
   addInput.className = "input w-full learnkit-input-fixed lk-browser-mcq-add";
   addInput.placeholder = txFromCtx(ctx, "ui.browser.row.mcq.addOption", "+ add option");
@@ -820,7 +821,7 @@ function makeOqStepsCell(
   isQuarantined: boolean,
   ctx: RowRendererContext,
 ): HTMLTableCellElement {
-  const td = activeDocument.createElement("td");
+  const td = makeEl("td");
   td.className = `align-top ${ctx.cellWrapClass} lk-browser-cell`;
   forceCellClip(td);
   setColAttr(td, "answer");
@@ -836,7 +837,7 @@ function makeOqStepsCell(
     ? card.oqSteps.filter((step): step is string => typeof step === "string")
     : [];
 
-  const wrap = activeDocument.createElement("div");
+  const wrap = makeEl("div");
   wrap.className = "flex flex-col gap-1 lk-browser-oq-cell";
   const h = `${ctx.editorHeightPx}px`;
   setCssProps(wrap, "--learnkit-editor-height", h);
@@ -920,25 +921,25 @@ function makeOqStepsCell(
   const addOqInputRow = (value: string) => {
     const idx = oqRows.length;
 
-    const row = activeDocument.createElement("div");
+    const row = makeEl("div");
     row.className = "flex items-center gap-1 lk-browser-oq-row";
     row.draggable = false;
 
     // Drag grip
-    const grip = activeDocument.createElement("span");
+    const grip = makeEl("span");
     grip.className = "inline-flex items-center justify-center text-muted-foreground cursor-grab learnkit-oq-grip-sm";
     grip.draggable = true;
     setIcon(grip, "grip-vertical");
     row.appendChild(grip);
 
     // Number badge
-    const badge = activeDocument.createElement("span");
+    const badge = makeEl("span");
     badge.className = "text-xs font-medium text-muted-foreground w-4 shrink-0 text-center";
     badge.textContent = String(idx + 1);
     row.appendChild(badge);
 
     // Text input
-    const input = activeDocument.createElement("input");
+    const input = makeEl("input");
     input.type = "text";
     input.className = "input flex-1 learnkit-input-fixed lk-browser-oq-input";
     input.placeholder = `Step ${idx + 1}`;
@@ -1006,7 +1007,7 @@ function makeOqStepsCell(
   renumber();
 
   // "Add step" input
-  const addInput = activeDocument.createElement("input");
+  const addInput = makeEl("input");
   addInput.type = "text";
   addInput.className = "input w-full learnkit-input-fixed lk-browser-oq-add";
   addInput.placeholder = txFromCtx(ctx, "ui.browser.row.oq.addStep", "+ add step");
@@ -1061,7 +1062,7 @@ function makeEditorCell(
   }
 
   if (col === "answer" && card.type === "cloze") {
-    const td = activeDocument.createElement("td");
+    const td = makeEl("td");
     td.className = `align-top ${ctx.readonlyTextClass} ${ctx.cellWrapClass} text-muted-foreground lk-browser-cell`;
     td.textContent = CLOZE_ANSWER_HELP;
     forceWrapStyles(td);
@@ -1106,7 +1107,7 @@ function makeIoCell(
   card: CardRecord,
   ctx: RowRendererContext,
 ): HTMLTableCellElement {
-  const td = activeDocument.createElement("td");
+  const td = makeEl("td");
   td.className = `align-top ${ctx.cellWrapClass} lk-browser-cell lk-browser-io-cell`;
   forceCellClip(td);
   setColAttr(td, col);
@@ -1117,7 +1118,7 @@ function makeIoCell(
   }
 
   /* Textarea-styled wrapper so the IO preview matches other cells */
-  const box = activeDocument.createElement("div");
+  const box = makeEl("div");
   box.className = "lk-browser-io-box";
   const h = `${ctx.editorHeightPx}px`;
   setCssProps(box, "--learnkit-editor-height", h);
@@ -1181,7 +1182,7 @@ function makeGroupsEditorCell(
   }
 
   const wrap = ctx.tableWrapEl;
-  const td = activeDocument.createElement("td");
+  const td = makeEl("td");
   td.className = "align-top lk-browser-cell lk-browser-tag-cell";
   forceCellClip(td);
   setColAttr(td, "groups");
@@ -1194,7 +1195,7 @@ function makeGroupsEditorCell(
       .filter(Boolean),
   );
 
-  const tagBox = activeDocument.createElement("div");
+  const tagBox = makeEl("div");
   tagBox.className = `textarea w-full ${ctx.cellTextClass} lk-browser-tag-box`;
   setCssProps(tagBox, "--learnkit-editor-height", `${ctx.editorHeightPx}px`);
   td.appendChild(tagBox);
@@ -1204,7 +1205,7 @@ function makeGroupsEditorCell(
   const renderBadges = () => {
     clearNode(tagBox);
     if (selected.length === 0) {
-      const empty = activeDocument.createElement("span");
+      const empty = makeEl("span");
       if (isCompact) {
         empty.className = "text-muted-foreground lk-browser-tag-empty-compact";
         empty.textContent = "—";
@@ -1218,7 +1219,7 @@ function makeGroupsEditorCell(
     }
 
     if (isCompact) {
-      const text = activeDocument.createElement("span");
+      const text = makeEl("span");
       text.className = "lk-browser-tag-compact-text";
       text.textContent = selected.map((g) => formatGroupDisplay(g)).join(", ");
       tagBox.appendChild(text);
@@ -1226,15 +1227,15 @@ function makeGroupsEditorCell(
     }
 
     for (const tag of selected) {
-      const badge = activeDocument.createElement("span");
+      const badge = makeEl("span");
       badge.className =
         "badge inline-flex items-center gap-1 px-2 py-0.5 text-xs whitespace-nowrap group h-6 learnkit-badge-placeholder learnkit-badge-inline lk-browser-tag-badge";
 
-      const txt = activeDocument.createElement("span");
+      const txt = makeEl("span");
       txt.textContent = formatGroupDisplay(tag);
       badge.appendChild(txt);
 
-      const removeBtn = activeDocument.createElement("span");
+      const removeBtn = makeEl("span");
       removeBtn.className =
         "ml-0 inline-flex items-center justify-center [&_svg]:size-[0.6rem] opacity-100 cursor-pointer lk-browser-tag-remove";
       setIcon(removeBtn, "x");
@@ -1277,38 +1278,38 @@ function makeGroupsEditorCell(
   };
 
   // ── Popover ──
-  const popover = activeDocument.createElement("div");
+  const popover = makeEl("div");
   popover.className = "learnkit learnkit-popover-overlay";
   popover.setAttribute("aria-hidden", "true");
 
-  const panel = activeDocument.createElement("div");
+  const panel = makeEl("div");
   panel.className =
     "rounded-md border border-border bg-popover text-popover-foreground shadow-lg py-1 px-1.5 learnkit-pointer-auto learnkit-header-menu-panel";
   popover.appendChild(panel);
 
-  const searchWrap = activeDocument.createElement("div");
+  const searchWrap = makeEl("div");
   searchWrap.className = "flex items-center gap-1 pl-1 pr-0 lk-browser-search-wrap min-h-[38px]";
   panel.appendChild(searchWrap);
 
-  const searchIcon = activeDocument.createElement("span");
+  const searchIcon = makeEl("span");
   searchIcon.className =
     "inline-flex items-center justify-center [&_svg]:size-3 text-muted-foreground learnkit-search-icon";
   searchIcon.setAttribute("aria-hidden", "true");
   setIcon(searchIcon, "search");
   searchWrap.appendChild(searchIcon);
 
-  const search = activeDocument.createElement("input");
+  const search = makeEl("input");
   search.type = "text";
   search.className = "bg-transparent text-sm flex-1 h-9 min-w-0 w-full learnkit-search-naked";
   search.placeholder = txFromCtx(ctx, "ui.browser.groups.searchOrAdd", "Search or add group");
   searchWrap.appendChild(search);
 
-  const divider = activeDocument.createElement("div");
+  const divider = makeEl("div");
   divider.className = "h-px bg-border w-full learnkit-group-picker-divider";
   divider.setAttribute("role", "separator");
   panel.appendChild(divider);
 
-  const list = activeDocument.createElement("div");
+  const list = makeEl("div");
   list.className = "flex flex-col max-h-60 overflow-auto p-1 learnkit-group-picker-results";
   panel.appendChild(list);
 
@@ -1366,27 +1367,27 @@ function makeGroupsEditorCell(
       raw && allOptions.some((t) => formatGroupDisplay(t).toLowerCase() === rawDisplay.toLowerCase());
 
     const addRow = (label: string, value: string, isAdd = false) => {
-      const row = activeDocument.createElement("div");
+      const row = makeEl("div");
       row.setAttribute("role", "menuitem");
       row.setAttribute("aria-checked", selected.includes(value) ? "true" : "false");
       row.tabIndex = 0;
       row.className =
         "group flex items-center gap-2 rounded-md px-2 py-1.5 text-sm cursor-pointer select-none outline-none hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground justify-between";
 
-      const text = activeDocument.createElement("span");
+      const text = makeEl("span");
       text.textContent = label;
       row.appendChild(text);
 
       row.style.order = isAdd ? "-2" : (selected.includes(value) ? "-1" : "0");
 
       if (selected.includes(value) && !isAdd) {
-        const check = activeDocument.createElement("span");
+        const check = makeEl("span");
         check.className =
           "inline-flex items-center justify-center [&_svg]:size-3 text-muted-foreground";
         setIcon(check, "check");
         row.appendChild(check);
       } else {
-        const spacer = activeDocument.createElement("span");
+        const spacer = makeEl("span");
         spacer.className = "inline-flex items-center justify-center [&_svg]:size-3 opacity-0";
         setIcon(spacer, "check");
         row.appendChild(spacer);
@@ -1429,7 +1430,7 @@ function makeGroupsEditorCell(
 
     if (allOptions.length === 0 && !raw && selected.length === 0) {
       list.classList.add("learnkit-list-unbounded", "learnkit-list-unbounded");
-      const empty = activeDocument.createElement("div");
+      const empty = makeEl("div");
       empty.className = "px-2 py-2 text-sm text-muted-foreground whitespace-normal break-words";
       empty.textContent = txFromCtx(ctx, "ui.browser.groups.emptyHint", "Type a keyword above to save this flashcard to a group.");
       list.appendChild(empty);

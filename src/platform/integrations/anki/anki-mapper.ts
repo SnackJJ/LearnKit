@@ -44,6 +44,7 @@ import type { CardRecord } from "../../types/card";
 import type { CardState, ReviewRating } from "../../types/scheduler";
 import type { ReviewLogEntry } from "../../types/review";
 import { State as FsrsState } from "ts-fsrs";
+import { makeEl } from "../../core/dom-factory";
 
 /** Derive a human-readable title from a vault file path. */
 function titleFromFilePath(filePath: string): string {
@@ -507,19 +508,19 @@ export function applyInlineMarkdown(el: HTMLElement, text: string): void {
       let wrapper: HTMLElement;
       switch (nextToken.type) {
         case "code":
-          wrapper = activeDocument.createElement("code");
+          wrapper = makeEl("code");
           break;
         case "bold":
-          wrapper = activeDocument.createElement("strong");
+          wrapper = makeEl("strong");
           break;
         case "italic":
-          wrapper = activeDocument.createElement("em");
+          wrapper = makeEl("em");
           break;
         case "strike":
-          wrapper = activeDocument.createElement("s");
+          wrapper = makeEl("s");
           break;
         case "mark":
-          wrapper = activeDocument.createElement("mark");
+          wrapper = makeEl("mark");
           break;
       }
       // Code content is literal — do not recursively process inline formatting
@@ -538,7 +539,7 @@ export function applyInlineMarkdown(el: HTMLElement, text: string): void {
   for (let i = 0; i < lines.length; i += 1) {
     appendInline(el, lines[i]);
     if (i < lines.length - 1) {
-      el.appendChild(activeDocument.createElement("br"));
+      el.appendChild(makeEl("br"));
     }
   }
 }

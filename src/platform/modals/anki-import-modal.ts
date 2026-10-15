@@ -15,6 +15,7 @@ import { setModalTitle, createThemedDropdown, scopeModalToWorkspace } from "./mo
 import { setCssProps } from "../core/ui";
 import { txCommon } from "../translations/ui-common";
 import { t } from "../translations/translator";
+import { makeEl } from "../core/dom-factory";
 
 export class AnkiImportModal extends Modal {
   private plugin: LearnKitPlugin;
@@ -104,7 +105,7 @@ export class AnkiImportModal extends Modal {
 
     const fileRow = body.createDiv({ cls: "flex items-center gap-3" });
 
-    const fileInput = activeDocument.createElement("input");
+    const fileInput = makeEl("input");
     fileInput.type = "file";
     fileInput.accept = ".apkg,.colpkg";
     fileInput.classList.add("learnkit-hidden-important", "learnkit-hidden-important");

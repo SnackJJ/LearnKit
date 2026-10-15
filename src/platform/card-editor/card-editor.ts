@@ -29,6 +29,7 @@ import {
   sortGroupPathsForDisplay,
   groupsToInput,
 } from "../../platform/core/shared-utils";
+import { makeEl } from "../core/dom-factory";
 
 export type ColKey =
   | "id"
@@ -140,15 +141,15 @@ export function attachClozeShortcuts(textarea: HTMLTextAreaElement) {
 }
 
 export function createMobileClozeButtons(textarea: HTMLTextAreaElement): HTMLElement {
-  const wrap = textarea.ownerDocument.createElement("div");
+  const wrap = makeEl("div", textarea.ownerDocument);
   wrap.className = "learnkit-cloze-mobile-actions";
 
-  const repeatBtn = textarea.ownerDocument.createElement("button");
+  const repeatBtn = makeEl("button", textarea.ownerDocument);
   repeatBtn.type = "button";
   repeatBtn.className = "learnkit-btn-toolbar h-7 px-2 text-sm inline-flex items-center justify-center learnkit-cloze-mobile-btn learnkit-is-hidden";
   repeatBtn.textContent = "Repeat cloze";
 
-  const addBtn = textarea.ownerDocument.createElement("button");
+  const addBtn = makeEl("button", textarea.ownerDocument);
   addBtn.type = "button";
   addBtn.className = "learnkit-btn-toolbar h-7 px-2 text-sm inline-flex items-center justify-center learnkit-cloze-mobile-btn";
   addBtn.textContent = "Add cloze";
@@ -194,10 +195,10 @@ export function attachFlagPreviewOverlay(
   maxControlHeight = Number.POSITIVE_INFINITY,
   opts?: { preferInlineControlHeight?: boolean; deferMeasuredHeightUntilInteraction?: boolean },
 ): HTMLElement {
-  const wrap = control.ownerDocument.createElement("div");
+  const wrap = makeEl("div", control.ownerDocument);
   wrap.className = `bc learnkit-flag-editor-wrap${control.tagName === "TEXTAREA" ? " learnkit-flag-editor-wrap--multiline" : ""}`;
 
-  const overlay = control.ownerDocument.createElement("div");
+  const overlay = makeEl("div", control.ownerDocument);
   overlay.className = `bc learnkit-flag-editor-overlay${control.tagName === "TEXTAREA" ? " learnkit-flag-editor-overlay--multiline" : ""}`;
 
   control.classList.add("learnkit-flag-editor-control", "learnkit-flag-editor-control");
@@ -792,7 +793,7 @@ export function createCardEditor(config: CardEditorConfig): CardEditorResult {
     safeCards.length === 1 && (normalizedTypes[0] === "basic" || normalizedTypes[0] === "reversed");
   const showReadOnlyFields = config.showReadOnlyFields ?? true;
 
-  const root = activeDocument.createElement("div");
+  const root = makeEl("div");
   root.className = "flex flex-col gap-3";
 
   const formFields: Array<{ key: ColKey; label: string; editable: boolean }> = [];
@@ -836,20 +837,20 @@ export function createCardEditor(config: CardEditorConfig): CardEditorResult {
   };
 
   const appendField = (field: { key: ColKey; label: string; editable: boolean }) => {
-    const wrapper = activeDocument.createElement("div");
+    const wrapper = makeEl("div");
     wrapper.className = "flex flex-col gap-1";
 
-    const label = activeDocument.createElement("label");
+    const label = makeEl("label");
     label.className = "text-sm font-medium";
     label.textContent = field.label;
     if (field.key === "question") {
-      const required = activeDocument.createElement("span");
+      const required = makeEl("span");
       required.className = "text-destructive ml-1";
       required.textContent = "*";
       label.appendChild(required);
     }
     if (field.key === "answer" && !isSingleMcq) {
-      const required = activeDocument.createElement("span");
+      const required = makeEl("span");
       required.className = "text-destructive ml-1";
       required.textContent = "*";
       label.appendChild(required);
@@ -857,7 +858,7 @@ export function createCardEditor(config: CardEditorConfig): CardEditorResult {
     const suppressGenericInfoIcons = isSingleBasicOrReversed || isSingleMcq || isSingleOq || isClozeOnly;
     if (field.key === "question" && isClozeOnly) {
       label.className = "text-sm font-medium inline-flex items-center gap-1";
-      const infoIcon = activeDocument.createElement("span");
+      const infoIcon = makeEl("span");
       infoIcon.className = "inline-flex items-center justify-center [&_svg]:size-3 text-muted-foreground learnkit-info-icon-elevated";
       infoIcon.setAttribute("aria-label", CLOZE_TOOLTIP);
       infoIcon.setAttribute("data-tooltip-position", "top");
@@ -865,7 +866,7 @@ export function createCardEditor(config: CardEditorConfig): CardEditorResult {
       label.appendChild(infoIcon);
     } else if (!suppressGenericInfoIcons && field.editable && ["title", "question", "answer", "info"].includes(field.key)) {
       label.className = "text-sm font-medium inline-flex items-center gap-1";
-      const infoIcon = activeDocument.createElement("span");
+      const infoIcon = makeEl("span");
       infoIcon.className = "inline-flex items-center justify-center [&_svg]:size-3 text-muted-foreground learnkit-info-icon-elevated";
       infoIcon.setAttribute("aria-label", FORMAT_TOOLTIP);
       infoIcon.setAttribute("data-tooltip-position", "top");
@@ -891,7 +892,7 @@ export function createCardEditor(config: CardEditorConfig): CardEditorResult {
     const value = sharedValue(field.key, predicate);
 
     if (field.editable && ["title", "question", "answer", "info"].includes(field.key)) {
-      const textarea = activeDocument.createElement("textarea");
+      const textarea = makeEl("textarea");
       textarea.className = "textarea w-full learnkit-textarea-fixed";
       textarea.rows = 3;
       textarea.value = value;
@@ -903,7 +904,7 @@ export function createCardEditor(config: CardEditorConfig): CardEditorResult {
       if (field.key === "info") textarea.placeholder = t(locale, "ui.browser.bulkEdit.placeholder.info", "Optional: Add extra context or explanation shown on the back of the card");
       input = textarea;
     } else {
-      const txt = activeDocument.createElement("input");
+      const txt = makeEl("input");
       txt.type = "text";
       txt.className = "input w-full";
       txt.value = value;
@@ -912,7 +913,7 @@ export function createCardEditor(config: CardEditorConfig): CardEditorResult {
     }
 
     if (cards.length > 1 && field.editable) {
-      const overwriteNotice = activeDocument.createElement("div");
+      const overwriteNotice = makeEl("div");
       overwriteNotice.className = "text-xs text-muted-foreground";
       const cardCount = cards.length;
       const cardLabel = cardCount === 1 ? "card" : "cards";
@@ -1085,20 +1086,20 @@ function getFieldValue(card: CardRecord, key: ColKey): string {
 
 export function createGroupPickerField(initialValue: string, cardsCount: number, plugin: LearnKitPlugin) {
   const locale = plugin.settings?.general?.interfaceLanguage;
-  const hiddenInput = activeDocument.createElement("input");
+  const hiddenInput = makeEl("input");
   hiddenInput.type = "hidden";
   hiddenInput.value = initialValue;
 
-  const container = activeDocument.createElement("div");
+  const container = makeEl("div");
   container.className = "relative learnkit-group-picker";
 
-  const tagBox = activeDocument.createElement("div");
+  const tagBox = makeEl("div");
   tagBox.className = "textarea w-full learnkit-tag-box";
   container.appendChild(tagBox);
 
   let overwriteNotice: HTMLDivElement | null = null;
   if (cardsCount > 1) {
-    overwriteNotice = activeDocument.createElement("div");
+    overwriteNotice = makeEl("div");
     overwriteNotice.className = "text-xs text-muted-foreground";
     overwriteNotice.textContent =
       t(locale, "ui.browser.bulkEdit.groups.overwriteHint", "Typing here will overwrite this field for every selected card; leave it blank to keep existing values.");
@@ -1119,35 +1120,35 @@ export function createGroupPickerField(initialValue: string, cardsCount: number,
     formatGroupDisplay(a).localeCompare(formatGroupDisplay(b)),
   );
 
-  const list = activeDocument.createElement("div");
+  const list = makeEl("div");
   list.className = "flex flex-col max-h-60 overflow-auto p-1 learnkit-group-picker-results";
 
-  const searchWrap = activeDocument.createElement("div");
+  const searchWrap = makeEl("div");
   searchWrap.className = "flex items-center gap-1 pl-1 pr-0 w-full min-h-[44px]";
 
-  const searchIcon = activeDocument.createElement("span");
+  const searchIcon = makeEl("span");
   searchIcon.className = "inline-flex items-center justify-center [&_svg]:size-3 text-muted-foreground learnkit-search-icon";
   searchIcon.setAttribute("aria-hidden", "true");
   setIcon(searchIcon, "search");
   searchWrap.appendChild(searchIcon);
 
-  const search = activeDocument.createElement("input");
+  const search = makeEl("input");
   search.type = "text";
   search.className = "bg-transparent text-sm flex-1 h-9 learnkit-search-naked";
   search.placeholder = t(locale, "ui.shared.groups.searchPlaceholder", "Search groups or add group");
   searchWrap.appendChild(search);
 
-  const divider = activeDocument.createElement("div");
+  const divider = makeEl("div");
   divider.className = "h-px bg-border w-full learnkit-group-picker-divider";
   divider.setAttribute("role", "separator");
 
-  const panel = activeDocument.createElement("div");
+  const panel = makeEl("div");
   panel.className = "rounded-md border border-border bg-popover text-popover-foreground shadow-lg py-1 px-1.5 flex flex-col learnkit-pointer-auto learnkit-header-menu-panel";
   panel.appendChild(searchWrap);
   panel.appendChild(divider);
   panel.appendChild(list);
 
-  const popover = activeDocument.createElement("div");
+  const popover = makeEl("div");
   popover.className = "learnkit-popover-dropdown";
   popover.setAttribute("aria-hidden", "true");
   popover.appendChild(panel);
@@ -1156,21 +1157,21 @@ export function createGroupPickerField(initialValue: string, cardsCount: number,
   const renderBadges = () => {
     clearNode(tagBox);
     if (!selected.length) {
-      const placeholder = activeDocument.createElement("span");
+      const placeholder = makeEl("span");
       placeholder.className = "badge inline-flex items-center gap-1 px-2 py-0.5 text-xs whitespace-nowrap group h-6 learnkit-badge-placeholder";
       placeholder.textContent = t(locale, "ui.shared.groups.empty", "No groups");
       tagBox.appendChild(placeholder);
       return;
     }
     for (const tag of selected) {
-      const badge = activeDocument.createElement("span");
+      const badge = makeEl("span");
       badge.className = "badge inline-flex items-center gap-1 px-2 py-0.5 text-xs whitespace-nowrap group h-6 learnkit-badge-inline";
 
-      const txt = activeDocument.createElement("span");
+      const txt = makeEl("span");
       txt.textContent = formatGroupDisplay(tag);
       badge.appendChild(txt);
 
-      const removeBtn = activeDocument.createElement("span");
+      const removeBtn = makeEl("span");
       removeBtn.className =
         "ml-0 inline-flex items-center justify-center [&_svg]:size-[0.6rem] opacity-100 cursor-pointer text-white";
       setIcon(removeBtn, "x");
@@ -1229,26 +1230,26 @@ export function createGroupPickerField(initialValue: string, cardsCount: number,
       raw && allOptions.some((t) => formatGroupDisplay(t).toLowerCase() === rawDisplay.toLowerCase());
 
     const addRow = (label: string, value: string, isAdd = false) => {
-      const row = activeDocument.createElement("div");
+      const row = makeEl("div");
       row.setAttribute("role", "menuitem");
       row.setAttribute("aria-checked", selected.includes(value) ? "true" : "false");
       row.tabIndex = 0;
       row.className =
         "group flex items-center gap-2 rounded-md px-2 py-1.5 text-sm cursor-pointer select-none outline-none hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground justify-between";
 
-      const text = activeDocument.createElement("span");
+      const text = makeEl("span");
       text.textContent = label;
       row.appendChild(text);
 
       row.style.order = isAdd ? "-2" : (selected.includes(value) ? "-1" : "0");
 
       if (selected.includes(value) && !isAdd) {
-        const check = activeDocument.createElement("span");
+        const check = makeEl("span");
         check.className = "inline-flex items-center justify-center [&_svg]:size-3 text-muted-foreground";
         setIcon(check, "check");
         row.appendChild(check);
       } else {
-        const spacer = activeDocument.createElement("span");
+        const spacer = makeEl("span");
         spacer.className = "inline-flex items-center justify-center [&_svg]:size-3 opacity-0";
         setIcon(spacer, "check");
         row.appendChild(spacer);
@@ -1289,7 +1290,7 @@ export function createGroupPickerField(initialValue: string, cardsCount: number,
     if (raw && !exact) addRow(`Add “${rawDisplay || rawTitle}”`, rawTitle || raw, true);
     if (allOptions.length === 0 && !raw && selected.length === 0) {
       list.classList.add("learnkit-list-unbounded", "learnkit-list-unbounded");
-      const empty = activeDocument.createElement("div");
+      const empty = makeEl("div");
       empty.className = "px-2 py-2 text-sm text-muted-foreground whitespace-normal break-words";
       empty.textContent = "Type a keyword above to save this flashcard to a group.";
       list.appendChild(empty);
@@ -1370,21 +1371,21 @@ export function createGroupPickerField(initialValue: string, cardsCount: number,
 function createOqEditor(card: CardRecord) {
   const initialSteps = Array.isArray(card.oqSteps) ? [...card.oqSteps] : ["", ""];
 
-  const container = activeDocument.createElement("div");
+  const container = makeEl("div");
   container.className = "flex flex-col gap-2";
 
-  const label = activeDocument.createElement("label");
+  const label = makeEl("label");
   label.className = "text-sm font-medium inline-flex items-center gap-1";
   label.append("Steps", " ", "(", "Correct", " ", "Order", ")");
-  label.appendChild(Object.assign(activeDocument.createElement("span"), { className: "text-destructive", textContent: "*" }));
+  label.appendChild(Object.assign(makeEl("span"), { className: "text-destructive", textContent: "*" }));
   container.appendChild(label);
 
-  const hint = activeDocument.createElement("div");
+  const hint = makeEl("div");
   hint.className = "text-xs text-muted-foreground";
   hint.textContent = "List each step in the correct sequence. Drag the grip handle to reorder. Steps will be shuffled during review.";
   container.appendChild(hint);
 
-  const listContainer = activeDocument.createElement("div");
+  const listContainer = makeEl("div");
   listContainer.className = "flex flex-col gap-2 learnkit-oq-editor-list";
   container.appendChild(listContainer);
 
@@ -1411,25 +1412,25 @@ function createOqEditor(card: CardRecord) {
   const addStepRow = (value: string) => {
     const idx = stepRows.length;
 
-    const row = activeDocument.createElement("div");
+    const row = makeEl("div");
     row.className = "flex items-center gap-2 learnkit-oq-editor-row";
     row.draggable = false;
 
     // Drag grip
-    const grip = activeDocument.createElement("span");
+    const grip = makeEl("span");
     grip.className = "inline-flex items-center justify-center text-muted-foreground cursor-grab learnkit-oq-grip";
     grip.draggable = true;
     setIcon(grip, "grip-vertical");
     row.appendChild(grip);
 
     // Number badge
-    const badge = activeDocument.createElement("span");
+    const badge = makeEl("span");
     badge.className = "inline-flex items-center justify-center text-xs font-medium text-muted-foreground w-5 h-9 leading-none shrink-0 learnkit-oq-step-index";
     badge.textContent = String(idx + 1);
     row.appendChild(badge);
 
     // Text input
-    const input = activeDocument.createElement("textarea");
+    const input = makeEl("textarea");
     input.className = "textarea flex-1 text-sm learnkit-oq-step-input";
     input.rows = 1;
     input.placeholder = `Step ${idx + 1}`;
@@ -1450,12 +1451,12 @@ function createOqEditor(card: CardRecord) {
       row.appendChild(attachFlagPreviewOverlay(input, 36, 36));
 
     // Delete button
-    const delBtn = activeDocument.createElement("button");
+    const delBtn = makeEl("button");
     delBtn.type = "button";
     delBtn.className = "inline-flex items-center justify-center p-0 learnkit-remove-btn-ghost learnkit-oq-del-btn";
     delBtn.setAttribute("aria-label", t(undefined, "ui.cardCreator.removeStep", "Remove step"));
     delBtn.setAttribute("data-tooltip-position", "top");
-    const xIcon = activeDocument.createElement("span");
+    const xIcon = makeEl("span");
     xIcon.className = "inline-flex items-center justify-center [&_svg]:size-4";
     setIcon(xIcon, "x");
     delBtn.appendChild(xIcon);
@@ -1519,9 +1520,9 @@ function createOqEditor(card: CardRecord) {
   updateRemoveButtons();
 
   // "Add step" button
-  const addRow = activeDocument.createElement("div");
+  const addRow = makeEl("div");
   addRow.className = "flex items-center gap-2 learnkit-oq-add-row";
-  const addInput = activeDocument.createElement("textarea");
+  const addInput = makeEl("textarea");
   addInput.className = "textarea flex-1 text-sm learnkit-input-fixed learnkit-textarea-fixed";
   addInput.rows = 1;
   addInput.placeholder = "Add another step (press enter)";
@@ -1564,21 +1565,21 @@ function createMcqEditor(card: CardRecord) {
   const options = normalizeCardOptions(card.options);
   const correctSet = new Set(getCorrectIndices(card));
 
-  const container = activeDocument.createElement("div");
+  const container = makeEl("div");
   container.className = "flex flex-col gap-2";
 
-  const label = activeDocument.createElement("label");
+  const label = makeEl("label");
   label.className = "text-sm font-medium inline-flex items-center gap-1";
   label.append("Correct", " ", "and", " ", "Incorrect", " ", "Options");
-  label.appendChild(Object.assign(activeDocument.createElement("span"), { className: "text-destructive", textContent: "*" }));
+  label.appendChild(Object.assign(makeEl("span"), { className: "text-destructive", textContent: "*" }));
   container.appendChild(label);
 
-  const hint = activeDocument.createElement("div");
+  const hint = makeEl("div");
   hint.className = "text-xs text-muted-foreground";
   hint.textContent = "Select at least one correct option and one incorrect option. Mark each correct option using its checkbox.";
   container.appendChild(hint);
 
-  const optionsContainer = activeDocument.createElement("div");
+  const optionsContainer = makeEl("div");
   optionsContainer.className = "flex flex-col gap-2";
   container.appendChild(optionsContainer);
 
@@ -1595,10 +1596,10 @@ function createMcqEditor(card: CardRecord) {
   };
 
   const addOptionRow = (value: string, isCorrect: boolean) => {
-    const row = activeDocument.createElement("div");
+    const row = makeEl("div");
     row.className = "flex items-center gap-2 learnkit-edit-mcq-option-row";
 
-    const checkbox = activeDocument.createElement("input");
+    const checkbox = makeEl("input");
     checkbox.type = "checkbox";
     checkbox.checked = isCorrect;
     checkbox.className = "learnkit-mcq-correct-checkbox";
@@ -1606,7 +1607,7 @@ function createMcqEditor(card: CardRecord) {
     checkbox.setAttribute("data-tooltip-position", "top");
     row.appendChild(checkbox);
 
-    const input = activeDocument.createElement("textarea");
+    const input = makeEl("textarea");
     input.className = "textarea flex-1 text-sm learnkit-input-fixed learnkit-textarea-fixed";
     input.rows = 1;
     input.placeholder = "Enter an answer option";
@@ -1621,12 +1622,12 @@ function createMcqEditor(card: CardRecord) {
     });
     row.appendChild(attachFlagPreviewOverlay(input, 36, 36));
 
-    const removeBtn = activeDocument.createElement("button");
+    const removeBtn = makeEl("button");
     removeBtn.type = "button";
     removeBtn.className = "inline-flex items-center justify-center p-0 learnkit-remove-btn-ghost";
     removeBtn.setAttribute("aria-label", t(undefined, "ui.modal.mcq.removeOption", "Remove option"));
     removeBtn.setAttribute("data-tooltip-position", "top");
-    const xIcon = activeDocument.createElement("span");
+    const xIcon = makeEl("span");
     xIcon.className = "inline-flex items-center justify-center [&_svg]:size-4";
     setIcon(xIcon, "x");
     removeBtn.appendChild(xIcon);
@@ -1647,7 +1648,7 @@ function createMcqEditor(card: CardRecord) {
     updateRemoveButtons();
   };
 
-  const addInput = activeDocument.createElement("textarea");
+  const addInput = makeEl("textarea");
   addInput.className = "textarea flex-1 text-sm learnkit-input-fixed learnkit-textarea-fixed";
   addInput.rows = 1;
   addInput.placeholder = "Add another option (press enter)";
@@ -1670,7 +1671,7 @@ function createMcqEditor(card: CardRecord) {
     addInput.value = "";
   });
 
-  const addInputWrap = activeDocument.createElement("div");
+  const addInputWrap = makeEl("div");
   addInputWrap.className = "flex items-center gap-2 learnkit-mcq-add-row";
   addInputWrap.appendChild(attachFlagPreviewOverlay(addInput, 36, 36));
   container.appendChild(addInputWrap);

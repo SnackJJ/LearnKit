@@ -9,6 +9,7 @@
 
 import { Modal, type App } from "obsidian";
 import { scopeModalToWorkspace } from "../../platform/modals/modal-utils";
+import { makeEl } from "../../platform/core/dom-factory";
 
 export class SproutImageZoomModal extends Modal {
   private src: string;
@@ -29,10 +30,10 @@ export class SproutImageZoomModal extends Modal {
     this.modalEl.addClass("learnkit-img-zoom-modal");
     this.contentEl.addClass("learnkit-img-zoom-content");
 
-    const wrap = activeDocument.createElement("div");
+    const wrap = makeEl("div");
     wrap.className = "learnkit-img-zoom-wrap";
 
-    const img = activeDocument.createElement("img");
+    const img = makeEl("img");
     img.className = "learnkit-img-zoom-full";
     img.src = this.src;
     img.alt = this.alt;

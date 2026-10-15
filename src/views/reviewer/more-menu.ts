@@ -13,6 +13,7 @@ import { log } from "../../platform/core/logger";
 import { placePopover, queryFirst } from "../../platform/core/ui";
 import type { SproutReviewerView } from "./review-view";
 import { t } from "../../platform/translations/translator";
+import { makeEl } from "../../platform/core/dom-factory";
 
 export function closeMoreMenu(view: SproutReviewerView) {
   view._moreOpen = false;
@@ -165,11 +166,11 @@ export function injectMoreMenu(view: SproutReviewerView) {
   const menuId = `${popoverId}-menu`;
 
   // Instead of rendering the menu inside the card row, render the popover at the document body root for correct positioning
-  const wrap = activeDocument.createElement("div");
+  const wrap = makeEl("div");
   wrap.className = "learnkit relative inline-flex overflow-visible";
   wrap.dataset.sproutAction = "more-wrap";
 
-  const moreBtn = activeDocument.createElement("button");
+  const moreBtn = makeEl("button");
   moreBtn.type = "button";
   moreBtn.id = triggerId;
   moreBtn.className = "learnkit-btn-toolbar learnkit-btn-filter";
@@ -182,7 +183,7 @@ export function injectMoreMenu(view: SproutReviewerView) {
   moreBtn.setAttribute("aria-label", tx("ui.reviewer.more.tooltip", "Open menu"));
   moreBtn.textContent = tx("ui.reviewer.more.label", "More");
 
-  const kbd = activeDocument.createElement("kbd");
+  const kbd = makeEl("kbd");
   kbd.className = "kbd ml-2";
   kbd.textContent = "M";
   moreBtn.appendChild(kbd);
@@ -202,19 +203,19 @@ export function injectMoreMenu(view: SproutReviewerView) {
   });
 
   // Create the popover and append to activeDocument.body for global positioning
-  const popover = activeDocument.createElement("div");
+  const popover = makeEl("div");
   popover.id = popoverId;
   popover.className = "learnkit";
   popover.setAttribute("aria-hidden", "true");
   popover.classList.add("learnkit-popover-overlay", "learnkit-popover-overlay");
   activeDocument.body.appendChild(popover);
 
-  const panel = activeDocument.createElement("div");
+  const panel = makeEl("div");
   panel.className =
     "lk-more-panel rounded-md border border-border bg-popover text-popover-foreground shadow-lg p-1 learnkit-pointer-auto";
   popover.appendChild(panel);
 
-  const menu = activeDocument.createElement("div");
+  const menu = makeEl("div");
   menu.setAttribute("role", "menu");
   menu.id = menuId;
   
@@ -228,7 +229,7 @@ export function injectMoreMenu(view: SproutReviewerView) {
     disabled?: boolean,
     ariaLabel?: string,
   ) => {
-    const item = activeDocument.createElement("div");
+    const item = makeEl("div");
     item.setAttribute("role", "menuitem");
     item.tabIndex = disabled ? -1 : 0;
     item.setAttribute("aria-label", ariaLabel ?? label);
@@ -237,12 +238,12 @@ export function injectMoreMenu(view: SproutReviewerView) {
       ? "group flex items-center justify-between gap-2 rounded-md px-2 py-1.5 text-sm select-none opacity-50 cursor-not-allowed pointer-events-none"
       : "group flex items-center justify-between gap-2 rounded-md px-2 py-1.5 text-sm cursor-pointer select-none outline-none hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground";
 
-    const label_span = activeDocument.createElement("span");
+    const label_span = makeEl("span");
     label_span.className = "";
     label_span.textContent = label;
     item.appendChild(label_span);
 
-    const spacer = activeDocument.createElement("kbd");
+    const spacer = makeEl("kbd");
     spacer.className = "kbd ml-auto text-xs text-muted-foreground tracking-widest";
     spacer.textContent = hotkey;
     item.appendChild(spacer);
@@ -284,7 +285,7 @@ export function injectMoreMenu(view: SproutReviewerView) {
   menu.appendChild(suspendItem);
 
   if (showUndoHere) {
-    const sep = activeDocument.createElement("hr");
+    const sep = makeEl("hr");
     sep.setAttribute("role", "separator");
     sep.className = "h-px bg-border my-2";
     menu.appendChild(sep);

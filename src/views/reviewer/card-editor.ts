@@ -21,6 +21,7 @@ import { escapeDelimiterRe } from "../../platform/core/delimiter";
 import { CARD_ANCHOR_LINE_RE } from "../../platform/core/identity";
 import { findCardBlockRangeById } from "./markdown-block";
 import { t } from "../../platform/translations/translator";
+import { makeEl } from "../../platform/core/dom-factory";
 
 export type CardEditPayload = {
   title?: string;
@@ -400,13 +401,13 @@ export class CardEditModal extends Modal {
         row.draggable = true;
 
         // Grip handle
-        const grip = activeDocument.createElement("span");
+        const grip = makeEl("span");
         grip.className = "inline-flex items-center justify-center text-muted-foreground cursor-grab learnkit-oq-grip";
         setIcon(grip, "grip-vertical");
         row.appendChild(grip);
 
         // Number badge
-        const badge = activeDocument.createElement("span");
+        const badge = makeEl("span");
         badge.className = "inline-flex items-center justify-center text-xs font-medium text-muted-foreground w-5 shrink-0";
         badge.textContent = String(oqStepRows.length + 1);
         row.appendChild(badge);

@@ -31,6 +31,7 @@ import {
 import { t } from "../translations/translator";
 import { txCommon } from "../translations/ui-common";
 import { syncOneFile } from "../integrations/sync/sync-engine";
+import { makeEl } from "../core/dom-factory";
 
 // ──────────────────────────────────────────────────────────────────────────────
 // Types
@@ -276,28 +277,28 @@ export class CardCreatorModal extends Modal {
     typeMenuBtn.setAttribute("aria-haspopup", "menu");
     typeMenuBtn.setAttribute("aria-expanded", "false");
 
-    const typeMenuBtnText = activeDocument.createElement("span");
+    const typeMenuBtnText = makeEl("span");
     typeMenuBtnText.className = "truncate";
     typeMenuBtn.appendChild(typeMenuBtnText);
 
-    const typeMenuBtnIcon = activeDocument.createElement("span");
+    const typeMenuBtnIcon = makeEl("span");
     typeMenuBtnIcon.className = "inline-flex items-center justify-center [&_svg]:size-3";
     setIcon(typeMenuBtnIcon, "chevron-down");
     typeMenuBtn.appendChild(typeMenuBtnIcon);
 
-    const typePopover = activeDocument.createElement("div");
-    const typeSproutWrapper = activeDocument.createElement("div");
+    const typePopover = makeEl("div");
+    const typeSproutWrapper = makeEl("div");
     typeSproutWrapper.className = "learnkit";
     typePopover.className = "";
     typePopover.setAttribute("aria-hidden", "true");
     typePopover.classList.add("learnkit-popover-overlay", "learnkit-popover-overlay", "learnkit-card-creator-type-popover", "learnkit-card-creator-type-popover");
     typeSproutWrapper.appendChild(typePopover);
 
-    const typePanel = activeDocument.createElement("div");
+    const typePanel = makeEl("div");
     typePanel.className = "rounded-md border border-border bg-popover text-popover-foreground shadow-lg p-1 learnkit-pointer-auto learnkit-card-creator-type-panel";
     typePopover.appendChild(typePanel);
 
-    const typeMenu = activeDocument.createElement("div");
+    const typeMenu = makeEl("div");
     typeMenu.setAttribute("role", "menu");
     typeMenu.className = "flex flex-col";
     typePanel.appendChild(typeMenu);
@@ -339,23 +340,23 @@ export class CardCreatorModal extends Modal {
       while (typeMenu.firstChild) typeMenu.removeChild(typeMenu.firstChild);
 
       for (const opt of typeOptions) {
-        const item = activeDocument.createElement("div");
+        const item = makeEl("div");
         item.setAttribute("role", "menuitemradio");
         item.setAttribute("aria-checked", opt.value === currentType ? "true" : "false");
         item.tabIndex = 0;
         item.className =
           "group flex items-center gap-2 rounded-md px-2 py-1.5 text-sm cursor-pointer select-none outline-none hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground learnkit-card-creator-type-item";
 
-        const dotWrap = activeDocument.createElement("div");
+        const dotWrap = makeEl("div");
         dotWrap.className = "size-4 flex items-center justify-center";
         item.appendChild(dotWrap);
 
-        const dot = activeDocument.createElement("div");
+        const dot = makeEl("div");
         dot.className = "size-2 rounded-full bg-foreground invisible group-aria-checked:visible";
         dot.setAttribute("aria-hidden", "true");
         dotWrap.appendChild(dot);
 
-        const txt = activeDocument.createElement("span");
+        const txt = makeEl("span");
         txt.className = "";
         txt.textContent = opt.label;
         item.appendChild(txt);
@@ -452,12 +453,12 @@ export class CardCreatorModal extends Modal {
         };
 
         const addLocationField = (root: HTMLElement) => {
-          const wrapper = activeDocument.createElement("div");
+          const wrapper = makeEl("div");
           wrapper.className = "flex flex-col gap-1";
-          const label = activeDocument.createElement("label");
+          const label = makeEl("label");
           label.className = "text-sm font-medium";
           label.textContent = this.tx("ui.cardCreator.location", "Location");
-          const input = activeDocument.createElement("input");
+          const input = makeEl("input");
           input.type = "text";
           input.className = "input w-full";
           input.disabled = true;

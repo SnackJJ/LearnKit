@@ -14,6 +14,7 @@ import { setIcon } from "obsidian";
 import { log } from "../../../platform/core/logger";
 import { placePopover } from "../../../platform/core/ui";
 import { t } from "../../../platform/translations/translator";
+import { makeEl } from "../../../platform/core/dom-factory";
 
 /* ------------------------------------------------------------------ */
 /*  Hover colour helper                                                */
@@ -48,7 +49,7 @@ export function makeIconButton(opts: {
   className: string;
   onClick: () => void;
 }): HTMLButtonElement {
-  const btn = activeDocument.createElement("button");
+  const btn = makeEl("button");
   btn.type = "button";
   btn.className = opts.className;
   btn.setAttribute("aria-label", opts.title || opts.label);
@@ -84,7 +85,7 @@ export function makeTextButton(opts: {
   onClick: () => void;
   kbd?: string;
 }): HTMLButtonElement {
-  const btn = activeDocument.createElement("button");
+  const btn = makeEl("button");
   btn.type = "button";
   btn.className = opts.className;
   btn.setAttribute("aria-label", opts.title || opts.label);
@@ -92,14 +93,14 @@ export function makeTextButton(opts: {
 
   if (opts.subtitle) {
     btn.classList.add("sprout-widget-btn-with-subtitle");
-    const labelWrap = activeDocument.createElement("span");
+    const labelWrap = makeEl("span");
     labelWrap.className = "sprout-widget-btn-label-wrap";
 
-    const labelLine = activeDocument.createElement("span");
+    const labelLine = makeEl("span");
     labelLine.className = "learnkit-grade-btn-label";
     labelLine.textContent = opts.label;
 
-    const subtitleLine = activeDocument.createElement("span");
+    const subtitleLine = makeEl("span");
     subtitleLine.className = "sprout-widget-btn-subtitle";
     subtitleLine.textContent = opts.subtitle;
 
@@ -107,13 +108,13 @@ export function makeTextButton(opts: {
     labelWrap.appendChild(subtitleLine);
     btn.appendChild(labelWrap);
   } else {
-    const content = activeDocument.createElement("span");
+    const content = makeEl("span");
     content.textContent = opts.label;
     btn.appendChild(content);
   }
 
   if (opts.kbd) {
-    const kbd = activeDocument.createElement("kbd");
+    const kbd = makeEl("kbd");
     kbd.className = "kbd sprout-widget-kbd";
     kbd.textContent = opts.kbd;
     btn.appendChild(kbd);
@@ -167,24 +168,24 @@ export function attachWidgetMoreMenu(opts: {
   trigger.setAttribute("aria-controls", `${id}-menu`);
   trigger.setAttribute("aria-expanded", "false");
 
-  const popover = activeDocument.createElement("div");
+  const popover = makeEl("div");
   popover.id = `${id}-popover`;
   popover.className = "learnkit";
   popover.setAttribute("aria-hidden", "true");
   popover.classList.add("learnkit-popover-overlay", "learnkit-popover-overlay");
 
-  const panel = activeDocument.createElement("div");
+  const panel = makeEl("div");
   panel.className = "learnkit rounded-md border border-border bg-popover text-popover-foreground shadow-lg p-1 pointer-events-auto";
   popover.appendChild(panel);
 
-  const menu = activeDocument.createElement("div");
+  const menu = makeEl("div");
   menu.className = "learnkit flex flex-col";
   menu.setAttribute("role", "menu");
   menu.id = `${id}-menu`;
   panel.appendChild(menu);
 
   const addItem = (label: string, hotkey: string | null, onClick: () => void, disabled = false, ariaLabel?: string) => {
-    const item = activeDocument.createElement("div");
+    const item = makeEl("div");
     item.className =
       "group flex items-center justify-between gap-2 rounded-md px-2 py-1.5 text-sm cursor-pointer select-none outline-none hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground";
     item.setAttribute("role", "menuitem");
@@ -195,13 +196,13 @@ export function attachWidgetMoreMenu(opts: {
       item.setAttribute("aria-disabled", "true");
     }
 
-    const labelSpan = activeDocument.createElement("span");
+    const labelSpan = makeEl("span");
     labelSpan.className = "";
     labelSpan.textContent = label;
     item.appendChild(labelSpan);
 
     if (hotkey) {
-      const key = activeDocument.createElement("kbd");
+      const key = makeEl("kbd");
       key.className = "kbd ml-auto text-xs text-muted-foreground tracking-widest";
       key.textContent = hotkey;
       item.appendChild(key);

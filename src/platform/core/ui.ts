@@ -14,6 +14,7 @@ import createDOMPurify from "dompurify";
 import { finishRenderMath, renderMath, setIcon } from "obsidian";
 import { hydrateCircleFlagsInElement, renderFlagPreviewHtml, replaceCircleFlagTokens, escapeFlagHtml } from "../../platform/flags/flag-tokens";
 import { collectMathSegments, protectMathRanges } from "./shared-utils";
+import { makeEl } from "./dom-factory";
 
 export type CssPropValue = string | number | null | undefined;
 
@@ -61,12 +62,12 @@ function ensureStyleEls(): void {
   const head = activeDocument.head;
 
   if (!sharedStyleEl || !sharedStyleEl.isConnected) {
-    sharedStyleEl = activeDocument.createElement("style");
+    sharedStyleEl = makeEl("style");
     sharedStyleEl.setAttribute("data-learnkit-style", "shared");
     head.appendChild(sharedStyleEl);
   }
   if (!dynamicStyleEl || !dynamicStyleEl.isConnected) {
-    dynamicStyleEl = activeDocument.createElement("style");
+    dynamicStyleEl = makeEl("style");
     dynamicStyleEl.setAttribute("data-learnkit-style", "dynamic");
     head.appendChild(dynamicStyleEl);
   }
@@ -228,7 +229,7 @@ export function setCssProps(
 }
 
 export function el(tag: string, cls?: string, text?: string): HTMLElement {
-  const e = activeDocument.createElement(tag);
+  const e = makeEl(tag);
   if (cls) e.className = cls;
   if (text !== undefined) e.textContent = text;
   return e;
@@ -240,7 +241,7 @@ export function iconButton(
   title: string,
   onClick: () => void,
 ): HTMLButtonElement {
-  const b = activeDocument.createElement("button");
+  const b = makeEl("button");
   b.className = "learnkit-btn";
   b.type = "button";
   if (title) {
@@ -263,7 +264,7 @@ export function iconButton(
 }
 
 export function smallToggleButton(isOpen: boolean, onClick: () => void): HTMLButtonElement {
-  const b = activeDocument.createElement("button");
+  const b = makeEl("button");
   b.className = "learnkit-toggle";
   b.type = "button";
   b.setAttribute("aria-label", isOpen ? "Collapse" : "Expand");

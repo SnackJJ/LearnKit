@@ -29,6 +29,7 @@ import { setModalTitle, scopeModalToWorkspace } from "../../platform/modals/moda
 import { renderMarkdownPreviewInElement, setCssProps } from "../../platform/core/ui";
 import { handleTabInTextarea } from "../../platform/card-editor/card-editor";
 import { t } from "../../platform/translations/translator";
+import { makeEl } from "../../platform/core/dom-factory";
 
 // ── Context interface ──────────────────────────────────────
 
@@ -94,13 +95,13 @@ export class BulkEditModal extends Modal {
     const headerEl = this.modalEl.querySelector<HTMLElement>(":scope > .modal-header");
     if (closeBtn) closeBtn.remove();
     if (headerEl) {
-      const close = activeDocument.createElement("button");
+      const close = makeEl("button");
       close.type = "button";
       close.className = "learnkit-btn-toolbar learnkit-btn-filter h-7 px-3 text-sm inline-flex items-center gap-2 learnkit-scope-clear-btn learnkit-card-creator-close-btn learnkit-bulk-edit-close-btn";
       close.setAttribute("aria-label", tx("ui.common.close", "Close"));
       close.setAttribute("data-tooltip-position", "top");
 
-      const closeIcon = activeDocument.createElement("span");
+      const closeIcon = makeEl("span");
       closeIcon.className = "inline-flex items-center justify-center";
       setIcon(closeIcon, "x");
 
@@ -138,7 +139,7 @@ export class BulkEditModal extends Modal {
       activeDocument.removeEventListener("pointerdown", handleModalPointerDownBlur, true);
     });
 
-  const form = activeDocument.createElement("div");
+  const form = makeEl("div");
   form.className = `flex flex-col gap-4 learnkit-bulk-edit-form${cards.length > 1 ? " learnkit-bulk-edit-form--multi" : ""}`;
 
   const normalizedTypes = cards.map((card) => String(card?.type ?? "").toLowerCase());
@@ -184,10 +185,10 @@ export class BulkEditModal extends Modal {
     minControlHeight = 100,
     maxControlHeight = Number.POSITIVE_INFINITY,
   ): HTMLElement => {
-    const wrap = activeDocument.createElement("div");
+    const wrap = makeEl("div");
     wrap.className = `learnkit-flag-editor-wrap${control.tagName === "TEXTAREA" ? " learnkit-flag-editor-wrap--multiline" : ""}`;
 
-    const overlay = activeDocument.createElement("div");
+    const overlay = makeEl("div");
     overlay.className = `learnkit-flag-editor-overlay${control.tagName === "TEXTAREA" ? " learnkit-flag-editor-overlay--multiline" : ""}`;
 
     control.classList.add("learnkit-flag-editor-control", "learnkit-flag-editor-control");
@@ -405,20 +406,20 @@ export class BulkEditModal extends Modal {
   // ── Group picker field builder ────────────────────────────
 
   const createGroupPickerField = (initialValue: string, cardsCount: number) => {
-    const hiddenInput = activeDocument.createElement("input");
+    const hiddenInput = makeEl("input");
     hiddenInput.type = "hidden";
     hiddenInput.value = initialValue;
 
-    const container = activeDocument.createElement("div");
+    const container = makeEl("div");
     container.className = "relative learnkit-group-picker";
 
-    const tagBox = activeDocument.createElement("div");
+    const tagBox = makeEl("div");
     tagBox.className = `textarea w-full ${ctx.cellTextClass} learnkit-tag-box`;
     container.appendChild(tagBox);
 
     let overwriteNotice: HTMLDivElement | null = null;
     if (cardsCount > 1) {
-      overwriteNotice = activeDocument.createElement("div");
+      overwriteNotice = makeEl("div");
       overwriteNotice.className = "text-xs text-muted-foreground";
       overwriteNotice.textContent =
         tx(
@@ -443,35 +444,35 @@ export class BulkEditModal extends Modal {
       formatGroupDisplay(a).localeCompare(formatGroupDisplay(b)),
     );
 
-    const list = activeDocument.createElement("div");
+    const list = makeEl("div");
     list.className = "flex flex-col max-h-60 overflow-auto p-1 learnkit-group-picker-results";
 
-    const searchWrap = activeDocument.createElement("div");
+    const searchWrap = makeEl("div");
     searchWrap.className = "flex items-center gap-1 pl-1 pr-0 lk-browser-search-wrap min-h-[38px]";
 
-    const searchIconEl = activeDocument.createElement("span");
+    const searchIconEl = makeEl("span");
     searchIconEl.className = "inline-flex items-center justify-center [&_svg]:size-3 text-muted-foreground learnkit-search-icon";
     searchIconEl.setAttribute("aria-hidden", "true");
     setIcon(searchIconEl, "search");
     searchWrap.appendChild(searchIconEl);
 
-    const search = activeDocument.createElement("input");
+    const search = makeEl("input");
     search.type = "text";
     search.className = "bg-transparent text-sm flex-1 h-9 min-w-0 w-full learnkit-search-naked";
     search.placeholder = tx("ui.browser.bulkEdit.groups.searchPlaceholder", "Search or add group");
     searchWrap.appendChild(search);
 
-    const divider = activeDocument.createElement("div");
+    const divider = makeEl("div");
     divider.className = "h-px bg-border w-full learnkit-group-picker-divider";
     divider.setAttribute("role", "separator");
 
-    const panelEl = activeDocument.createElement("div");
+    const panelEl = makeEl("div");
     panelEl.className = "rounded-md border border-border bg-popover text-popover-foreground shadow-lg py-1 px-1.5 flex flex-col learnkit-pointer-auto learnkit-header-menu-panel";
     panelEl.appendChild(searchWrap);
     panelEl.appendChild(divider);
     panelEl.appendChild(list);
 
-    const popover = activeDocument.createElement("div");
+    const popover = makeEl("div");
     popover.className = "learnkit-popover-dropdown";
     popover.setAttribute("aria-hidden", "true");
     popover.appendChild(panelEl);
@@ -505,21 +506,21 @@ export class BulkEditModal extends Modal {
     const renderBadges = () => {
       clearNode(tagBox);
       if (selected.length === 0) {
-        const empty = activeDocument.createElement("span");
+        const empty = makeEl("span");
         empty.className = "badge inline-flex items-center gap-1 px-2 py-0.5 text-xs whitespace-nowrap group h-6 learnkit-badge-placeholder learnkit-badge-inline";
         empty.textContent = tx("ui.browser.bulkEdit.groups.empty", "No groups");
         tagBox.appendChild(empty);
         return;
       }
       for (const tag of selected) {
-        const badge = activeDocument.createElement("span");
+        const badge = makeEl("span");
         badge.className = "badge inline-flex items-center gap-1 px-2 py-0.5 text-xs whitespace-nowrap group h-6 learnkit-badge-inline";
 
-        const txt = activeDocument.createElement("span");
+        const txt = makeEl("span");
         txt.textContent = formatGroupDisplay(tag);
         badge.appendChild(txt);
 
-        const removeBtn = activeDocument.createElement("span");
+        const removeBtn = makeEl("span");
         removeBtn.className = "ml-0 inline-flex items-center justify-center [&_svg]:size-[0.6rem] opacity-100 cursor-pointer text-white scale-[0.85]";
         setIcon(removeBtn, "x");
         removeBtn.addEventListener("pointerdown", (ev) => {
@@ -569,25 +570,25 @@ export class BulkEditModal extends Modal {
         raw && allOptions.some((t) => formatGroupDisplay(t).toLowerCase() === rawDisplay.toLowerCase());
 
       const addRow = (label: string, value: string, isAdd = false) => {
-        const row = activeDocument.createElement("div");
+        const row = makeEl("div");
         row.setAttribute("role", "menuitem");
         row.setAttribute("aria-checked", selected.includes(value) ? "true" : "false");
         row.tabIndex = 0;
         row.className = "group flex items-center gap-2 rounded-md px-2 py-1.5 text-sm cursor-pointer select-none outline-none hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground justify-between";
 
-        const text = activeDocument.createElement("span");
+        const text = makeEl("span");
         text.textContent = label;
         row.appendChild(text);
 
         row.style.order = isAdd ? "-2" : (selected.includes(value) ? "-1" : "0");
 
         if (selected.includes(value) && !isAdd) {
-          const check = activeDocument.createElement("span");
+          const check = makeEl("span");
           check.className = "inline-flex items-center justify-center [&_svg]:size-3 text-muted-foreground";
           setIcon(check, "check");
           row.appendChild(check);
         } else {
-          const spacer = activeDocument.createElement("span");
+          const spacer = makeEl("span");
           spacer.className = "inline-flex items-center justify-center [&_svg]:size-3 opacity-0";
           setIcon(spacer, "check");
           row.appendChild(spacer);
@@ -629,7 +630,7 @@ export class BulkEditModal extends Modal {
       if (raw && !exact) addRow(tx("ui.browser.bulkEdit.groups.add", "Add \"{group}\"", { group: rawDisplay || rawTitle }), rawTitle || raw, true);
       if (allOptions.length === 0 && !raw && selected.length === 0) {
         list.classList.add("learnkit-list-unbounded", "learnkit-list-unbounded");
-        const empty = activeDocument.createElement("div");
+        const empty = makeEl("div");
         empty.className = "px-2 py-2 text-sm text-muted-foreground whitespace-normal break-words";
         empty.textContent = tx("ui.browser.bulkEdit.groups.emptyHint", "Type a keyword above to save this flashcard to a group.");
         list.appendChild(empty);
@@ -728,10 +729,10 @@ export class BulkEditModal extends Modal {
   // ── Field wrapper builder ─────────────────────────────────
 
   const createFieldWrapper = (field: { key: ColKey; label: string; editable: boolean }) => {
-    const wrapper = activeDocument.createElement("div");
+    const wrapper = makeEl("div");
     wrapper.className = `flex flex-col gap-1${field.key === "type" ? " learnkit-card-meta-field" : ""}`;
 
-    const label = activeDocument.createElement("label");
+    const label = makeEl("label");
     label.className = "text-sm font-medium";
     label.textContent = field.label;
     wrapper.appendChild(label);
@@ -748,10 +749,10 @@ export class BulkEditModal extends Modal {
     const predicate = field.key === "answer" ? answerPredicate : undefined;
     const value = sharedValue(field.key, predicate);
     if (field.key === "type" && canBulkToggleType) {
-      const typeRoot = activeDocument.createElement("div");
+      const typeRoot = makeEl("div");
       typeRoot.className = "learnkit relative inline-flex";
 
-      const typeButton = activeDocument.createElement("button");
+      const typeButton = makeEl("button");
       typeButton.type = "button";
       typeButton.className = "learnkit-btn-toolbar text-sm inline-flex items-center gap-2 h-7 px-2 cursor-pointer learnkit-card-meta-type-btn";
       typeButton.setAttribute("aria-label", tx("ui.browser.bulkEdit.field.type", "Type"));
@@ -759,7 +760,7 @@ export class BulkEditModal extends Modal {
       typeButton.setAttribute("aria-haspopup", "menu");
       typeButton.setAttribute("aria-expanded", "false");
 
-      const typeText = activeDocument.createElement("span");
+      const typeText = makeEl("span");
       typeText.className = "truncate";
       const syncTypeText = () => {
         typeText.textContent = selectedBulkType === "reversed"
@@ -768,35 +769,35 @@ export class BulkEditModal extends Modal {
       };
       syncTypeText();
 
-      const chevron = activeDocument.createElement("span");
+      const chevron = makeEl("span");
       chevron.className = "inline-flex items-center justify-center [&_svg]:size-3";
       setIcon(chevron, "chevron-down");
       typeButton.appendChild(typeText);
       typeButton.appendChild(chevron);
 
-      const menu = activeDocument.createElement("div");
+      const menu = makeEl("div");
       menu.className = "learnkit-popover-dropdown learnkit-popover-dropdown-below";
       menu.setAttribute("aria-hidden", "true");
 
-      const panel = activeDocument.createElement("div");
+      const panel = makeEl("div");
       panel.className = "rounded-md border border-border bg-popover text-popover-foreground shadow-lg p-1 learnkit-pointer-auto";
-      const menuList = activeDocument.createElement("div");
+      const menuList = makeEl("div");
       menuList.setAttribute("role", "menu");
       menuList.className = "flex flex-col";
 
       const makeTypeItem = (type: "basic" | "reversed", labelText: string) => {
-        const item = activeDocument.createElement("div");
+        const item = makeEl("div");
         item.setAttribute("role", "menuitemradio");
         item.setAttribute("tabindex", "0");
         item.className =
           "group flex items-center gap-2 rounded-md px-2 py-1.5 text-sm cursor-pointer select-none outline-none hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground";
 
-        const radioWrap = activeDocument.createElement("div");
+        const radioWrap = makeEl("div");
         radioWrap.className = "size-4 flex items-center justify-center";
-        const dot = activeDocument.createElement("div");
+        const dot = makeEl("div");
         dot.className = "size-2 rounded-full bg-foreground";
         radioWrap.appendChild(dot);
-        const text = activeDocument.createElement("span");
+        const text = makeEl("span");
         text.textContent = labelText;
         item.appendChild(radioWrap);
         item.appendChild(text);
@@ -897,7 +898,7 @@ export class BulkEditModal extends Modal {
     }
 
     if (field.editable && (field.key === "title" || field.key === "question" || field.key === "answer" || field.key === "info")) {
-      const textarea = activeDocument.createElement("textarea");
+      const textarea = makeEl("textarea");
       textarea.className = "textarea w-full learnkit-textarea-fixed";
       textarea.rows = 3;
       textarea.value = value;
@@ -909,7 +910,7 @@ export class BulkEditModal extends Modal {
       if (field.key === "info") textarea.placeholder = tx("ui.browser.bulkEdit.placeholder.info", "Optional: Add extra context or explanation shown on the back of the card");
       input = textarea;
     } else {
-      const txt = activeDocument.createElement("input");
+      const txt = makeEl("input");
       txt.type = "text";
       txt.className = `input w-full${field.key === "location" ? " learnkit-location-input" : ""}`;
       txt.value = value;
@@ -918,7 +919,7 @@ export class BulkEditModal extends Modal {
     }
 
     if (cards.length > 1 && field.editable) {
-      const overwriteNotice = activeDocument.createElement("div");
+      const overwriteNotice = makeEl("div");
       overwriteNotice.className = "text-xs text-muted-foreground";
       const cardCount = cards.length;
       const cardLabel = cardCount === 1
@@ -978,13 +979,13 @@ export class BulkEditModal extends Modal {
     const options = normalizeCardOptions(card.options);
     const correctIdxSet = new Set(getCorrectIndices(card));
 
-    const container = activeDocument.createElement("div");
+    const container = makeEl("div");
     container.className = "flex flex-col gap-1";
 
-    const label = activeDocument.createElement("label");
+    const label = makeEl("label");
     label.className = "text-sm font-medium inline-flex items-center gap-1";
     label.textContent = tx("ui.browser.bulkEdit.mcq.answersAndOptions", "Answers and options");
-    const mcqInfoIcon = activeDocument.createElement("span");
+    const mcqInfoIcon = makeEl("span");
     mcqInfoIcon.className = "inline-flex items-center justify-center [&_svg]:size-3 text-muted-foreground learnkit-info-icon-elevated";
     mcqInfoIcon.setAttribute("aria-label", tx("ui.browser.bulkEdit.mcq.correctHint", "Check the box next to each correct answer. At least one correct and one incorrect option required."));
     mcqInfoIcon.setAttribute("data-tooltip-position", "top");
@@ -992,7 +993,7 @@ export class BulkEditModal extends Modal {
     label.appendChild(mcqInfoIcon);
     container.appendChild(label);
 
-    const optionsContainer = activeDocument.createElement("div");
+    const optionsContainer = makeEl("div");
     optionsContainer.className = "flex flex-col gap-2";
     container.appendChild(optionsContainer);
 
@@ -1009,10 +1010,10 @@ export class BulkEditModal extends Modal {
     };
 
     const addOptionRow = (value: string, isCorrect: boolean) => {
-      const row = activeDocument.createElement("div");
+      const row = makeEl("div");
       row.className = "flex items-center gap-2 learnkit-edit-mcq-option-row";
 
-      const checkbox = activeDocument.createElement("input");
+      const checkbox = makeEl("input");
       checkbox.type = "checkbox";
       checkbox.checked = isCorrect;
       checkbox.className = "learnkit-mcq-correct-checkbox";
@@ -1020,19 +1021,19 @@ export class BulkEditModal extends Modal {
       checkbox.setAttribute("data-tooltip-position", "top");
       row.appendChild(checkbox);
 
-      const input = activeDocument.createElement("input");
+      const input = makeEl("input");
       input.type = "text";
       input.className = "input flex-1 text-sm learnkit-input-fixed";
       input.placeholder = tx("ui.browser.bulkEdit.mcq.optionPlaceholder", "Enter an answer option");
       input.value = value;
       row.appendChild(attachFlagPreviewOverlay(input, 36, 36));
 
-      const removeBtn = activeDocument.createElement("button");
+      const removeBtn = makeEl("button");
       removeBtn.type = "button";
       removeBtn.className = "inline-flex items-center justify-center h-9 w-9 p-0 learnkit-remove-btn-ghost";
       removeBtn.setAttribute("aria-label", tx("ui.browser.bulkEdit.mcq.removeOption", "Remove option"));
       removeBtn.setAttribute("data-tooltip-position", "top");
-      const xIcon = activeDocument.createElement("span");
+      const xIcon = makeEl("span");
       xIcon.className = "inline-flex items-center justify-center [&_svg]:size-4";
       setIcon(xIcon, "x");
       removeBtn.appendChild(xIcon);
@@ -1065,7 +1066,7 @@ export class BulkEditModal extends Modal {
     }
 
     // "Add another option" input
-    const addInput = activeDocument.createElement("input");
+    const addInput = makeEl("input");
     addInput.type = "text";
     addInput.className = "input flex-1 text-sm learnkit-input-fixed";
     addInput.placeholder = tx("ui.browser.bulkEdit.mcq.addOptionPlaceholder", "Add another option (press enter)");
@@ -1085,7 +1086,7 @@ export class BulkEditModal extends Modal {
       addOptionRow(value, false);
       addInput.value = "";
     });
-    const addInputWrap = activeDocument.createElement("div");
+    const addInputWrap = makeEl("div");
     addInputWrap.className = "flex items-center gap-2 learnkit-mcq-add-row";
     addInputWrap.appendChild(attachFlagPreviewOverlay(addInput, 36, 36));
     container.appendChild(addInputWrap);
@@ -1118,7 +1119,7 @@ export class BulkEditModal extends Modal {
 
   // ── Assemble the form ─────────────────────────────────────
 
-  const topGrid = activeDocument.createElement("div");
+  const topGrid = makeEl("div");
   topGrid.className = "grid grid-cols-1 gap-3 md:grid-cols-2 learnkit-card-meta-grid";
   for (const key of topKeys) {
     const field = fields.find((f) => f.key === key);
@@ -1144,23 +1145,23 @@ export class BulkEditModal extends Modal {
   // ── Footer (Cancel / Save) ────────────────────────────────
 
   this.modalEl.querySelectorAll<HTMLElement>(":scope > .lk-modal-footer.learnkit-bulk-edit-footer").forEach((node) => node.remove());
-  const footer = activeDocument.createElement("div");
+  const footer = makeEl("div");
   footer.className = "flex items-center justify-end gap-4 lk-modal-footer learnkit-card-creator-footer learnkit-bulk-edit-footer";
-  const cancel = activeDocument.createElement("button");
+  const cancel = makeEl("button");
   cancel.type = "button";
   cancel.className = "learnkit-btn-toolbar learnkit-btn-filter inline-flex items-center gap-2 h-9 px-3 text-sm";
   cancel.setAttribute("aria-label", tx("ui.common.cancel", "Cancel"));
   cancel.setAttribute("data-tooltip-position", "top");
-  const cancelText = activeDocument.createElement("span");
+  const cancelText = makeEl("span");
   cancelText.textContent = tx("ui.common.cancel", "Cancel");
   cancel.appendChild(cancelText);
   cancel.addEventListener("click", () => this.close());
-  const save = activeDocument.createElement("button");
+  const save = makeEl("button");
   save.type = "button";
   save.className = "learnkit-btn-toolbar learnkit-btn-accent learnkit-bulk-edit-save-btn h-9 inline-flex items-center gap-2";
   save.setAttribute("aria-label", tx("ui.common.save", "Save"));
   save.setAttribute("data-tooltip-position", "top");
-  const saveText = activeDocument.createElement("span");
+  const saveText = makeEl("span");
   saveText.textContent = tx("ui.common.save", "Save");
   save.appendChild(saveText);
   save.addEventListener("click", () => { void (async () => {

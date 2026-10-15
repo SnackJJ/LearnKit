@@ -17,6 +17,7 @@ import { setIcon } from "obsidian";
 import { log } from "../../../platform/core/logger";
 import { type ColKey, type DropdownOption, clearNode } from "../browser-helpers";
 import { placePopover } from "../../../platform/core/ui";
+import { makeEl } from "../../../platform/core/dom-factory";
 
 // ── Generic dropdown menu ──────────────────────────────────
 
@@ -37,11 +38,11 @@ export function makeDropdownMenu<T extends string>(
 ): { root: HTMLElement; setValue: (v: T) => void; dispose: () => void } {
   const id = `sprout-dd-${Math.random().toString(36).slice(2, 9)}`;
 
-  const root = activeDocument.createElement("div");
+  const root = makeEl("div");
   root.id = id;
   root.className = "relative inline-flex learnkit-overflow-visible";
 
-  const trigger = activeDocument.createElement("button");
+  const trigger = makeEl("button");
   trigger.type = "button";
   trigger.id = `${id}-trigger`;
   trigger.className = `learnkit-btn-toolbar h-9 px-3 text-sm inline-flex items-center gap-2${args.triggerClassName ? ` ${args.triggerClassName}` : ""}`;
@@ -52,11 +53,11 @@ export function makeDropdownMenu<T extends string>(
   trigger.classList.add("learnkit-pointer-auto", "learnkit-pointer-auto");
   root.appendChild(trigger);
 
-  const trigText = activeDocument.createElement("span");
+  const trigText = makeEl("span");
   trigText.className = "truncate";
   trigger.appendChild(trigText);
 
-  const chevron = activeDocument.createElement("span");
+  const chevron = makeEl("span");
   chevron.className = "inline-flex items-center justify-center [&_svg]:size-4 transition-transform duration-150 ease-out";
   chevron.setAttribute("aria-hidden", "true");
   setIcon(chevron, "chevron-down");
@@ -67,19 +68,19 @@ export function makeDropdownMenu<T extends string>(
   const labelFor = (v: T) => args.options.find((o) => o.v === v)?.label ?? String(v);
 
   // Body-portal popover (fixed) avoids clipping/z-index issues in Obsidian panes.
-  const sproutWrapper = activeDocument.createElement("div");
+  const sproutWrapper = makeEl("div");
   sproutWrapper.className = "learnkit";
-  const popover = activeDocument.createElement("div");
+  const popover = makeEl("div");
   popover.id = `${id}-popover`;
   popover.setAttribute("aria-hidden", "true");
   popover.classList.add("learnkit-popover-overlay", "learnkit-popover-overlay", "learnkit-dd-popover", "learnkit-dd-popover");
 
-  const panel = activeDocument.createElement("div");
+  const panel = makeEl("div");
   panel.className = "rounded-md border border-border bg-popover text-popover-foreground shadow-lg p-1 learnkit-pointer-auto learnkit-dd-panel";
   popover.appendChild(panel);
   sproutWrapper.appendChild(popover);
 
-  const menu = activeDocument.createElement("div");
+  const menu = makeEl("div");
   menu.setAttribute("role", "menu");
   menu.id = `${id}-menu`;
 
@@ -97,7 +98,7 @@ export function makeDropdownMenu<T extends string>(
     items.length = 0;
 
     for (const opt of args.options) {
-      const item = activeDocument.createElement("div");
+      const item = makeEl("div");
       item.setAttribute("role", "menuitemradio");
       item.setAttribute("aria-checked", opt.v === current ? "true" : "false");
       item.tabIndex = 0;
@@ -106,21 +107,21 @@ export function makeDropdownMenu<T extends string>(
         "group flex items-center gap-2 rounded-md px-2 py-1.5 text-sm cursor-pointer select-none outline-none hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
       );
 
-      const dotWrap = activeDocument.createElement("div");
+      const dotWrap = makeEl("div");
       dotWrap.className = "size-4 flex items-center justify-center";
       item.appendChild(dotWrap);
 
-      const dot = activeDocument.createElement("div");
+      const dot = makeEl("div");
       dot.className = "size-2 rounded-full bg-foreground invisible group-aria-checked:visible";
       dot.setAttribute("aria-hidden", "true");
       dotWrap.appendChild(dot);
 
-      const txt = activeDocument.createElement("span");
+      const txt = makeEl("span");
       txt.textContent = opt.label;
       item.appendChild(txt);
 
       if (opt.hint) {
-        const hint = activeDocument.createElement("span");
+        const hint = makeEl("span");
         hint.className = "text-muted-foreground ml-auto text-sm tracking-wide";
         hint.textContent = opt.hint;
         item.appendChild(hint);
@@ -284,11 +285,11 @@ export function makeColumnsDropdown(
   const id = `sprout-cols-${Math.random().toString(36).slice(2, 9)}`;
   const autoCloseMs = Math.max(0, Math.floor(args.autoCloseMs ?? 10000));
 
-  const root = activeDocument.createElement("div");
+  const root = makeEl("div");
   root.id = id;
   root.className = "relative inline-flex learnkit-overflow-visible";
 
-  const trigger = activeDocument.createElement("button");
+  const trigger = makeEl("button");
   trigger.type = "button";
   trigger.id = `${id}-trigger`;
   trigger.className = "learnkit-btn-toolbar h-9 px-3 text-sm inline-flex items-center gap-2";
@@ -298,32 +299,32 @@ export function makeColumnsDropdown(
   trigger.setAttribute("data-tooltip-position", "top");
   root.appendChild(trigger);
 
-  const trigIcon = activeDocument.createElement("span");
+  const trigIcon = makeEl("span");
   trigIcon.className = "inline-flex items-center justify-center [&_svg]:size-4";
   trigIcon.setAttribute("aria-hidden", "true");
   setIcon(trigIcon, "columns-2");
   trigger.appendChild(trigIcon);
 
-  const trigText = activeDocument.createElement("span");
+  const trigText = makeEl("span");
   trigText.className = "truncate";
   trigText.textContent = args.label;
   trigger.appendChild(trigText);
 
   // Create a single .learnkit wrapper around the popover menu
-  const sproutWrapper = activeDocument.createElement("div");
+  const sproutWrapper = makeEl("div");
   sproutWrapper.className = "learnkit";
 
-  const popover = activeDocument.createElement("div");
+  const popover = makeEl("div");
   popover.id = `${id}-popover`;
   popover.className = "";
   popover.setAttribute("aria-hidden", "true");
   popover.classList.add("learnkit-popover-overlay", "learnkit-dd-popover");
 
-  const panel = activeDocument.createElement("div");
+  const panel = makeEl("div");
   panel.className = "rounded-md border border-border bg-popover text-popover-foreground shadow-lg p-0 learnkit-pointer-auto learnkit-columns-panel learnkit-dd-panel";
   popover.appendChild(panel);
 
-  const menu = activeDocument.createElement("div");
+  const menu = makeEl("div");
   menu.setAttribute("role", "menu");
   menu.id = `${id}-menu`;
   menu.setAttribute("aria-label", trigger.id);
@@ -347,22 +348,22 @@ export function makeColumnsDropdown(
     for (const opt of args.options) {
       const checked = ctx.getVisibleCols().has(opt.v);
 
-      const item = activeDocument.createElement("div");
+      const item = makeEl("div");
       item.setAttribute("role", "menuitemcheckbox");
       item.setAttribute("aria-checked", checked ? "true" : "false");
       item.tabIndex = 0;
       item.className = "learnkit-cols-item";
 
-      const dotWrap = activeDocument.createElement("div");
+      const dotWrap = makeEl("div");
       dotWrap.className = "learnkit-ss-dot-wrap";
       item.appendChild(dotWrap);
 
-      const dot = activeDocument.createElement("div");
+      const dot = makeEl("div");
       dot.className = "learnkit-ss-dot";
       if (checked) dot.classList.add("is-selected");
       dotWrap.appendChild(dot);
 
-      const txt = activeDocument.createElement("span");
+      const txt = makeEl("span");
       txt.className = "learnkit-cols-item-label";
       txt.textContent = opt.label;
       item.appendChild(txt);

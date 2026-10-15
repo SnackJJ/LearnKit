@@ -42,6 +42,7 @@ import { getTtsService } from "../../platform/integrations/tts/tts-service";
 import { hasCardAnchorForId } from "../../platform/core/identity";
 import { buildReadingFlashcardCloze } from "./reading-flashcard-cloze";
 import { computeContentSignature } from "./reading-refresh-runtime";
+import { makeEl, makeSvgEl } from "../../platform/core/dom-factory";
 
 /* -----------------------
    Module-level mutable state
@@ -368,7 +369,7 @@ function getReadingDynamicStyleSheet(): HTMLStyleElement | null {
 
   if (readingDynamicStyleEl && readingDynamicStyleEl.isConnected) return readingDynamicStyleEl;
 
-  const style = activeDocument.createElement('style');
+  const style = makeEl('style');
   style.setAttribute('data-learnkit-style', 'reading-view');
   activeDocument.head.appendChild(style);
   readingDynamicStyleEl = style;
@@ -1679,7 +1680,7 @@ function wrapContiguousCardRuns(section: HTMLElement) {
 
     if (isCard && !isHidden) {
       if (!currentRun) {
-        currentRun = section.ownerDocument.createElement('div');
+        currentRun = makeEl('div', section.ownerDocument);
         currentRun.className = 'learnkit-reading-card-run';
         section.insertBefore(currentRun, child);
       }
@@ -3209,22 +3210,22 @@ function setupGuidebookCarousel(el: HTMLElement) {
   const slides = Array.from(content.querySelectorAll<HTMLElement>('.learnkit-card-section'));
   if (slides.length <= 1) return;
 
-  const prevBtn = activeDocument.createElement('button');
+  const prevBtn = makeEl('button');
   prevBtn.className = 'learnkit-guidebook-nav learnkit-guidebook-nav-prev';
   prevBtn.type = 'button';
   prevBtn.setAttribute('aria-label', t(undefined, "ui.reading.guidebook.previousSection", "Previous section"));
   prevBtn.textContent = '‹';
 
-  const nextBtn = activeDocument.createElement('button');
+  const nextBtn = makeEl('button');
   nextBtn.className = 'learnkit-guidebook-nav learnkit-guidebook-nav-next';
   nextBtn.type = 'button';
   nextBtn.setAttribute('aria-label', t(undefined, "ui.reading.guidebook.nextSection", "Next section"));
   nextBtn.textContent = '›';
 
-  const dots = activeDocument.createElement('div');
+  const dots = makeEl('div');
   dots.className = 'learnkit-guidebook-dots';
   const dotEls = slides.map((_, i) => {
-    const dot = activeDocument.createElement('button');
+    const dot = makeEl('button');
     dot.className = 'learnkit-guidebook-dot';
     dot.type = 'button';
     dot.setAttribute('aria-label', t(undefined, "ui.reading.guidebook.goToSection", "Go to section {index}", { index: String(i + 1) }));
@@ -3269,7 +3270,7 @@ function setupGuidebookCarousel(el: HTMLElement) {
   content.addEventListener('scroll', updateDots, { passive: true });
   updateDots();
 
-  const wrap = activeDocument.createElement('div');
+  const wrap = makeEl('div');
   wrap.className = 'learnkit-guidebook-controls';
   wrap.appendChild(prevBtn);
   wrap.appendChild(dots);
@@ -3908,7 +3909,7 @@ function resolveUnloadedEmbeds(
     try {
       const imageFile = resolveImageFile(app, sourcePath, embedSrc);
       if (imageFile) {
-        const img = activeDocument.createElement('img');
+        const img = makeEl('img');
         img.src = app.vault.getResourcePath(imageFile);
         img.alt = embedSrc.split('/').pop() || embedSrc;
         img.className = 'learnkit-reading-embed-img';
@@ -4095,7 +4096,6 @@ function renderIoInReadingCard(
   };
 
   const clampUnit = (value: number): number => Math.max(0, Math.min(1, value));
-  const SVG_NS = 'http://www.w3.org/2000/svg';
   const MASK_STROKE_VIEWBOX = '-1 -1 102 102';
 
   const normalizePolygonPointsForMask = (rect: StoredIORect): Array<{ x: number; y: number }> | null => {
@@ -4137,7 +4137,7 @@ function renderIoInReadingCard(
     w: number,
     h: number,
   ): void => {
-    const stroke = activeDocument.createElementNS(SVG_NS, 'svg');
+    const stroke = makeSvgEl('svg');
     stroke.classList.add('learnkit-io-reading-mask-stroke');
     stroke.setAttribute('viewBox', MASK_STROKE_VIEWBOX);
     stroke.setAttribute('preserveAspectRatio', 'none');
@@ -4159,7 +4159,7 @@ function renderIoInReadingCard(
     const strokeColor = `hsl(var(--accent-h) var(--accent-s) ${lExpr} / 0.55)`;
 
     if (rect.shape === 'circle') {
-      const ellipse = activeDocument.createElementNS(SVG_NS, 'ellipse');
+      const ellipse = makeSvgEl('ellipse');
       ellipse.setAttribute('cx', '50');
       ellipse.setAttribute('cy', '50');
       ellipse.setAttribute('rx', '50');
@@ -4170,13 +4170,13 @@ function renderIoInReadingCard(
     } else if (rect.shape === 'polygon') {
       const points = normalizePolygonPointsForMask(rect);
       if (!points || points.length < 3) return;
-      const polygon = activeDocument.createElementNS(SVG_NS, 'polygon');
+      const polygon = makeSvgEl('polygon');
       polygon.setAttribute('points', points.map((point) => `${point.x * 100},${point.y * 100}`).join(' '));
       polygon.setAttribute('fill', fillColor);
       polygon.setAttribute('stroke', strokeColor);
       stroke.appendChild(polygon);
     } else {
-      const rectEl = activeDocument.createElementNS(SVG_NS, 'rect');
+      const rectEl = makeSvgEl('rect');
       rectEl.setAttribute('x', '0');
       rectEl.setAttribute('y', '0');
       rectEl.setAttribute('width', '100');
@@ -4417,17 +4417,17 @@ function renderIoInReadingCard(
   const questionEl = queryFirst<HTMLElement>(el, '[id^="sprout-io-question-"], [id^="learnkit-io-question-"]');
   if (questionEl) {
     questionEl.replaceChildren();
-    const container = activeDocument.createElement('div');
+    const container = makeEl('div');
     container.className = 'learnkit-io-reading-container';
 
-    const img = activeDocument.createElement('img');
+    const img = makeEl('img');
     img.src = imageSrc;
     img.alt = card.title || 'Image Occlusion';
     img.className = 'learnkit-io-reading-img';
     container.appendChild(img);
 
     if (occlusions.length > 0) {
-      const overlay = activeDocument.createElement('div');
+      const overlay = makeEl('div');
       overlay.className = 'learnkit-io-reading-overlay';
 
       // Sync overlay to the actual rendered image layout bounds using inline
@@ -4471,7 +4471,7 @@ function renderIoInReadingCard(
         const w = Number.isFinite(rect.w) ? Number(rect.w) : 0;
         const h = Number.isFinite(rect.h) ? Number(rect.h) : 0;
 
-        const mask = activeDocument.createElement('div');
+        const mask = makeEl('div');
         mask.className = 'learnkit-io-reading-mask learnkit-io-reading-mask-filled learnkit-io-reading-mask-hotspot-answer';
         mask.classList.add('learnkit-io-reading-mask-no-border');
         if (rect.shape === 'circle') {
@@ -4503,7 +4503,7 @@ function renderIoInReadingCard(
           labelStr = rect.groupKey ? String(rect.groupKey) : String(index + 1);
         }
         const label = labelStr.trim() || String(index + 1);
-        const labelEl = activeDocument.createElement('span');
+        const labelEl = makeEl('span');
         labelEl.className = 'learnkit-io-reading-mask-label learnkit-io-reading-mask-label-floating';
         labelEl.textContent = label;
         const polygonAnchor = getPolygonLabelAnchor(rect);
@@ -4529,17 +4529,17 @@ function renderIoInReadingCard(
   const answerEl = queryFirst<HTMLElement>(el, '[id^="sprout-io-answer-"], [id^="learnkit-io-answer-"]');
   if (answerEl) {
     answerEl.replaceChildren();
-    const container = activeDocument.createElement('div');
+    const container = makeEl('div');
     container.className = 'learnkit-io-reading-container';
 
-    const img = activeDocument.createElement('img');
+    const img = makeEl('img');
     img.src = imageSrc;
     img.alt = card.title || 'Image Occlusion — Answer';
     img.className = 'learnkit-io-reading-img';
     container.appendChild(img);
 
     if (isHotspot && occlusions.length > 0) {
-      const overlay = activeDocument.createElement('div');
+      const overlay = makeEl('div');
       overlay.className = 'learnkit-io-reading-overlay';
 
       const syncOverlay = () => {
@@ -4579,7 +4579,7 @@ function renderIoInReadingCard(
         const w = Number.isFinite(rect.w) ? Number(rect.w) : 0;
         const h = Number.isFinite(rect.h) ? Number(rect.h) : 0;
 
-        const mask = activeDocument.createElement('div');
+        const mask = makeEl('div');
         mask.className = 'learnkit-io-reading-mask learnkit-io-reading-mask-filled learnkit-io-reading-mask-hotspot-answer';
         mask.classList.add('learnkit-io-reading-mask-no-border');
         if (rect.shape === 'circle') {
@@ -4611,7 +4611,7 @@ function renderIoInReadingCard(
           labelStr = rect.groupKey ? String(rect.groupKey) : String(index + 1);
         }
         const label = labelStr.trim() || String(index + 1);
-        const labelEl = activeDocument.createElement('span');
+        const labelEl = makeEl('span');
         labelEl.className = 'learnkit-io-reading-mask-label learnkit-io-reading-mask-label-floating';
         labelEl.textContent = label;
         const polygonAnchor = getPolygonLabelAnchor(rect);

@@ -61,6 +61,7 @@ import {
   clearNode,
   buildCardBlockPipeMarkdown,
 } from "./browser-helpers";
+import { makeEl } from "../../platform/core/dom-factory";
 
 type BrowserDensityMode = "comfortable" | "compact";
 
@@ -511,7 +512,7 @@ export class SproutCardBrowserView extends ItemView {
     subtitle.textContent = this._tx("ui.view.browser.subtitle", "Search, edit, and manage your cards");
 
     const mkDensityBtn = (mode: BrowserDensityMode, token: string, fallback: string) => {
-      const btn = activeDocument.createElement("button");
+      const btn = makeEl("button");
       btn.type = "button";
       btn.className = "h-9 px-3 text-sm inline-flex items-center justify-center lk-browser-density-btn";
       btn.textContent = this._tx(token, fallback);
@@ -597,12 +598,12 @@ export class SproutCardBrowserView extends ItemView {
     });
     const mode = allSuspended ? "unsuspend" : "suspend";
     this._suspendButton.setAttribute("data-mode", mode);
-    const icon = activeDocument.createElement("span");
+    const icon = makeEl("span");
     icon.className = "inline-flex items-center justify-center [&_svg]:size-4";
     setIcon(icon, mode === "unsuspend" ? "circle-play" : "circle-pause");
     icon.classList.add("scale-[0.85]");
     this._suspendButton.appendChild(icon);
-    const text = activeDocument.createElement("span");
+    const text = makeEl("span");
     text.textContent = mode === "unsuspend"
       ? this._tx("ui.browser.action.unsuspend.label", "Unsuspend")
       : this._tx("ui.browser.action.suspend.label", "Suspend");
@@ -872,7 +873,7 @@ export class SproutCardBrowserView extends ItemView {
 
     if (pageRows.length === 0) {
       // Empty page — show empty-state message
-      const emptyTbody = activeDocument.createElement("tbody");
+      const emptyTbody = makeEl("tbody");
       emptyTbody.className = "";
       oldTbody.replaceWith(emptyTbody);
       this._tableBody = emptyTbody;
@@ -971,7 +972,7 @@ export class SproutCardBrowserView extends ItemView {
     this._header.install("library");
     this._applyWidthMode();
 
-    const contentShell = activeDocument.createElement("div");
+    const contentShell = makeEl("div");
     contentShell.className = `${SPROUT_HOME_CONTENT_SHELL_CLASS} lk-browser-content-shell`;
     root.appendChild(contentShell);
 

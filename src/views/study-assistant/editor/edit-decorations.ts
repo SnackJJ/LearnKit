@@ -25,6 +25,7 @@ import {
   classifyEditProposalRender,
   type InlineDiffSegment,
 } from "./edit-diff-helpers";
+import { makeEl } from "../../../platform/core/dom-factory";
 
 // ── Types ──
 
@@ -140,7 +141,7 @@ function renderSourceProposalFragment(contentEl: HTMLElement, text: string): voi
 function createSourceProposalLine(line: string): HTMLElement {
   if (!line.length) {
     const emptyLine = createSourceProposalLineEl("cm-line learnkit-edit-proposal-source-line", "auto");
-    emptyLine.appendChild(activeDocument.createElement("br"));
+    emptyLine.appendChild(makeEl("br"));
     return emptyLine;
   }
 
@@ -183,7 +184,7 @@ function createSourceProposalLine(line: string): HTMLElement {
     );
 
     if (depth > 0) {
-      const indentWrap = activeDocument.createElement("span");
+      const indentWrap = makeEl("span");
       indentWrap.className = `learnkit-edit-proposal-source-indent-spacer cm-hmd-list-indent cm-hmd-list-indent-${depth}`;
       setCssProps(indentWrap, {
         "--learnkit-edit-proposal-indent-width": `${depth * 32}px`,
@@ -212,14 +213,14 @@ function createSourceProposalLine(line: string): HTMLElement {
 }
 
 function createSourceProposalLineEl(className: string, dir = "ltr"): HTMLElement {
-  const lineEl = activeDocument.createElement("div");
+  const lineEl = makeEl("div");
   lineEl.className = className;
   lineEl.setAttribute("dir", dir);
   return lineEl;
 }
 
 function createSourceContentWrap(classes: string[] = []): HTMLElement {
-  const wrap = activeDocument.createElement("span");
+  const wrap = makeEl("span");
   wrap.className = joinClasses(["learnkit-edit-proposal-source-content", ...classes]);
   return wrap;
 }
@@ -285,11 +286,11 @@ function appendSourceTextSegment(parent: HTMLElement, text: string, classes?: st
 }
 
 function createSourceInternalLink(target: string, display: string): HTMLElement {
-  const wrap = activeDocument.createElement("span");
+  const wrap = makeEl("span");
   wrap.className = "glossary-entry virtual-link virtual-link-span virtual-link-default";
   wrap.contentEditable = "false";
 
-  const link = activeDocument.createElement("a");
+  const link = makeEl("a");
   link.className = "internal-link virtual-link-a";
   link.href = "#";
   link.textContent = display;
@@ -304,7 +305,7 @@ function createSourceInternalLink(target: string, display: string): HTMLElement 
 }
 
 function createSpan(className: string, text: string): HTMLElement {
-  const span = activeDocument.createElement("span");
+  const span = makeEl("span");
   span.className = className;
   span.textContent = text;
   return span;
@@ -333,14 +334,14 @@ class EditInlineDiffWidget extends WidgetType {
   }
 
   toDOM(view: EditorView): HTMLElement {
-    const wrap = activeDocument.createElement("span");
+    const wrap = makeEl("span");
     wrap.className = "learnkit-edit-inline-diff-widget";
 
-    const contentEl = activeDocument.createElement("span");
+    const contentEl = makeEl("span");
     contentEl.className = "learnkit-edit-inline-diff-content";
 
     for (const segment of this.segments) {
-      const segmentEl = activeDocument.createElement("span");
+      const segmentEl = makeEl("span");
       segmentEl.className = `learnkit-edit-inline-diff-segment is-${segment.kind}`;
       segmentEl.textContent = segment.text;
       contentEl.appendChild(segmentEl);
@@ -348,10 +349,10 @@ class EditInlineDiffWidget extends WidgetType {
 
     wrap.appendChild(contentEl);
 
-    const actionsEl = activeDocument.createElement("span");
+    const actionsEl = makeEl("span");
     actionsEl.className = "learnkit-edit-inline-diff-actions";
 
-    const acceptBtn = activeDocument.createElement("button");
+    const acceptBtn = makeEl("button");
     acceptBtn.className = "learnkit-edit-proposal-action-btn is-accept";
     acceptBtn.type = "button";
     acceptBtn.textContent = "✓";
@@ -364,7 +365,7 @@ class EditInlineDiffWidget extends WidgetType {
     });
     actionsEl.appendChild(acceptBtn);
 
-    const rejectBtn = activeDocument.createElement("button");
+    const rejectBtn = makeEl("button");
     rejectBtn.className = "learnkit-edit-proposal-action-btn is-reject";
     rejectBtn.type = "button";
     rejectBtn.textContent = "✗";
@@ -417,17 +418,17 @@ class EditReplacementWidget extends WidgetType {
   }
 
   toDOM(view: EditorView): HTMLElement {
-    const wrap = activeDocument.createElement("div");
+    const wrap = makeEl("div");
     wrap.className = "learnkit-edit-proposal-widget";
 
     // Replacement text preview – render markdown so bold, links, lists etc. display naturally
-    const replacementEl = activeDocument.createElement("span");
+    const replacementEl = makeEl("span");
     replacementEl.className = "learnkit-edit-proposal-replacement";
     bindProposalContentToEditorMode(wrap, replacementEl, view, this.replacement);
     wrap.appendChild(replacementEl);
 
     // Accept button
-    const acceptBtn = activeDocument.createElement("button");
+    const acceptBtn = makeEl("button");
     acceptBtn.className = "learnkit-edit-proposal-action-btn is-accept";
     acceptBtn.type = "button";
     acceptBtn.textContent = "✓";
@@ -441,7 +442,7 @@ class EditReplacementWidget extends WidgetType {
     wrap.appendChild(acceptBtn);
 
     // Reject button
-    const rejectBtn = activeDocument.createElement("button");
+    const rejectBtn = makeEl("button");
     rejectBtn.className = "learnkit-edit-proposal-action-btn is-reject";
     rejectBtn.type = "button";
     rejectBtn.textContent = "✗";
@@ -500,20 +501,20 @@ class EditBlockCompareWidget extends WidgetType {
   }
 
   toDOM(view: EditorView): HTMLElement {
-    const wrap = activeDocument.createElement("div");
+    const wrap = makeEl("div");
     wrap.className = "learnkit-edit-block-compare";
 
     // NEW block (green) — rendered markdown preview of the replacement
-    const newBlock = activeDocument.createElement("div");
+    const newBlock = makeEl("div");
     newBlock.className = "learnkit-edit-block-new";
     bindProposalContentToEditorMode(wrap, newBlock, view, this.replacement);
     wrap.appendChild(newBlock);
 
     // Buttons row
-    const btnRow = activeDocument.createElement("div");
+    const btnRow = makeEl("div");
     btnRow.className = "learnkit-edit-block-actions";
 
-    const acceptBtn = activeDocument.createElement("button");
+    const acceptBtn = makeEl("button");
     acceptBtn.className = "learnkit-edit-proposal-action-btn is-accept";
     acceptBtn.type = "button";
     acceptBtn.textContent = "✓";
@@ -530,7 +531,7 @@ class EditBlockCompareWidget extends WidgetType {
     });
     btnRow.appendChild(acceptBtn);
 
-    const rejectBtn = activeDocument.createElement("button");
+    const rejectBtn = makeEl("button");
     rejectBtn.className = "learnkit-edit-proposal-action-btn is-reject";
     rejectBtn.type = "button";
     rejectBtn.textContent = "✗";

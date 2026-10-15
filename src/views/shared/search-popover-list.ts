@@ -12,6 +12,7 @@
 
 import { setIcon } from "obsidian";
 import { t } from "../../platform/translations/translator";
+import { makeSvgEl } from "../../platform/core/dom-factory";
 
 export type SearchPopoverOption = {
   id: string;
@@ -116,7 +117,7 @@ function renderScopeItemIcon(target: HTMLElement, type: SearchPopoverOption["typ
 
   target.empty();
   const ns = "http://www.w3.org/2000/svg";
-  const svg = activeDocument.createElementNS(ns, "svg");
+  const svg = makeSvgEl("svg");
   svg.setAttribute("xmlns", ns);
   svg.setAttribute("width", "24");
   svg.setAttribute("height", "24");
@@ -128,7 +129,7 @@ function renderScopeItemIcon(target: HTMLElement, type: SearchPopoverOption["typ
   svg.setAttribute("stroke-linejoin", "round");
   svg.setAttribute("class", "svg-icon lucide-folder");
 
-  const path = activeDocument.createElementNS(ns, "path");
+  const path = makeSvgEl("path");
   path.setAttribute("d", "M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z");
   svg.appendChild(path);
   target.appendChild(svg);

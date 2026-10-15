@@ -32,6 +32,7 @@ import {
 import { makeDropdownMenu, makeColumnsDropdown } from "./shared/browser-dropdowns";
 import { makeResizableTh } from "./shared/browser-resize";
 import { t } from "../../platform/translations/translator";
+import { makeEl, makeSvgEl } from "../../platform/core/dom-factory";
 
 // ── Context / result interfaces ───────────────────────────
 
@@ -136,25 +137,25 @@ export function buildBrowserLayout(
   const uiCleanups: Array<() => void> = [];
 
   // ── Toolbar / filters ──
-  const top = activeDocument.createElement("div");
+  const top = makeEl("div");
   top.className = "flex flex-col gap-4 w-full lk-browser-cards-stack";
   root.appendChild(top);
 
-  const searchCard = activeDocument.createElement("div");
+  const searchCard = makeEl("div");
   searchCard.className = "card lk-browser-card lk-browser-search-card";
   applyAos(searchCard, 0);
   top.appendChild(searchCard);
 
-  const searchRow = activeDocument.createElement("div");
+  const searchRow = makeEl("div");
   searchRow.className = "flex flex-row flex-wrap items-start gap-3 w-full lk-browser-toolbar-row";
   searchCard.appendChild(searchRow);
 
   // Search input
-  const searchGroup = activeDocument.createElement("div");
+  const searchGroup = makeEl("div");
   searchGroup.className = "flex flex-row items-stretch gap-2 flex-1 min-w-[200px] lk-browser-search-group";
   searchRow.appendChild(searchGroup);
 
-  const q = activeDocument.createElement("input");
+  const q = makeEl("input");
   q.type = "text";
   q.placeholder = tx("ui.browser.search.placeholder", "Search flashcards");
   q.value = ctx.query;
@@ -196,8 +197,8 @@ export function buildBrowserLayout(
   uiCleanups.push(colsDd.dispose);
 
   // Controls row
-  const controlsRow = activeDocument.createElement("div");
-  const controlsCard = activeDocument.createElement("div");
+  const controlsRow = makeEl("div");
+  const controlsCard = makeEl("div");
   controlsCard.className = "card lk-browser-card lk-browser-controls-card";
   applyAos(controlsCard, 120);
   top.appendChild(controlsCard);
@@ -266,14 +267,14 @@ export function buildBrowserLayout(
   uiCleanups.push(dueDd.dispose);
 
   // Columns button
-  const columnsWrap = activeDocument.createElement("div");
+  const columnsWrap = makeEl("div");
   columnsWrap.className = "flex flex-row flex-wrap items-center gap-2 lk-browser-filter-columns-wrap";
   controlsRow.appendChild(columnsWrap);
   colsDd.root.classList.add("lk-browser-filter", "lk-browser-filter-columns");
   columnsWrap.appendChild(colsDd.root);
 
   // Suspend button
-  const suspendBtn = activeDocument.createElement("button");
+  const suspendBtn = makeEl("button");
   suspendBtn.type = "button";
   suspendBtn.className = "learnkit-btn-toolbar h-9 px-3 text-sm inline-flex items-center gap-2 lk-browser-action-btn lk-browser-action-btn-suspend";
   suspendBtn.disabled = true;
@@ -287,19 +288,19 @@ export function buildBrowserLayout(
   controlsRow.appendChild(suspendBtn);
 
   // Edit button
-  const editBtn = activeDocument.createElement("button");
+  const editBtn = makeEl("button");
   editBtn.type = "button";
   editBtn.className = "learnkit-btn-toolbar h-9 px-3 text-sm inline-flex items-center gap-2 lk-browser-action-btn lk-browser-action-btn-edit";
   editBtn.disabled = true;
   editBtn.setAttribute("aria-label", tx("ui.browser.action.edit.tooltip", "Edit selected cards"));
   editBtn.setAttribute("data-tooltip-position", "top");
   editBtn.setAttribute("aria-live", "polite");
-  const editIcon = activeDocument.createElement("span");
+  const editIcon = makeEl("span");
   editIcon.className = "inline-flex items-center justify-center [&_svg]:size-4";
   setIcon(editIcon, "edit-3");
   editIcon.classList.add("learnkit-icon-scale-80", "learnkit-icon-scale-80");
   editBtn.appendChild(editIcon);
-  const editText = activeDocument.createElement("span");
+  const editText = makeEl("span");
   editText.textContent = tx("ui.browser.action.edit.label", "Edit");
   editBtn.appendChild(editText);
   editBtn.addEventListener("click", (ev) => {
@@ -310,17 +311,17 @@ export function buildBrowserLayout(
   controlsRow.appendChild(editBtn);
 
   // Reset filters button
-  const resetFiltersBtn = activeDocument.createElement("button");
+  const resetFiltersBtn = makeEl("button");
   resetFiltersBtn.type = "button";
   resetFiltersBtn.className = "learnkit-btn-toolbar h-9 px-3 text-sm inline-flex items-center gap-2 lk-browser-action-btn lk-browser-action-btn-reset";
   resetFiltersBtn.disabled = true;
   resetFiltersBtn.setAttribute("aria-label", tx("ui.browser.action.reset.tooltip", "Reset filters"));
   resetFiltersBtn.setAttribute("data-tooltip-position", "top");
-  const resetIcon = activeDocument.createElement("span");
+  const resetIcon = makeEl("span");
   resetIcon.className = "inline-flex items-center justify-center [&_svg]:size-4";
   setIcon(resetIcon, "funnel-x");
   resetFiltersBtn.appendChild(resetIcon);
-  const resetText = activeDocument.createElement("span");
+  const resetText = makeEl("span");
   resetText.textContent = tx("ui.browser.action.reset.label", "Reset");
   resetFiltersBtn.appendChild(resetText);
   resetFiltersBtn.addEventListener("click", (ev) => {
@@ -331,25 +332,25 @@ export function buildBrowserLayout(
   controlsRow.appendChild(resetFiltersBtn);
 
   // ── Table ──
-  const tableCard = activeDocument.createElement("div");
+  const tableCard = makeEl("div");
   tableCard.className = "card lk-browser-card lk-browser-table-card";
   applyAos(tableCard, 240);
   top.appendChild(tableCard);
 
-  const tableWrap = activeDocument.createElement("div");
+  const tableWrap = makeEl("div");
   tableWrap.className =
     "overflow-auto flex-1 min-h-0 lk-browser-table-wrap";
   tableCard.appendChild(tableWrap);
 
-  const table = activeDocument.createElement("table");
+  const table = makeEl("table");
   table.className = "table w-full text-sm leading-snug lk-browser-table";
   tableWrap.appendChild(table);
 
   // Colgroup
-  const colgroup = activeDocument.createElement("colgroup");
+  const colgroup = makeEl("colgroup");
   table.appendChild(colgroup);
 
-  const selectCol = activeDocument.createElement("col");
+  const selectCol = makeEl("col");
   selectCol.setAttribute("data-col", "select");
   selectCol.className = "lk-browser-select-col";
   colgroup.appendChild(selectCol);
@@ -358,7 +359,7 @@ export function buildBrowserLayout(
   const cols = ctx.allCols;
 
   cols.forEach((k) => {
-    const c = activeDocument.createElement("col");
+    const c = makeEl("col");
     c.setAttribute("data-col", k);
     c.className = "lk-browser-col";
     setCssProps(c, "--learnkit-col-width", `${ctx.colWidths[k] || 120}px`);
@@ -367,19 +368,19 @@ export function buildBrowserLayout(
   });
 
   // Thead
-  const thead = activeDocument.createElement("thead");
+  const thead = makeEl("thead");
   table.appendChild(thead);
 
-  const hr = activeDocument.createElement("tr");
+  const hr = makeEl("tr");
   hr.classList.add("lk-browser-header-row");
   thead.appendChild(hr);
 
   // Select-all checkbox
-  const selectTh = activeDocument.createElement("th");
+  const selectTh = makeEl("th");
   selectTh.className = "text-sm font-medium text-muted-foreground select-none lk-browser-select-th";
   applyStickyThStyles(selectTh, 0);
 
-  const selectAll = activeDocument.createElement("input");
+  const selectAll = makeEl("input");
   selectAll.type = "checkbox";
   selectAll.className = "cursor-pointer lk-browser-select-all";
   selectTh.appendChild(selectAll);
@@ -390,20 +391,20 @@ export function buildBrowserLayout(
   const headerSortIcons: Partial<Record<SortKey, SVGSVGElement>> = {};
 
   const headCell = (label: string, key: SortKey) => {
-    const th = activeDocument.createElement("th");
+    const th = makeEl("th");
     th.className = `text-sm font-medium text-muted-foreground select-none cursor-pointer ${ctx.cellWrapClass} lk-browser-header-cell lk-browser-th`;
     th.setAttribute("data-col", key);
 
     applyStickyThStyles(th, 0);
 
-    const inner = activeDocument.createElement("div");
+    const inner = makeEl("div");
     inner.className = "items-center h-full lk-browser-th-inner";
 
-    const lbl = activeDocument.createElement("span");
+    const lbl = makeEl("span");
     lbl.textContent = label;
     lbl.className = "lk-browser-th-label";
 
-    const icon = activeDocument.createElementNS("http://www.w3.org/2000/svg", "svg");
+    const icon = makeSvgEl("svg");
     icon.setAttribute("class", "svg-icon lucide-chevron-down lk-browser-header-icon lk-browser-th-icon");
     icon.setAttribute("viewBox", "0 0 24 24");
     icon.setAttribute("width", "16");
@@ -413,7 +414,7 @@ export function buildBrowserLayout(
     icon.setAttribute("stroke-width", "2");
     icon.setAttribute("stroke-linecap", "round");
     icon.setAttribute("stroke-linejoin", "round");
-    const path = activeDocument.createElementNS("http://www.w3.org/2000/svg", "path");
+    const path = makeSvgEl("path");
     path.setAttribute("d", "m6 9 6 6 6-6");
     icon.appendChild(path);
 
@@ -463,42 +464,42 @@ export function buildBrowserLayout(
   hr.appendChild(headCell(tx("ui.browser.column.groups", "Groups"), "groups"));
 
   // Tbody (empty — refreshTable fills it)
-  const tbody = activeDocument.createElement("tbody");
+  const tbody = makeEl("tbody");
   thead.classList.add("lk-browser-thead");
   tbody.classList.add("lk-browser-tbody");
   table.appendChild(tbody);
 
   // ── Bottom controls ──
-  const bottomCard = activeDocument.createElement("div");
+  const bottomCard = makeEl("div");
   bottomCard.className = "card lk-browser-card lk-browser-bottom-card";
   applyAos(bottomCard, 360);
   top.appendChild(bottomCard);
 
-  const bottom = activeDocument.createElement("div");
+  const bottom = makeEl("div");
   bottom.className = "flex flex-row flex-wrap items-center justify-between gap-2 lk-browser-bottom-bar";
   bottomCard.appendChild(bottom);
 
-  const summaryWrap = activeDocument.createElement("div");
+  const summaryWrap = makeEl("div");
   summaryWrap.className = "flex flex-col gap-0.5 lk-browser-summary-wrap";
-  const summary = activeDocument.createElement("div");
+  const summary = makeEl("div");
   summary.className = "text-sm text-muted-foreground lk-browser-summary";
-  const selectionRow = activeDocument.createElement("div");
+  const selectionRow = makeEl("div");
   selectionRow.className = "flex items-center gap-2 lk-browser-selection-row";
-  const selectionCount = activeDocument.createElement("div");
+  const selectionCount = makeEl("div");
   selectionCount.className = "text-sm text-muted-foreground lk-browser-selection-count";
   selectionCount.textContent = tx("ui.browser.selection.none", "No cards selected");
   summaryWrap.appendChild(summary);
   selectionRow.appendChild(selectionCount);
 
-  const clearSelection = activeDocument.createElement("div");
+  const clearSelection = makeEl("div");
   clearSelection.className =
     "inline-flex items-center gap-1 text-sm font-semibold text-muted-foreground cursor-pointer lk-browser-clear-selection";
-  const clearIcon = activeDocument.createElement("span");
+  const clearIcon = makeEl("span");
   clearIcon.className = "inline-flex items-center justify-center [&_svg]:size-3";
   setIcon(clearIcon, "x");
   clearIcon.classList.add("learnkit-icon-scale-80", "learnkit-icon-scale-80");
   clearSelection.appendChild(clearIcon);
-  const clearText = activeDocument.createElement("span");
+  const clearText = makeEl("span");
   clearText.textContent = tx("ui.browser.selection.clear", "Clear selection");
   clearSelection.appendChild(clearText);
   clearSelection.classList.add("learnkit-is-hidden", "learnkit-is-hidden");
@@ -511,15 +512,15 @@ export function buildBrowserLayout(
   summaryWrap.appendChild(selectionRow);
   bottom.appendChild(summaryWrap);
 
-  const right = activeDocument.createElement("div");
+  const right = makeEl("div");
   right.className = "flex flex-row flex-wrap items-center gap-2 ml-auto lk-browser-bottom-right";
   bottom.appendChild(right);
 
-  const rowsControl = activeDocument.createElement("div");
+  const rowsControl = makeEl("div");
   rowsControl.className = "flex flex-row items-center gap-2 lk-browser-rows-control";
   right.appendChild(rowsControl);
 
-  const rowsLbl = activeDocument.createElement("div");
+  const rowsLbl = makeEl("div");
   rowsLbl.className = "text-sm text-muted-foreground lk-browser-rows-label";
   rowsLbl.textContent = tx("ui.browser.rows.label", "Rows");
   rowsControl.appendChild(rowsLbl);
@@ -541,7 +542,7 @@ export function buildBrowserLayout(
   rowsControl.appendChild(pageSizeDd.root);
   uiCleanups.push(pageSizeDd.dispose);
 
-  const pagerHost = activeDocument.createElement("div");
+  const pagerHost = makeEl("div");
   pagerHost.className = "flex items-center lk-browser-pager-host";
   right.appendChild(pagerHost);
 

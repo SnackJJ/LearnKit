@@ -15,6 +15,7 @@ import { textBgCss } from "./io-image-ops";
 import { pointInPolygon } from "./image-geometry";
 import { setCssProps } from "../../platform/core/ui";
 import { t } from "../translations/translator";
+import { makeEl, makeSvgEl } from "../core/dom-factory";
 
 type DragMoveEvent = {
   dx: number;
@@ -32,7 +33,7 @@ function clampUnit(value: number): number {
 }
 
 function createDeleteIcon(): SVGSVGElement {
-  const svg = activeDocument.createElementNS(SVG_NS, "svg");
+  const svg = makeSvgEl("svg");
   svg.setAttribute("xmlns", SVG_NS);
   svg.setAttribute("width", "16");
   svg.setAttribute("height", "16");
@@ -44,9 +45,9 @@ function createDeleteIcon(): SVGSVGElement {
   svg.setAttribute("stroke-linejoin", "round");
   svg.setAttribute("class", "svg-icon lucide-x");
 
-  const pathA = activeDocument.createElementNS(SVG_NS, "path");
+  const pathA = makeSvgEl("path");
   pathA.setAttribute("d", "M18 6 6 18");
-  const pathB = activeDocument.createElementNS(SVG_NS, "path");
+  const pathB = makeSvgEl("path");
   pathB.setAttribute("d", "m6 6 12 12");
 
   svg.appendChild(pathA);
@@ -150,14 +151,14 @@ export function renderOverlay(opts: RenderOverlayOptions): void {
   };
 
   const buildPolygonShape = (rect: IORect): SVGSVGElement => {
-    const shape = activeDocument.createElementNS(SVG_NS, "svg");
+    const shape = makeSvgEl("svg");
     shape.classList.add("learnkit-io-rect-polygon");
     const widthPx = Math.max(1, (Number(rect.normW) || 0) * stageW);
     const heightPx = Math.max(1, (Number(rect.normH) || 0) * stageH);
     shape.setAttribute("viewBox", `0 0 ${widthPx} ${heightPx}`);
     shape.setAttribute("preserveAspectRatio", "none");
 
-    const polygon = activeDocument.createElementNS(SVG_NS, "polygon");
+    const polygon = makeSvgEl("polygon");
     const localPoints = getLocalPolygonPoints(rect) ?? [];
     polygon.setAttribute(
       "points",
@@ -182,7 +183,7 @@ export function renderOverlay(opts: RenderOverlayOptions): void {
   // ── Render occlusion rects ──────────────────────────────────────────────
 
   for (const rect of rects) {
-    const el = activeDocument.createElement("div");
+    const el = makeEl("div");
     el.className = "learnkit-io-overlay-item learnkit-io-rect learnkit-cursor-move";
     el.classList.toggle("learnkit-pointer-none", isCropTool);
     el.setAttribute("data-rect-id", rect.rectId);
@@ -205,12 +206,12 @@ export function renderOverlay(opts: RenderOverlayOptions): void {
     el.style.zIndex = isSelected ? "30" : "10";
 
     // GroupKey input controls (centered on rect, visually unscaled from canvas zoom)
-    const inputUi = activeDocument.createElement("div");
+    const inputUi = makeEl("div");
     inputUi.className = "learnkit-io-group-ui";
     inputUi.style.zIndex = isSelected ? "40" : "11";
     setCssProps(inputUi, "--learnkit-io-ui-inverse-scale", `${uiInverseScale}`);
 
-    const groupInput = activeDocument.createElement("input");
+    const groupInput = makeEl("input");
     groupInput.type = "text";
     groupInput.value = useHotspotLabels ? String(rect.label || rect.groupKey || "1") : (rect.groupKey || "1");
     groupInput.className = "learnkit-io-group-input";
@@ -249,7 +250,7 @@ export function renderOverlay(opts: RenderOverlayOptions): void {
 
     inputUi.appendChild(groupInput);
 
-    const deleteBtn = activeDocument.createElement("button");
+    const deleteBtn = makeEl("button");
     deleteBtn.type = "button";
     deleteBtn.className = "learnkit-assistant-popup-close learnkit-io-mask-delete";
     deleteBtn.setAttribute("aria-label", t(undefined, "ui.io.maskRenderer.deleteMask", "Delete mask"));
@@ -275,7 +276,7 @@ export function renderOverlay(opts: RenderOverlayOptions): void {
     if (rect.shape === "rect") {
       const cornerSize = 10;
       const addCorner = (cx: string, cy: string) => {
-        const c = activeDocument.createElement("div");
+        const c = makeEl("div");
         c.className = "learnkit-io-corner";
         c.classList.add(cx === "left" ? "is-left" : "is-right");
         c.classList.add(cy === "top" ? "is-top" : "is-bottom");
@@ -411,7 +412,7 @@ export function renderOverlay(opts: RenderOverlayOptions): void {
   // ── Render text boxes ───────────────────────────────────────────────────
 
   for (const textBox of textBoxes) {
-    const el = activeDocument.createElement("div");
+    const el = makeEl("div");
     el.className = "learnkit-io-overlay-item learnkit-io-text-box";
     el.classList.toggle("learnkit-pointer-none", isCropTool);
     el.setAttribute("data-text-id", textBox.textId);
@@ -437,7 +438,7 @@ export function renderOverlay(opts: RenderOverlayOptions): void {
       isSelected ? "0 0 0 2px rgba(16, 185, 129, 0.12)" : "none",
     );
 
-    const textEl = activeDocument.createElement("div");
+    const textEl = makeEl("div");
     textEl.textContent = textBox.text;
     textEl.className = "learnkit-io-text-content";
     setCssProps(textEl, "--learnkit-io-text-size", `${Math.max(8, textBox.fontSize)}px`);

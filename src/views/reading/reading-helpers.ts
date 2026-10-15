@@ -52,6 +52,7 @@ import {
 import { CARD_ANCHOR_INLINE_RE } from "../../platform/core/identity";
 import { splitComboVariants, splitZipVariants } from "../../platform/core/delimiter";
 import { t } from "../../platform/translations/translator";
+import { makeEl } from "../../platform/core/dom-factory";
 
 /* -----------------------
    Constants
@@ -1023,11 +1024,11 @@ export function parseMarkdownToElements(text: string): ParsedMarkdownElement[] {
  */
 export function createMarkdownElement(data: ParsedMarkdownElement): HTMLElement | null {
   if (data.type === 'header' && data.level) {
-    const wrapper = activeDocument.createElement('div');
+    const wrapper = makeEl('div');
     wrapper.className = `el-h${data.level}`;
     wrapper.setAttribute('data-learnkit-extracted', 'true');
     
-    const header = activeDocument.createElement(`h${data.level}`);
+    const header = makeEl(`h${data.level}`);
     header.setAttribute('data-heading', data.content);
     header.setAttribute('dir', 'auto');
     header.textContent = data.content;
@@ -1037,15 +1038,15 @@ export function createMarkdownElement(data: ParsedMarkdownElement): HTMLElement 
   }
   
   if (data.type === 'ordered-list' && data.items) {
-    const wrapper = activeDocument.createElement('div');
+    const wrapper = makeEl('div');
     wrapper.className = 'el-ol';
     wrapper.setAttribute('data-learnkit-extracted', 'true');
     
-    const ol = activeDocument.createElement('ol');
+    const ol = makeEl('ol');
     ol.className = 'has-list-bullet';
     
     for (const item of data.items) {
-      const li = activeDocument.createElement('li');
+      const li = makeEl('li');
       li.setAttribute('data-line', '0');
       li.setAttribute('dir', 'auto');
       
@@ -1055,11 +1056,11 @@ export function createMarkdownElement(data: ParsedMarkdownElement): HTMLElement 
         const linkText = linkMatch[1];
         const linkUrl = linkMatch[2];
         
-        const span = activeDocument.createElement('span');
+        const span = makeEl('span');
         span.className = 'list-bullet';
         li.appendChild(span);
         
-        const link = activeDocument.createElement('a');
+        const link = makeEl('a');
         link.href = linkUrl;
         link.className = 'external-link';
         link.setAttribute('rel', 'noopener');
@@ -1067,7 +1068,7 @@ export function createMarkdownElement(data: ParsedMarkdownElement): HTMLElement 
         link.textContent = linkText;
         li.appendChild(link);
       } else {
-        const span = activeDocument.createElement('span');
+        const span = makeEl('span');
         span.className = 'list-bullet';
         li.appendChild(span);
         li.appendChild(activeDocument.createTextNode(item));
@@ -1081,19 +1082,19 @@ export function createMarkdownElement(data: ParsedMarkdownElement): HTMLElement 
   }
   
   if (data.type === 'unordered-list' && data.items) {
-    const wrapper = activeDocument.createElement('div');
+    const wrapper = makeEl('div');
     wrapper.className = 'el-ul';
     wrapper.setAttribute('data-learnkit-extracted', 'true');
     
-    const ul = activeDocument.createElement('ul');
+    const ul = makeEl('ul');
     ul.className = 'has-list-bullet';
     
     for (const item of data.items) {
-      const li = activeDocument.createElement('li');
+      const li = makeEl('li');
       li.setAttribute('data-line', '0');
       li.setAttribute('dir', 'auto');
       
-      const span = activeDocument.createElement('span');
+      const span = makeEl('span');
       span.className = 'list-bullet';
       li.appendChild(span);
       li.appendChild(activeDocument.createTextNode(item));
@@ -1106,11 +1107,11 @@ export function createMarkdownElement(data: ParsedMarkdownElement): HTMLElement 
   }
   
   if (data.type === 'paragraph') {
-    const wrapper = activeDocument.createElement('div');
+    const wrapper = makeEl('div');
     wrapper.className = 'el-p';
     wrapper.setAttribute('data-learnkit-extracted', 'true');
     
-    const p = activeDocument.createElement('p');
+    const p = makeEl('p');
     p.setAttribute('dir', 'auto');
     p.textContent = data.content;
     wrapper.appendChild(p);

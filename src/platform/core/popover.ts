@@ -19,6 +19,7 @@
 import {  } from "obsidian";
 
 import { placePopover } from "./ui";
+import { makeEl } from "./dom-factory";
 
 // ────────────────────────────────────────────
 // Public API
@@ -148,15 +149,15 @@ export function createBodyPortalPopover(
     close();
 
     // Step 2: create DOM
-    sproutWrapper = activeDocument.createElement("div");
+    sproutWrapper = makeEl("div");
     sproutWrapper.className = "learnkit";
 
-    const overlay = activeDocument.createElement("div");
+    const overlay = makeEl("div");
     overlay.classList.add("learnkit-popover-overlay", "learnkit-popover-overlay", ...overlayClasses);
     if (ariaHidden) overlay.setAttribute("aria-hidden", "true");
     sproutWrapper.appendChild(overlay);
 
-    const panel = activeDocument.createElement("div");
+    const panel = makeEl("div");
     if (panelClasses.length) panel.classList.add(...panelClasses);
     overlay.appendChild(panel);
 

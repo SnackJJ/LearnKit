@@ -25,6 +25,7 @@ import { scopeModalToWorkspace } from "../../platform/modals/modal-utils";
 import { setCssProps } from "../../platform/core/ui";
 import { t } from "../../platform/translations/translator";
 import { txCommon } from "../../platform/translations/ui-common";
+import { makeEl } from "../../platform/core/dom-factory";
 
 type ConfirmButtonKind = "default" | "danger";
 
@@ -941,29 +942,29 @@ export class ConfirmSyncPrivilegesModal extends Modal {
       panelClasses: ["learnkit-ss-panel", "learnkit-header-menu-panel"],
       width: () => Math.max(220, modeTrigger.getBoundingClientRect().width),
       buildContent: (panel, close) => {
-        const listbox = activeDocument.createElement("div");
+        const listbox = makeEl("div");
         listbox.setAttribute("role", "listbox");
         listbox.className = "learnkit-ss-listbox";
         panel.appendChild(listbox);
 
         modeOptions.forEach((opt, idx) => {
-          const item = activeDocument.createElement("div");
+          const item = makeEl("div");
           item.setAttribute("role", "option");
           item.setAttribute("aria-selected", opt.value === this._selectedMode ? "true" : "false");
           item.tabIndex = 0;
           item.className = "learnkit-ss-item";
 
-          const dotWrap = activeDocument.createElement("div");
+          const dotWrap = makeEl("div");
           dotWrap.className = "learnkit-ss-dot-wrap";
-          const dot = activeDocument.createElement("div");
+          const dot = makeEl("div");
           dot.className = "learnkit-ss-dot";
           if (opt.value === this._selectedMode) dot.classList.add("is-selected");
           dotWrap.appendChild(dot);
           item.appendChild(dotWrap);
 
-          const textWrap = activeDocument.createElement("div");
+          const textWrap = makeEl("div");
           textWrap.className = "learnkit-ss-item-text";
-          const itemLabel = activeDocument.createElement("span");
+          const itemLabel = makeEl("span");
           itemLabel.className = "learnkit-ss-item-label";
           itemLabel.textContent = opt.label;
           textWrap.appendChild(itemLabel);
@@ -992,7 +993,7 @@ export class ConfirmSyncPrivilegesModal extends Modal {
           listbox.appendChild(item);
 
           if (idx === 0) {
-            const sep = activeDocument.createElement("div");
+            const sep = makeEl("div");
             sep.className = "learnkit-ss-separator";
             sep.setAttribute("role", "separator");
             listbox.appendChild(sep);

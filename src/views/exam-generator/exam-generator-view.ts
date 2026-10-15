@@ -600,10 +600,10 @@ export class SproutExamGeneratorView extends ItemView {
       : this._tx(
         "ui.view.examGenerator.subtitle", "Turn notes and media into focused practice tests.", );
 
-    const savedTestsWrap = activeDocument.createElement("div");
+    const savedTestsWrap = makeEl("div");
     savedTestsWrap.className = "learnkit-exam-generator-saved-tests-wrap";
 
-    const savedTestsBtn = activeDocument.createElement("button");
+    const savedTestsBtn = makeEl("button");
     savedTestsBtn.className = "learnkit-btn-outline-muted inline-flex items-center gap-2 learnkit-exam-generator-saved-tests-btn";
     savedTestsBtn.type = "button";
     savedTestsBtn.setAttribute("aria-label", this._tx("ui.view.examGenerator.savedTests", "Saved tests"));
@@ -2416,10 +2416,10 @@ export class SproutExamGeneratorView extends ItemView {
   }
 
   private _renderTitleTimer(container: HTMLElement): void {
-    const timerGroup = activeDocument.createElement("div");
+    const timerGroup = makeEl("div");
     timerGroup.className = "flex items-center gap-2 lk-session-timer-group";
 
-    const timerDisplay = activeDocument.createElement("button");
+    const timerDisplay = makeEl("button");
     timerDisplay.type = "button";
     timerDisplay.disabled = true;
     timerDisplay.className =
@@ -2429,7 +2429,7 @@ export class SproutExamGeneratorView extends ItemView {
         ? this._tx("ui.view.examGenerator.taking.timeRemaining", "Time remaining")
         : this._tx("ui.view.examGenerator.taking.elapsedTime", "Elapsed time"), );
 
-    const timerText = activeDocument.createElement("span");
+    const timerText = makeEl("span");
     timerText.className = "truncate lk-exam-timer-text";
     timerText.textContent = this._config.timed
       ? this._formatTime(this._remainingSec())
@@ -2439,16 +2439,16 @@ export class SproutExamGeneratorView extends ItemView {
     this._titleTimerEl = timerText;
 
     if (!this._config.timed) {
-      const playBtn = activeDocument.createElement("button");
+      const playBtn = makeEl("button");
       playBtn.type = "button";
       playBtn.className = "h-9 flex items-center gap-2 equal-height-btn learnkit-btn-outline-muted";
       playBtn.setAttribute("aria-label", this._tx("ui.view.examGenerator.taking.resumeTimer", "Resume timer"));
       playBtn.disabled = !this._untimedPaused;
-      const playIconWrap = activeDocument.createElement("span");
+      const playIconWrap = makeEl("span");
       playIconWrap.className = "inline-flex items-center justify-center learnkit-btn-icon";
       setIcon(playIconWrap, "play");
       playBtn.appendChild(playIconWrap);
-      playBtn.appendChild(Object.assign(activeDocument.createElement("span"), { textContent: this._tx("ui.view.examGenerator.taking.resume", "Resume") }));
+      playBtn.appendChild(Object.assign(makeEl("span"), { textContent: this._tx("ui.view.examGenerator.taking.resume", "Resume") }));
       playBtn.addEventListener("click", () => {
         this._untimedPaused = false;
         playBtn.disabled = true;
@@ -2456,16 +2456,16 @@ export class SproutExamGeneratorView extends ItemView {
       });
       timerGroup.appendChild(playBtn);
 
-      const pauseBtn = activeDocument.createElement("button");
+      const pauseBtn = makeEl("button");
       pauseBtn.type = "button";
       pauseBtn.className = "h-9 flex items-center gap-2 equal-height-btn learnkit-btn-outline-muted";
       pauseBtn.setAttribute("aria-label", this._tx("ui.view.examGenerator.taking.pauseTimer", "Pause timer"));
       pauseBtn.disabled = this._untimedPaused;
-      const pauseIconWrap = activeDocument.createElement("span");
+      const pauseIconWrap = makeEl("span");
       pauseIconWrap.className = "inline-flex items-center justify-center learnkit-btn-icon";
       setIcon(pauseIconWrap, "pause");
       pauseBtn.appendChild(pauseIconWrap);
-      pauseBtn.appendChild(Object.assign(activeDocument.createElement("span"), { textContent: this._tx("ui.view.examGenerator.taking.pause", "Pause") }));
+      pauseBtn.appendChild(Object.assign(makeEl("span"), { textContent: this._tx("ui.view.examGenerator.taking.pause", "Pause") }));
       pauseBtn.addEventListener("click", () => {
         this._untimedPaused = true;
         pauseBtn.disabled = true;
@@ -2550,10 +2550,10 @@ export class SproutExamGeneratorView extends ItemView {
   }
 
   private _createTakingLabelRow(label: string): HTMLDivElement {
-    const row = activeDocument.createElement("div");
+    const row = makeEl("div");
     row.className = "flex items-center justify-between learnkit-label-row";
 
-    const labelEl = activeDocument.createElement("div");
+    const labelEl = makeEl("div");
     labelEl.className = "bc text-muted-foreground text-sm font-medium";
     labelEl.textContent = label;
     row.appendChild(labelEl);
@@ -2562,7 +2562,7 @@ export class SproutExamGeneratorView extends ItemView {
   }
 
   private _renderTakingMarkdownBlock(cls: string, markdown: string): HTMLDivElement {
-    const block = activeDocument.createElement("div");
+    const block = makeEl("div");
     block.className = `bc ${cls} whitespace-pre-wrap break-words learnkit-md-block`;
     renderMarkdownPreviewInElement(block, markdown);
     return block;
@@ -3225,6 +3225,7 @@ export class SproutExamGeneratorView extends ItemView {
 //  ExamAttachmentPickerModal – file picker for exam attachments
 // ---------------------------------------------------------------------------
 import { Modal } from "obsidian";
+import { makeEl } from "../../platform/core/dom-factory";
 
 class ExamAttachmentPickerModal extends Modal {
   private _tx: (token: string, fallback: string, vars?: Record<string, string | number>) => string;
@@ -3360,7 +3361,7 @@ class ExamAttachmentPickerModal extends Modal {
   }
 
   private _pickSystemFile(): void {
-    const input = activeDocument.createElement("input");
+    const input = makeEl("input");
     input.type = "file";
     input.multiple = true;
     input.accept = SUPPORTED_FILE_ACCEPT;

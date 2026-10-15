@@ -84,6 +84,7 @@ import {
   extractFileTags,
 } from "../shared/scope-metadata";
 import { copyAllDbsToVaultSyncFolder } from "../../platform/core/sqlite-store";
+import { makeEl } from "../../platform/core/dom-factory";
 
 type SettingsRerenderOptions = {
   refreshChrome?: boolean;
@@ -487,30 +488,30 @@ export class LearnKitSettingsTab extends PluginSettingTab {
         rowsBtn.setAttribute("aria-label", this._tx("ui.settings.backups.pager.rowsPerPage", "Rows per page"));
         rowsBtn.setAttribute("data-tooltip-position", "top");
 
-        const rowsBtnText = activeDocument.createElement("span");
+        const rowsBtnText = makeEl("span");
         rowsBtnText.className = "truncate";
         rowsBtnText.textContent = String(backupRowsPerPage);
         rowsBtn.appendChild(rowsBtnText);
 
-        const rowsChevron = activeDocument.createElement("span");
+        const rowsChevron = makeEl("span");
         rowsChevron.className = "inline-flex items-center justify-center [&_svg]:size-4 transition-transform duration-150 ease-out";
         rowsChevron.setAttribute("aria-hidden", "true");
         setIcon(rowsChevron, "chevron-down");
         rowsBtn.appendChild(rowsChevron);
 
-        const rowsPopoverHost = activeDocument.createElement("div");
+        const rowsPopoverHost = makeEl("div");
         rowsPopoverHost.className = "learnkit learnkit-backup-pager-popover-host";
 
-        const rowsPopover = activeDocument.createElement("div");
+        const rowsPopover = makeEl("div");
         rowsPopover.className = "learnkit-popover-overlay learnkit-dd-popover";
         rowsPopover.setAttribute("aria-hidden", "true");
         rowsPopoverHost.appendChild(rowsPopover);
 
-        const rowsPanel = activeDocument.createElement("div");
+        const rowsPanel = makeEl("div");
         rowsPanel.className = "rounded-md border border-border bg-popover text-popover-foreground shadow-lg p-1 learnkit-pointer-auto learnkit-dd-panel";
         rowsPopover.appendChild(rowsPanel);
 
-        const rowsMenu = activeDocument.createElement("div");
+        const rowsMenu = makeEl("div");
         rowsMenu.setAttribute("role", "menu");
         rowsMenu.className = "flex flex-col";
         rowsPanel.appendChild(rowsMenu);
@@ -542,22 +543,22 @@ export class LearnKitSettingsTab extends PluginSettingTab {
           while (rowsMenu.firstChild) rowsMenu.removeChild(rowsMenu.firstChild);
 
           for (const opt of pageSizeOptions) {
-            const item = activeDocument.createElement("div");
+            const item = makeEl("div");
             item.setAttribute("role", "menuitemradio");
             item.setAttribute("aria-checked", opt === backupRowsPerPage ? "true" : "false");
             item.tabIndex = 0;
             item.className = "group flex items-center gap-2 rounded-md px-2 py-1.5 text-sm cursor-pointer select-none outline-none hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground";
 
-            const dotWrap = activeDocument.createElement("div");
+            const dotWrap = makeEl("div");
             dotWrap.className = "size-4 flex items-center justify-center";
             item.appendChild(dotWrap);
 
-            const dot = activeDocument.createElement("div");
+            const dot = makeEl("div");
             dot.className = "size-2 rounded-full bg-foreground invisible group-aria-checked:visible";
             dot.setAttribute("aria-hidden", "true");
             dotWrap.appendChild(dot);
 
-            const txt = activeDocument.createElement("span");
+            const txt = makeEl("span");
             txt.textContent = String(opt);
             item.appendChild(txt);
 
@@ -967,7 +968,7 @@ export class LearnKitSettingsTab extends PluginSettingTab {
           return `#${hex[0]}${hex[0]}${hex[1]}${hex[1]}${hex[2]}${hex[2]}`;
         }
 
-        const probe = activeDocument.createElement("span");
+        const probe = makeEl("span");
         setCssProps(probe, "color", "");
         setCssProps(probe, "color", val);
         if (!probe.style.color) return null;
@@ -6327,17 +6328,17 @@ export class LearnKitSettingsTab extends PluginSettingTab {
     const id = `sprout-ss-${Math.random().toString(36).slice(2, 9)}`;
 
     // ── Trigger button ──
-    const trigger = activeDocument.createElement("button");
+    const trigger = makeEl("button");
     trigger.type = "button";
     trigger.className = "learnkit-ss-trigger inline-flex items-center gap-2 h-9 px-3 text-sm learnkit-settings-action-btn";
     trigger.setAttribute("aria-haspopup", "listbox");
     trigger.setAttribute("aria-expanded", "false");
 
-    const trigLabel = activeDocument.createElement("span");
+    const trigLabel = makeEl("span");
     trigLabel.className = "learnkit-ss-trigger-label";
     trigger.appendChild(trigLabel);
 
-    const chevron = activeDocument.createElement("span");
+    const chevron = makeEl("span");
     chevron.className = "learnkit-ss-trigger-chevron";
     setIcon(chevron, "chevron-down");
     trigger.appendChild(chevron);
@@ -6349,20 +6350,20 @@ export class LearnKitSettingsTab extends PluginSettingTab {
     controlEl.appendChild(trigger);
 
     // ── Body-portal popover ──
-    const sproutWrapper = activeDocument.createElement("div");
+    const sproutWrapper = makeEl("div");
     sproutWrapper.className = "learnkit";
-    const popover = activeDocument.createElement("div");
+    const popover = makeEl("div");
     popover.id = `${id}-popover`;
     popover.setAttribute("aria-hidden", "true");
     popover.classList.add("learnkit-popover-overlay", "learnkit-popover-overlay", "learnkit-ss-popover", "learnkit-ss-popover");
 
-    const panel = activeDocument.createElement("div");
+    const panel = makeEl("div");
     panel.className = "learnkit-ss-panel learnkit-header-menu-panel";
     popover.appendChild(panel);
     sproutWrapper.appendChild(popover);
 
     // ── Options list ──
-    const listbox = activeDocument.createElement("div");
+    const listbox = makeEl("div");
     listbox.setAttribute("role", "listbox");
     listbox.className = "learnkit-ss-listbox";
     setCssProps(listbox, "scrollbar-gutter", "stable");
@@ -6381,25 +6382,25 @@ export class LearnKitSettingsTab extends PluginSettingTab {
         : args.options;
 
       for (const opt of orderedOptions) {
-        const item = activeDocument.createElement("div");
+        const item = makeEl("div");
         item.setAttribute("role", "option");
         item.setAttribute("aria-selected", opt.value === current ? "true" : "false");
         item.tabIndex = 0;
         item.className = "learnkit-ss-item";
 
-        const dotWrap = activeDocument.createElement("div");
+        const dotWrap = makeEl("div");
         dotWrap.className = "learnkit-ss-dot-wrap";
         item.appendChild(dotWrap);
 
-        const dot = activeDocument.createElement("div");
+        const dot = makeEl("div");
         dot.className = "learnkit-ss-dot";
         if (opt.value === current) dot.classList.add("is-selected");
         dotWrap.appendChild(dot);
 
-        const textWrap = activeDocument.createElement("div");
+        const textWrap = makeEl("div");
         textWrap.className = "learnkit-ss-item-text";
 
-        const txt = activeDocument.createElement("span");
+        const txt = makeEl("span");
         txt.className = "learnkit-ss-item-label";
         txt.textContent = opt.label;
         textWrap.appendChild(txt);
@@ -6443,7 +6444,7 @@ export class LearnKitSettingsTab extends PluginSettingTab {
 
         // Insert separator after the specified index
         if (args.separatorAfterIndex != null && items.length - 1 === args.separatorAfterIndex) {
-          const sep = activeDocument.createElement("div");
+          const sep = makeEl("div");
           sep.className = "learnkit-ss-separator";
           sep.setAttribute("role", "separator");
           listbox.appendChild(sep);
@@ -6566,17 +6567,17 @@ export class LearnKitSettingsTab extends PluginSettingTab {
     }
 
     // ── Trigger button ──
-    const trigger = activeDocument.createElement("button");
+    const trigger = makeEl("button");
     trigger.type = "button";
     trigger.className = "learnkit-ss-trigger inline-flex items-center gap-2 h-9 px-3 text-sm learnkit-settings-action-btn";
     trigger.setAttribute("aria-haspopup", "listbox");
     trigger.setAttribute("aria-expanded", "false");
 
-    const trigLabel = activeDocument.createElement("span");
+    const trigLabel = makeEl("span");
     trigLabel.className = "learnkit-ss-trigger-label";
     trigger.appendChild(trigLabel);
 
-    const chevron = activeDocument.createElement("span");
+    const chevron = makeEl("span");
     chevron.className = "learnkit-ss-trigger-chevron";
     setIcon(chevron, "chevron-down");
     trigger.appendChild(chevron);
@@ -6586,7 +6587,7 @@ export class LearnKitSettingsTab extends PluginSettingTab {
     const renderLabel = (target: HTMLElement, label: string, flagCode?: string) => {
       target.replaceChildren();
       if (flagCode) {
-        const img = activeDocument.createElement("img");
+        const img = makeEl("img");
         img.className = "learnkit-inline-flag";
         img.alt = flagCode;
         img.src = getCircleFlagUrl(flagCode);
@@ -6613,14 +6614,14 @@ export class LearnKitSettingsTab extends PluginSettingTab {
     setting.controlEl.appendChild(trigger);
 
     // ── Body-portal popover ──
-    const sproutWrapper = activeDocument.createElement("div");
+    const sproutWrapper = makeEl("div");
     sproutWrapper.className = "learnkit";
-    const popover = activeDocument.createElement("div");
+    const popover = makeEl("div");
     popover.id = `${id}-popover`;
     popover.setAttribute("aria-hidden", "true");
     popover.classList.add("learnkit-popover-overlay", "learnkit-popover-overlay", "learnkit-ss-popover", "learnkit-ss-popover");
 
-    const panel = activeDocument.createElement("div");
+    const panel = makeEl("div");
     panel.className = "learnkit-ss-panel learnkit-header-menu-panel";
     popover.appendChild(panel);
     sproutWrapper.appendChild(popover);
@@ -6630,16 +6631,16 @@ export class LearnKitSettingsTab extends PluginSettingTab {
     let searchInput: HTMLInputElement | null = null;
 
     if (showSearch) {
-      const searchWrap = activeDocument.createElement("div");
+      const searchWrap = makeEl("div");
       searchWrap.className = "learnkit-ss-search-wrap";
       panel.appendChild(searchWrap);
 
-      const searchIcon = activeDocument.createElement("span");
+      const searchIcon = makeEl("span");
       searchIcon.className = "learnkit-ss-search-icon";
       setIcon(searchIcon, "search");
       searchWrap.appendChild(searchIcon);
 
-      searchInput = activeDocument.createElement("input");
+      searchInput = makeEl("input");
       searchInput.type = "text";
       searchInput.className = "learnkit-ss-search-input";
       searchInput.placeholder = this._tx("ui.settings.searchableSelect.searchPlaceholder", "Search...");
@@ -6649,13 +6650,13 @@ export class LearnKitSettingsTab extends PluginSettingTab {
     }
 
     // ── Options list ──
-    const listbox = activeDocument.createElement("div");
+    const listbox = makeEl("div");
     listbox.setAttribute("role", "listbox");
     listbox.className = "learnkit-ss-listbox";
     panel.appendChild(listbox);
 
     // ── Empty state ──
-    const emptyMsg = activeDocument.createElement("div");
+    const emptyMsg = makeEl("div");
     emptyMsg.className = "learnkit-ss-empty";
     emptyMsg.textContent = this._tx("ui.settings.searchableSelect.empty", "No results");
     emptyMsg.hidden = true;
@@ -6709,25 +6710,25 @@ export class LearnKitSettingsTab extends PluginSettingTab {
           previousSection = sectionKey;
         }
 
-        const item = activeDocument.createElement("div");
+        const item = makeEl("div");
         item.setAttribute("role", "option");
         item.setAttribute("aria-selected", opt.value === current ? "true" : "false");
         item.tabIndex = 0;
         item.className = "learnkit-ss-item";
 
-        const dotWrap = activeDocument.createElement("div");
+        const dotWrap = makeEl("div");
         dotWrap.className = "learnkit-ss-dot-wrap";
         item.appendChild(dotWrap);
 
-        const dot = activeDocument.createElement("div");
+        const dot = makeEl("div");
         dot.className = "learnkit-ss-dot";
         if (opt.value === current) dot.classList.add("is-selected");
         dotWrap.appendChild(dot);
 
-        const textWrap = activeDocument.createElement("div");
+        const textWrap = makeEl("div");
         textWrap.className = "learnkit-ss-item-text";
 
-        const txt = activeDocument.createElement("span");
+        const txt = makeEl("span");
         txt.className = "learnkit-ss-item-label";
         renderLabel(txt, opt.label, opt.flagCode);
         textWrap.appendChild(txt);

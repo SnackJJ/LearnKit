@@ -14,6 +14,7 @@ import { setCssProps } from "../core/ui";
 import type LearnKitPlugin from "../../main";
 import { t } from "../translations/translator";
 import { REVEAL_OR_NEXT_KEYS } from "../../views/reviewer/key-actions";
+import { makeEl } from "../core/dom-factory";
 
 /* ------------------------------------------------------------------ */
 /*  Shortcut data                                                      */
@@ -100,13 +101,13 @@ export class KeyboardShortcutsModal extends Modal {
     if (defaultClose) defaultClose.remove();
 
     if (headerEl) {
-      const close = activeDocument.createElement("button");
+      const close = makeEl("button");
       close.type = "button";
       close.className = "learnkit-btn-toolbar learnkit-btn-filter h-7 px-3 text-sm inline-flex items-center gap-2 learnkit-scope-clear-btn learnkit-card-creator-close-btn learnkit-bulk-edit-close-btn";
       close.setAttribute("aria-label", t(this.plugin.settings?.general?.interfaceLanguage, "ui.common.close", "Close"));
       close.setAttribute("data-tooltip-position", "top");
 
-      const closeIcon = activeDocument.createElement("span");
+      const closeIcon = makeEl("span");
       closeIcon.className = "inline-flex items-center justify-center";
       setIcon(closeIcon, "x");
 
@@ -203,10 +204,10 @@ export class KeyboardShortcutsModal extends Modal {
     }
 
     // ── Footer (appended to modalEl, matching bulk-edit pattern) ──────────
-    const footer = activeDocument.createElement("div");
+    const footer = makeEl("div");
     footer.className = "flex items-center justify-end gap-4 lk-modal-footer learnkit-card-creator-footer";
 
-    const closeFooterBtn = activeDocument.createElement("button");
+    const closeFooterBtn = makeEl("button");
     closeFooterBtn.type = "button";
     closeFooterBtn.className = "learnkit-btn-toolbar learnkit-btn-filter h-7 px-3 text-sm inline-flex items-center gap-2";
     closeFooterBtn.textContent = tx("ui.shortcuts.close", "Close");

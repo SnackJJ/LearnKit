@@ -39,6 +39,7 @@ import {
 } from "../../platform/image-occlusion/io-image-ops";
 import { polygonClipPath } from "../../platform/image-occlusion/image-geometry";
 import { saveIoCard } from "../../platform/image-occlusion/io-save";
+import { makeEl, makeSvgEl } from "../core/dom-factory";
 
 // ──────────────────────────────────────────────────────────────────────────────
 // ImageOcclusionCreatorModal
@@ -1014,12 +1015,12 @@ export class ImageOcclusionCreatorModal extends Modal {
     const useX = box ? box.normX * this.stageW : stageX;
     const useY = box ? box.normY * this.stageH : stageY;
 
-    const wrap = activeDocument.createElement("div");
+    const wrap = makeEl("div");
     wrap.className = "learnkit-io-text-wrap";
     setCssProps(wrap, "--learnkit-io-text-x", `${useX * this.t.scale + this.t.tx}px`);
     setCssProps(wrap, "--learnkit-io-text-y", `${useY * this.t.scale + this.t.ty}px`);
 
-    const input = activeDocument.createElement("textarea");
+    const input = makeEl("textarea");
     input.className = "textarea learnkit-io-text-input";
     input.rows = 1;
     input.placeholder = this._tx("ui.io.creator.text.placeholder", "Type text");
@@ -1131,7 +1132,7 @@ export class ImageOcclusionCreatorModal extends Modal {
   private updateTextPreview(x1: number, y1: number, x2: number, y2: number) {
     if (!this.overlayEl) return;
     if (!this.textPreviewEl) {
-      this.textPreviewEl = activeDocument.createElement("div");
+      this.textPreviewEl = makeEl("div");
       this.textPreviewEl.className = "learnkit-io-text-preview";
       this.overlayEl.appendChild(this.textPreviewEl);
     }
@@ -1157,7 +1158,7 @@ export class ImageOcclusionCreatorModal extends Modal {
   private updateCropPreview(x1: number, y1: number, x2: number, y2: number) {
     if (!this.overlayEl) return;
     if (!this.cropPreviewEl) {
-      this.cropPreviewEl = activeDocument.createElement("div");
+      this.cropPreviewEl = makeEl("div");
       this.cropPreviewEl.className = "learnkit-io-crop-preview";
       this.overlayEl.appendChild(this.cropPreviewEl);
     }
@@ -1193,7 +1194,7 @@ export class ImageOcclusionCreatorModal extends Modal {
     if (!this.overlayEl) return;
 
     if (!this.previewEl) {
-      this.previewEl = activeDocument.createElement("div");
+      this.previewEl = makeEl("div");
       this.previewEl.className = "learnkit-io-mask-preview";
       this.overlayEl.appendChild(this.previewEl);
     }
@@ -1221,7 +1222,7 @@ export class ImageOcclusionCreatorModal extends Modal {
     if (!this.overlayEl || points.length === 0) return;
 
     if (!this.previewEl) {
-      this.previewEl = activeDocument.createElement("div");
+      this.previewEl = makeEl("div");
       this.previewEl.className = "learnkit-io-mask-preview";
       this.overlayEl.appendChild(this.previewEl);
     }
@@ -1250,7 +1251,7 @@ export class ImageOcclusionCreatorModal extends Modal {
     this.previewEl.style.clipPath = polygonClipPath(relativePoints);
 
     if (!this.previewStrokeEl) {
-      this.previewStrokeEl = activeDocument.createElementNS("http://www.w3.org/2000/svg", "svg");
+      this.previewStrokeEl = makeSvgEl("svg");
       this.previewStrokeEl.classList.add("learnkit-io-mask-preview-stroke");
       this.overlayEl.appendChild(this.previewStrokeEl);
     }
@@ -1261,7 +1262,7 @@ export class ImageOcclusionCreatorModal extends Modal {
     this.previewStrokeEl.style.top = `${top}px`;
     this.previewStrokeEl.replaceChildren();
 
-    const polygon = activeDocument.createElementNS("http://www.w3.org/2000/svg", "polygon");
+    const polygon = makeSvgEl("polygon");
     polygon.setAttribute(
       "points",
       points
@@ -1372,7 +1373,7 @@ export class ImageOcclusionCreatorModal extends Modal {
       sampled.push(rawPoints[rawPoints.length - 1]);
     }
 
-    const canvas = activeDocument.createElement("canvas");
+    const canvas = makeEl("canvas");
     canvas.width = imgEl.naturalWidth;
     canvas.height = imgEl.naturalHeight;
     const ctx = canvas.getContext("2d", { willReadFrequently: true });
@@ -1637,7 +1638,7 @@ export class ImageOcclusionCreatorModal extends Modal {
         } else {
           const sw = Math.max(24, Math.round(imageW * scale));
           const sh = Math.max(24, Math.round(imageH * scale));
-          const scaledCanvas = activeDocument.createElement("canvas");
+          const scaledCanvas = makeEl("canvas");
           scaledCanvas.width = sw;
           scaledCanvas.height = sh;
           const sctx = scaledCanvas.getContext("2d", { willReadFrequently: true });
