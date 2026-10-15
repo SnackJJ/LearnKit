@@ -157,6 +157,12 @@ async function build() {
     logLevel: "info",
     plugins: [deflateWasmPlugin],
 
+    // esbuild defaults to charset "ascii", which escapes every non-ASCII
+    // character as \uXXXX. The bundled translations are mostly CJK, so that
+    // inflated them for no reason (zh-cn.json alone: 146,833 B on disk ->
+    // 189,646 B in the bundle). "utf8" keeps them literal: ~53 KB of main.js.
+    charset: "utf8",
+
     // Only ask esbuild for a metafile when a caller wants one, so the default
     // build path is unaffected.
     metafile: Boolean(metafilePath),
