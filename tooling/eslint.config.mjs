@@ -40,6 +40,10 @@ export default defineConfig([
     },
     rules: {
       "@typescript-eslint/no-explicit-any": ["error", { ignoreRestArgs: true }],
+      // Type assertions are erased at runtime, so removing a redundant one is
+      // provably behaviour-preserving. The community-plugin review reports 63
+      // of these; keep them surfaced here instead.
+      "@typescript-eslint/no-unnecessary-type-assertion": "warn",
     },
   },
 ]);

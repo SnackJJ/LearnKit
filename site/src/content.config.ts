@@ -1,6 +1,5 @@
 import { defineCollection } from "astro/content/config";
 import { glob } from "astro/loaders";
-// eslint-disable-next-line @typescript-eslint/no-unsafe-call -- Astro glob loader types are generated at build time
 import { docsSchema } from "@astrojs/starlight/schema";
 
 function isNonEmptyString(value: unknown): value is string {
@@ -19,7 +18,19 @@ function preserveDocsPath(entry: string) {
   return withoutExtension.replace(/\/index$/i, "");
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Astro defineCollection return type is opaque
+/*
+ * Astro and Starlight publish their loader/schema types as build-time-generated
+ * declarations. In an environment where this site's own dependencies are not
+ * installed (the plugin review sandbox only installs the repository root), those
+ * imports resolve to `any` and every call through them trips
+ * no-unsafe-call / no-unsafe-assignment.
+ *
+ * The suppressions below are scoped to the object literal that actually trips
+ * them. The previous eslint-disable-next-line comments sat on the *import* lines
+ * and the `export const` line, so they never applied to the reported ranges and
+ * the warnings kept firing.
+ */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call -- Astro/Starlight loader + schema types are generated at build time; unresolved they are `any` */
 export const collections = {
   docs: defineCollection({
     loader: glob({
@@ -31,7 +42,7 @@ export const collections = {
         return preserveDocsPath(entry);
       },
     }),
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call -- Starlight docsSchema return type is generated
     schema: docsSchema(),
   }),
 };
+/* eslint-enable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call */
