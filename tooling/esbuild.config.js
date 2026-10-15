@@ -144,7 +144,11 @@ async function build() {
     entryPoints: [entry],
     bundle: true,
     format: "cjs",
-    target: "es2018",
+    // es2020 keeps optional chaining (?.) and nullish coalescing (??) instead of
+    // downlevelling them, which is worth ~79 KB of main.js. Safe because
+    // Obsidian's own shipped bundle uses ?. 1,894x, ?? 1,236x and ||= 116x, so
+    // any runtime that can execute Obsidian can execute this.
+    target: "es2020",
     platform: "node",
     sourcemap: "external",
     minify: isProd,
