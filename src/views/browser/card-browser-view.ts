@@ -65,25 +65,6 @@ import { makeEl } from "../../platform/core/dom-factory";
 
 type BrowserDensityMode = "comfortable" | "compact";
 
-const BROWSER_DENSITY_STORAGE_KEY = "learnkit.browser.tableDensity.v1";
-const BROWSER_COLS_STORAGE_KEY = "learnkit.browser.colVisibility.v1";
-
-/**
- * Pre-rebrand localStorage keys (fallback/migration only - data.json owns these
- * prefs). Read once so an existing install migrates, then removed. Never write.
- */
-const LEGACY_BROWSER_STORAGE_KEYS: Readonly<Record<string, string>> = {
-  [BROWSER_DENSITY_STORAGE_KEY]: "sprout.browser.tableDensity.v1",
-  [BROWSER_COLS_STORAGE_KEY]: "sprout.browser.colVisibility.v1",
-};
-
-/** Reads a prefs key, falling back to the pre-rebrand key for migration. */
-export function readBrowserStorageWithMigration(key: string): string | null {
-  const current = window.localStorage.getItem(key);
-  if (current !== null) return current;
-  const legacy = LEGACY_BROWSER_STORAGE_KEYS[key];
-  return legacy ? window.localStorage.getItem(legacy) : null;
-}
 const BROWSER_PREFS_ROOT_KEY = "browserPrefs";
 const COMPACT_DEFAULT_HIDDEN_COLS: ColKey[] = ["id", "stage", "due", "location"];
 const ALL_COLS: ColKey[] = ["id", "type", "stage", "due", "title", "question", "answer", "info", "location", "groups"];
@@ -171,8 +152,6 @@ export class LearnKitCardBrowserView extends ItemView {
   constructor(leaf: WorkspaceLeaf, plugin: LearnKitPlugin) {
     super(leaf);
     this.plugin = plugin;
-    this._loadDensityMode();
-    this._loadColumnPrefs();
     this._applyDensityPreset();
   }
 
@@ -185,7 +164,7 @@ export class LearnKitCardBrowserView extends ItemView {
   getIcon() { return "table-2"; }
 
   async onOpen() {
-    // Hydrate browser prefs from data.json (overrides localStorage fallback from constructor)
+    // Hydrate browser prefs from data.json, the only store for them.
     await this._hydrateBrowserPrefsFromDataJson();
     this._applyDensityPreset();
     this.render();
@@ -366,39 +345,7 @@ export class LearnKitCardBrowserView extends ItemView {
         return; // data.json takes priority
       }
     } catch {
-      // Ignore — fall through to localStorage
-    }
-    // Fallback: migrate from localStorage
-    this._loadDensityMode();
-    this._loadColumnPrefs();
-  }
-
-  private _loadDensityMode() {
-    try {
-      const raw = readBrowserStorageWithMigration(BROWSER_DENSITY_STORAGE_KEY);
-      this._densityMode = raw === "compact" ? "compact" : "comfortable";
-    } catch {
-      this._densityMode = "comfortable";
-    }
-  }
-
-  private _loadColumnPrefs() {
-    try {
-      const raw = readBrowserStorageWithMigration(BROWSER_COLS_STORAGE_KEY);
-      if (!raw) return;
-      const parsed = JSON.parse(raw) as Record<string, string[]>;
-      const valid = new Set<ColKey>(ALL_COLS);
-      for (const mode of ["comfortable", "compact"] as const) {
-        const arr = parsed[mode];
-        if (!Array.isArray(arr)) continue;
-        const filtered = arr.filter((c): c is ColKey => valid.has(c as ColKey));
-        if (filtered.length === 0) continue;
-        const target = mode === "compact" ? this._compactCols : this._comfortableCols;
-        target.clear();
-        for (const c of filtered) target.add(c);
-      }
-    } catch {
-      // Ignore parse failures — keep defaults
+      // Ignore — the defaults below stand for this session.
     }
   }
 
@@ -420,41 +367,12 @@ export class LearnKitCardBrowserView extends ItemView {
           },
         };
         await this.plugin.saveData(nextRoot);
-        // One-time cleanup: remove current and pre-rebrand localStorage keys
-        try {
-          for (const key of [BROWSER_DENSITY_STORAGE_KEY, BROWSER_COLS_STORAGE_KEY]) {
-            window.localStorage.removeItem(key);
-            const legacy = LEGACY_BROWSER_STORAGE_KEYS[key];
-            if (legacy) window.localStorage.removeItem(legacy);
-          }
-        } catch { /* ignore */ }
-      } catch {
-        // Fallback: write to localStorage if data.json save fails
-        this._saveDensityMode();
-        this._saveColumnPrefs();
+      } catch (e) {
+        // Keep the value in memory for this session; the next change retries the write.
+        log.swallow("persist browser prefs", e);
       }
       })();
     }, 300);
-  }
-
-  private _saveDensityMode() {
-    try {
-      window.localStorage.setItem(BROWSER_DENSITY_STORAGE_KEY, this._densityMode);
-    } catch {
-      // Ignore storage failures (private mode / quota)
-    }
-  }
-
-  private _saveColumnPrefs() {
-    try {
-      const data: Record<string, string[]> = {
-        comfortable: Array.from(this._comfortableCols),
-        compact: Array.from(this._compactCols),
-      };
-      window.localStorage.setItem(BROWSER_COLS_STORAGE_KEY, JSON.stringify(data));
-    } catch {
-      // Ignore storage failures (private mode / quota)
-    }
   }
 
   private _applyDensityPreset() {

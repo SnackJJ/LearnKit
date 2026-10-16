@@ -122,7 +122,6 @@ import {
 import { formatAttachmentChipLabel } from "../../shared/attachment-chip-label";
 import { makeEl } from "../../../platform/core/dom-factory";
 
-const ASSISTANT_POPUP_SIZE_STORAGE_KEY = "learnkit.assistant.popup.size.v1";
 const ASSISTANT_POPUP_PREFS_ROOT_KEY = "assistantPopupSize";
 const CHAT_AUTO_FOLLOW_THRESHOLD_PX = 24;
 
@@ -273,27 +272,11 @@ export class LearnKitAssistantPopup {
 
   constructor(plugin: LearnKitPlugin) {
     this.plugin = plugin;
-    this._loadPersistedUserResize();
-    // Async hydrate from data.json (overrides localStorage if present)
+    // Async hydrate from data.json, the only store for this preference.
     void this._hydratePopupSizeFromDataJson();
   }
 
-  private _loadPersistedUserResize(): void {
-    // Try data.json first (async hydration will follow in onOpen)
-    try {
-      const raw = window.localStorage.getItem(ASSISTANT_POPUP_SIZE_STORAGE_KEY);
-      if (!raw) return;
-      const parsed = JSON.parse(raw) as { width?: unknown; height?: unknown };
-      const width = Number(parsed?.width);
-      const height = Number(parsed?.height);
-      this._userResizedWidth = Number.isFinite(width) && width > 0 ? width : null;
-      this._userResizedHeight = Number.isFinite(height) && height > 0 ? height : null;
-    } catch {
-      // Ignore malformed or unavailable storage.
-    }
-  }
-
-  /** Call after data.json is available to override localStorage with persisted prefs. */
+  /** Apply the popup size persisted in data.json, if any. */
   async _hydratePopupSizeFromDataJson(): Promise<void> {
     try {
       const root = (await this.plugin.loadData()) as Record<string, unknown> | null;
@@ -304,12 +287,12 @@ export class LearnKitAssistantPopup {
       if (Number.isFinite(width) && width > 0) this._userResizedWidth = width;
       if (Number.isFinite(height) && height > 0) this._userResizedHeight = height;
     } catch {
-      // Ignore — keep localStorage fallback values
+      // Ignore — keep the default size.
     }
   }
 
   private _persistUserResize(): void {
-    // Write to data.json asynchronously; fall back to localStorage on failure.
+    // Write to the plugin's data file asynchronously.
     void (async () => {
       try {
         const root = (await this.plugin.loadData()) as Record<string, unknown> | null;
@@ -319,16 +302,9 @@ export class LearnKitAssistantPopup {
           height: this._userResizedHeight,
         };
         await this.plugin.saveData(nextRoot);
-        // One-time cleanup: remove legacy localStorage key
-        try { window.localStorage.removeItem(ASSISTANT_POPUP_SIZE_STORAGE_KEY); } catch { /* ignore */ }
-      } catch {
-        // Fallback: write to localStorage
-        try {
-          window.localStorage.setItem(
-            ASSISTANT_POPUP_SIZE_STORAGE_KEY,
-            JSON.stringify({ width: this._userResizedWidth, height: this._userResizedHeight }),
-          );
-        } catch { /* ignore */ }
+      } catch (e) {
+        // Keep the size in memory for this session; the next resize retries the write.
+        log.swallow("persist assistant popup size", e);
       }
     })();
   }

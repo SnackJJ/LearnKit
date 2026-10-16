@@ -22,12 +22,6 @@ const SPECIAL_FLAG_URLS: Readonly<Record<string, string>> = {
 const SPECIAL_FLAG_FALLBACK_URLS: Readonly<Record<string, string>> = {
   checkered: "https://hatscripts.github.io/circle-flags/flags/other/chequered.svg",
 };
-const FLAG_CACHE_KEY = "learnkit-circle-flag-cache-v1";
-/**
- * Pre-rebrand localStorage keys. Read once so an existing cache survives the
- * rename, then removed by {@link flagCacheWasPersisted}. Never write to these.
- */
-const LEGACY_FLAG_CACHE_KEYS = ["sprout-circle-flag-cache-v1"] as const;
 const FLAG_CACHE_MAX_BYTES = 2_500_000;
 
 let memoryCache: Map<string, string> | null = null;
@@ -132,14 +126,14 @@ export function renderFlagPreviewHtml(input: string): string {
 /**
  * Hydrate the in-memory flag cache from data.json's `flagCache` field.
  * Call during plugin startup AFTER loading the root object.
- * Entries already in memory (e.g. from localStorage fallback) take priority.
+ * Entries already in memory take priority.
  */
 export function loadFlagCacheFromDataJson(raw: unknown): void {
   if (!raw || typeof raw !== "object") return;
   const src = raw as Record<string, unknown>;
   const map = ensureCache();
   for (const [k, v] of Object.entries(src)) {
-    if (map.has(k)) continue; // localStorage entry wins (may be fresher)
+    if (map.has(k)) continue; // an in-memory entry wins (may be fresher)
     const code = normalizeFlagCode(k);
     if (!code || typeof v !== "string" || !v.startsWith("data:image/svg+xml")) continue;
     map.set(code, v);
@@ -161,45 +155,21 @@ export function getFlagCacheForDataJson(): Record<string, string> | null {
 }
 
 /**
- * Call after data.json has been successfully saved with the flag cache.
- * Clears the dirty flag and removes the legacy localStorage key (one-time migration).
+ * Call after data.json has been successfully saved with the flag cache: the cache
+ * now lives in the plugin's data file, so there is nothing else to clear.
  */
 export function flagCacheWasPersisted(): void {
   _cacheDirty = false;
   _dataJsonAvailable = true;
-  // One-time cleanup: remove the current and pre-rebrand localStorage caches
-  if (typeof window !== "undefined") {
-    try {
-      window.localStorage.removeItem(FLAG_CACHE_KEY);
-      for (const legacyKey of LEGACY_FLAG_CACHE_KEYS) window.localStorage.removeItem(legacyKey);
-    } catch { /* ignore */ }
-  }
 }
 
+/**
+ * The cache lives on the plugin's data file (hydrated by
+ * {@link loadFlagCacheFromDataJson}) with an in-memory map for the rest of the
+ * session. Nothing is written outside the plugin's own data storage.
+ */
 function ensureCache(): Map<string, string> {
-  if (memoryCache) return memoryCache;
-  memoryCache = new Map<string, string>();
-  if (typeof window === "undefined") return memoryCache;
-
-  try {
-    let raw = window.localStorage.getItem(FLAG_CACHE_KEY);
-    if (!raw) {
-      // One-time migration from the pre-rebrand key.
-      for (const legacyKey of LEGACY_FLAG_CACHE_KEYS) {
-        raw = window.localStorage.getItem(legacyKey);
-        if (raw) break;
-      }
-    }
-    if (!raw) return memoryCache;
-    const parsed = JSON.parse(raw) as Record<string, string>;
-    for (const [k, v] of Object.entries(parsed || {})) {
-      const code = normalizeFlagCode(k);
-      if (!code || typeof v !== "string" || !v.startsWith("data:image/svg+xml")) continue;
-      memoryCache.set(code, v);
-    }
-  } catch {
-    return memoryCache;
-  }
+  if (!memoryCache) memoryCache = new Map<string, string>();
   return memoryCache;
 }
 

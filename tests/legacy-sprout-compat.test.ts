@@ -10,7 +10,7 @@
  *
  *   1. card anchors in markdown      -> `^sprout-<id>` must still resolve
  *   2. generated IO/HQ image names   -> `sprout-io-<id>.<ext>` must still resolve
- *   3. localStorage fallback keys    -> the pre-rebrand key must still migrate
+ *   3. the plugin data file         -> prefs live in data.json only (no web storage)
  *
  * If one of these tests fails after a rebrand/rename sweep, the sweep has turned
  * a *current* identifier into a *legacy* one instead of accepting both.
@@ -31,7 +31,6 @@ import {
 } from "../src/platform/core/identity";
 import { collectAnchorIdsFromText } from "../src/platform/image-occlusion/io-helpers";
 import { flagCacheWasPersisted } from "../src/platform/flags/flag-tokens";
-import { readBrowserStorageWithMigration } from "../src/views/browser/card-browser-view";
 
 const LEGACY_FLAG_CACHE_KEY = "sprout-circle-flag-cache-v1";
 const LEGACY_DENSITY_KEY = "sprout.browser.tableDensity.v1";
@@ -91,37 +90,6 @@ describe("legacy Sprout compatibility", () => {
       const dirs = getPluginDirCandidates(".obsidian", "learnkit");
       expect(dirs).toContain(".obsidian/plugins/learnkit");
       expect(dirs).toContain(".obsidian/plugins/sprout");
-    });
-  });
-
-  describe("localStorage fallback keys", () => {
-    beforeEach(() => {
-      window.localStorage.clear();
-    });
-
-    it("migrates a density pref written under the pre-rebrand key", () => {
-      window.localStorage.setItem(LEGACY_DENSITY_KEY, "compact");
-      expect(readBrowserStorageWithMigration(CURRENT_DENSITY_KEY)).toBe("compact");
-    });
-
-    it("prefers the current key when both are present", () => {
-      window.localStorage.setItem(LEGACY_DENSITY_KEY, "compact");
-      window.localStorage.setItem(CURRENT_DENSITY_KEY, "comfortable");
-      expect(readBrowserStorageWithMigration(CURRENT_DENSITY_KEY)).toBe("comfortable");
-    });
-
-    it("returns null when neither key is set", () => {
-      expect(readBrowserStorageWithMigration(CURRENT_DENSITY_KEY)).toBeNull();
-    });
-
-    it("clears the pre-rebrand flag cache once it has been persisted to data.json", () => {
-      window.localStorage.setItem(LEGACY_FLAG_CACHE_KEY, "{}");
-      window.localStorage.setItem("learnkit-circle-flag-cache-v1", "{}");
-
-      flagCacheWasPersisted();
-
-      expect(window.localStorage.getItem(LEGACY_FLAG_CACHE_KEY)).toBeNull();
-      expect(window.localStorage.getItem("learnkit-circle-flag-cache-v1")).toBeNull();
     });
   });
 });

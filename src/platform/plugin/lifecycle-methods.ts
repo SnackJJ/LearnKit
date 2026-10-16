@@ -347,7 +347,7 @@ export function WithLifecycleMethods<T extends Constructor<LearnKitPluginBase>>(
         const root = (await this.loadData()) as unknown;
         const rootObj = isPlainObject(root) ? root : {};
 
-        // Hydrate flag cache from data.json (falls back to localStorage for migration)
+        // Hydrate the flag cache from data.json, its only persistent store.
         loadFlagCacheFromDataJson(rootObj.flagCache);
 
         const rootSettings = isPlainObject(rootObj.settings)
