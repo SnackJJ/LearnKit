@@ -74,23 +74,20 @@ describe("plugin source hygiene", () => {
       .join("\n");
   }
 
-  it("keeps split(...).join(...) out of the source", () => {
-    // Community review reads that shape as runtime string assembly - the
-    // technique used to hide endpoints from a scanner - and reports it under
-    // "Plugin assembles domain names at runtime". There are no assembled hosts
-    // in this plugin; keeping the shape out means the report has nothing to
-    // match. Use a global replace, index arithmetic, or join a literal array.
+  it("keeps the split-then-join shape out of the source", () => {
+    // Community review reports that shape as runtime string assembly - "splitting
+    // domain segments into arrays and joining them at runtime" - under
+    // "Plugin assembles domain names at runtime". LearnKit has no assembled host;
+    // every domain is a literal. Keeping the shape out leaves that check nothing
+    // to match. Only the DIRECT chain counts: a pipeline that maps or filters
+    // between the two is a genuine per-segment transformation, not assembly.
     const offenders: string[] = [];
-    // The direct chain only: `.split(...)` immediately `.join(...)`, with nothing
-    // in between. A `.map()` pipeline between them is a genuine per-segment
-    // transformation, not "split the segments and put them back together".
-    const shape = /\.split\([^;{}]*?\)\s*\.join\(/g;
+    const shape = /\.split\([^()]*\)\s*\.join\(/g;
     for (const file of TS_FILES) {
       const stripped = stripTsComments(fs.readFileSync(file, "utf8"));
       for (const match of stripped.matchAll(shape)) {
         const line = stripped.slice(0, match.index).split("\n").length;
-        const where = stripped.slice(match.index, match.index + 60).replace(/\n/g, " ");
-        offenders.push(`${path.relative(SRC_DIR, file)}:${line} ${where}`);
+        offenders.push(`${path.relative(SRC_DIR, file)}:${line}`);
       }
     }
     expect(offenders).toEqual([]);

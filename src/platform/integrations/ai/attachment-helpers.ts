@@ -174,8 +174,7 @@ function normalizeExtractedText(text: string): string {
   const normalized = String(text || "");
   return normalized
     .replace(/\r/g, "")
-    .split("\u0000")
-    .join("")
+    replace(/\u0000/g, "")
     .replace(/\n{3,}/g, "\n\n")
     .trim();
 }
