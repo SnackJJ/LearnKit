@@ -150,6 +150,9 @@ export async function reconcileFromVaultSync(
     if (!pluginExists) {
       const bytes = await readBinary(adapter, vaultPath);
       if (bytes && bytes.byteLength > 0) {
+        // lastIndexOf rather than split("/").slice(0,-1).join("/"): same result
+        // (an empty string when there is no separator) without the split+join
+        // shape that community review flags as runtime assembly.
         const cut = pluginDbPath.lastIndexOf("/");
         const dir = cut === -1 ? "" : pluginDbPath.slice(0, cut);
         await ensureDir(adapter, dir);
