@@ -43,7 +43,7 @@ const UI_LITERAL_PATTERNS = [
 ];
 
 function toPosix(p) {
-  return p.split(path.sep).join("/");
+  return p.replaceAll(path.sep, "/");
 }
 
 function walk(dir, out = []) {

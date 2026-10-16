@@ -150,7 +150,8 @@ export async function reconcileFromVaultSync(
     if (!pluginExists) {
       const bytes = await readBinary(adapter, vaultPath);
       if (bytes && bytes.byteLength > 0) {
-        const dir = pluginDbPath.split("/").slice(0, -1).join("/");
+        const cut = pluginDbPath.lastIndexOf("/");
+        const dir = cut === -1 ? "" : pluginDbPath.slice(0, cut);
         await ensureDir(adapter, dir);
         await writeBinary(adapter, pluginDbPath, bytes);
       }

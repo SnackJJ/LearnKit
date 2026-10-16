@@ -120,7 +120,7 @@ export function titleCaseGroupPath(path: string): string {
 export function formatGroupDisplay(path: string): string {
   const canonical = titleCaseGroupPath(path);
   if (!canonical) return "";
-  return canonical.split("/").join(" / ");
+  return canonical.replace(/\//g, " / ");
 }
 
 /**
