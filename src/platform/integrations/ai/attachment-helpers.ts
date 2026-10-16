@@ -448,7 +448,7 @@ export function splitTextLikeAttachmentDataUrls(dataUrls: string[]): {
     }
 
     const decodedText = base64ToUtf8(parsed.base64);
-    const text = decodedText.split("\u0000").join("").trim();
+    const text = decodedText.replace(/\u0000/g, "").trim();
     if (!text) continue;
     textBlocks.push({ mimeType: parsed.mimeType, text });
   }

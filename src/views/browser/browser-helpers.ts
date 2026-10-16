@@ -177,7 +177,7 @@ export function fmtLocation(path: string | null | undefined): string {
   const p = (path || "").trim();
   if (!p) return "—";
   const noExt = p.replace(/\.md$/i, "");
-  return noExt.split("/").filter(Boolean).join(" / ");
+  return noExt.replace(/^\/+|\/+$/g, "").replace(/\/+/g, " / ");
 }
 
 export {

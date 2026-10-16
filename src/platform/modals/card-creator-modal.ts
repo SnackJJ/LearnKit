@@ -449,7 +449,7 @@ export class CardCreatorModal extends Modal {
         const formatLocationPath = (p: string) => {
           if (!p) return "";
           const cleaned = p.replace(/\.md$/i, "");
-          return cleaned.split("/").filter(Boolean).join(" / ");
+          return cleaned.replace(/^\/+|\/+$/g, "").replace(/\/+/g, " / ");
         };
 
         const addLocationField = (root: HTMLElement) => {

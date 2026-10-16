@@ -121,7 +121,7 @@ export function protectCodeFences(
     restore: (s: string) => {
       let r = s;
       for (let i = 0; i < blocks.length; i++) {
-        r = r.split(`${FENCE_PH}${i}@@`).join(blocks[i]);
+        r = r.replaceAll(`${FENCE_PH}${i}@@`, () => blocks[i]);
       }
       return r;
     },

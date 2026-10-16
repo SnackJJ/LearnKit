@@ -562,7 +562,7 @@ export function cleanHtmlToMarkdown(html: string): string {
   // Blockquotes
   text = text.replace(/<blockquote[^>]*>([\s\S]*?)<\/blockquote>/gi, (_m: string, content: string) => {
     const inner = content.replace(/<[^>]+>/g, "").trim();
-    return "\n" + inner.split("\n").map((l: string) => "> " + l).join("\n") + "\n";
+    return "\n" + inner.replace(/^/gm, "> ") + "\n";
   });
 
   // Preformatted / code blocks

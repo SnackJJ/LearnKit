@@ -268,7 +268,7 @@ function cloneStudyAssistantSettings(
 function formatFallbackText(template: string, vars?: Record<string, string | number>): string {
   let out = String(template || "");
   for (const [key, value] of Object.entries(vars || {})) {
-    out = out.split(`{${key}}`).join(String(value));
+    out = out.replaceAll(`{${key}}`, () => String(value));
   }
   return out;
 }

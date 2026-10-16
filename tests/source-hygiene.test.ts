@@ -81,12 +81,17 @@ describe("plugin source hygiene", () => {
     // in this plugin; keeping the shape out means the report has nothing to
     // match. Use a global replace, index arithmetic, or join a literal array.
     const offenders: string[] = [];
+    // The direct chain only: `.split(...)` immediately `.join(...)`, with nothing
+    // in between. A `.map()` pipeline between them is a genuine per-segment
+    // transformation, not "split the segments and put them back together".
+    const shape = /\.split\([^;{}]*?\)\s*\.join\(/g;
     for (const file of TS_FILES) {
-      stripTsComments(fs.readFileSync(file, "utf8")).split("\n").forEach((line, i) => {
-        if (/\bsplit\(/.test(line) && /\.join\(/.test(line)) {
-          offenders.push(`${path.relative(SRC_DIR, file)}:${i + 1} ${line.trim().slice(0, 70)}`);
-        }
-      });
+      const stripped = stripTsComments(fs.readFileSync(file, "utf8"));
+      for (const match of stripped.matchAll(shape)) {
+        const line = stripped.slice(0, match.index).split("\n").length;
+        const where = stripped.slice(match.index, match.index + 60).replace(/\n/g, " ");
+        offenders.push(`${path.relative(SRC_DIR, file)}:${line} ${where}`);
+      }
     }
     expect(offenders).toEqual([]);
   });
