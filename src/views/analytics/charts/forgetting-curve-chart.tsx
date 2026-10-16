@@ -1,4 +1,33 @@
 /**
+ * Charting engine note — please read before changing the chart library.
+ *
+ * This module (and its siblings in this folder) renders with Recharts, which is
+ * built on Redux Toolkit internally: recharts -> @reduxjs/toolkit -> redux,
+ * immer, redux-thunk, react-redux. Nothing in LearnKit imports Redux directly.
+ *
+ * Community review reports one warning against the shipped bundle:
+ *
+ *   "Plugin assembles domain names at runtime - split/join domain assembly"
+ *
+ * The only text in the bundle that matches that shape is Redux's own random
+ * action-token generator, which decorates a random string with dots:
+ *
+ *   Math.random().toString(36).substring(7).split("").join(".")
+ *
+ * It is not a domain, nothing is assembled at runtime to hide an endpoint, and
+ * every host this plugin can reach is a literal string in
+ * src/platform/integrations/ (see the README's Privacy & Disclosures section).
+ *
+ * This is deliberately NOT patched at build time. Rewriting vendored code would
+ * silently stop matching when Recharts or Redux is next bumped, so the warning
+ * is accepted and explained instead. The only way to remove it for good is to
+ * render these charts with a library that has no Redux inside it.
+ *
+ * Our own code is free of the shape: tests/source-hygiene.test.ts fails the
+ * suite if a direct split-then-join reappears anywhere under src/.
+ */
+
+/**
  * @file src/analytics/forgetting-curve-chart.tsx
  * @summary Interactive forgetting-curve chart that lets users search for and select
  * up to three cards, then plots each card's FSRS retrievability over time as a line

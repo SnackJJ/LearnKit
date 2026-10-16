@@ -100,6 +100,10 @@ If you are deciding whether LearnKit fits your workflow, start here.
 
 ## Privacy & Disclosures
 
+One review warning is accepted rather than fixed, and it is worth stating plainly:
+
+- **"Plugin assembles domain names at runtime - split/join domain assembly."** The charts are drawn with Recharts, which uses Redux Toolkit internally (Recharts -> `@reduxjs/toolkit` -> `redux`, `immer`, `react-redux`). LearnKit imports Redux nowhere. The one string in the bundle matching that pattern is Redux's own random action-token generator - `Math.random().toString(36).substring(7).split("").join(".")` - which decorates a random word with dots. It is not a domain, and no endpoint is assembled at runtime: every host listed above is a literal string in the source. Patching vendored library code was rejected deliberately, because it would silently stop applying on the next Recharts or Redux bump; removing the warning for good would mean rendering charts with a library that has no Redux inside it.
+
 Everything below is what Obsidian's automated review asks plugins to declare. LearnKit is local-first: none of its features require an account, and no data leaves your machine unless you switch on an AI provider, TTS, or an online image source yourself.
 
 - **Vault read and write.** LearnKit indexes the notes you point it at so it can find, render, sync and schedule flashcards. It can read any file in the vault, and it writes only the files a feature needs: card blocks and anchors in the notes you card, its own generated images, audio cache files, and backups.
