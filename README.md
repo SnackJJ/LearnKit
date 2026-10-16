@@ -98,6 +98,23 @@ If you are deciding whether LearnKit fits your workflow, start here.
 - **Where can I check which models support each Companion feature?** We maintain a [Companion Model Compatibility](https://ctrlaltwill.github.io/LearnKit/Companion-Model-Compatibility/) table showing which AI features work on each provider and model. If you have tested a provider or model, please submit a PR to update the table and help other users.
 
 
+## Privacy & Disclosures
+
+Everything below is what Obsidian's automated review asks plugins to declare. LearnKit is local-first: none of its features require an account, and no data leaves your machine unless you switch on an AI provider, TTS, or an online image source yourself.
+
+- **Vault read and write.** LearnKit indexes the notes you point it at so it can find, render, sync and schedule flashcards. It can read any file in the vault, and it writes only the files a feature needs: card blocks and anchors in the notes you card, its own generated images, audio cache files, and backups.
+- **External requests.** Nothing is sent anywhere until you ask for it. The complete list of hosts LearnKit can contact:
+    - **AI providers**, only when you have configured one and used a Companion feature: `generativelanguage.googleapis.com` (Google), `openrouter.ai`, `api.anthropic.com`, `api.openai.com`, `api.deepseek.com`, `api.x.ai` (xAI), `api.perplexity.ai`, or a custom OpenAI-compatible base URL that you enter yourself. That custom endpoint is why the review reports "assembles domain names at runtime": the request host comes from your settings.
+    - **Text to speech**, only when you play audio and have chosen a provider: `texttospeech.googleapis.com` (Google) or `api.elevenlabs.io`.
+    - **Circle flag images** in card text, fetched from `hatscripts.github.io` and cached in your plugin data file (with a bundled fallback, so reading cards works offline).
+    - **This plugin's own repository**, for the release notes and About page: `api.github.com`, `raw.githubusercontent.com`, `cdn.jsdelivr.net`.
+    - The About page also has links you may click (`github.com`, `buymeacoffee.com`, `linkedin.com`); it does not fetch them.
+- **Clipboard.** Used in two places: pasting an image into the Image Occlusion editor or the card creator (the paste event's own clipboard data), and the About page's copy button. Nothing is read from the clipboard in the background.
+- **Plugin data file, not browser storage.** LearnKit stores its settings, caches and preferences in its own `data.json` through Obsidian's plugin data API. It no longer touches `localStorage` / `sessionStorage`, so nothing is kept in the renderer's web storage.
+- **Base64 and an inline WASM blob.** The Anki importer and exporter run on SQLite compiled to WebAssembly (`sql.js`). An Obsidian plugin may only ship `main.js`, `manifest.json` and `styles.css`, so that module and its WASM are embedded in `main.js` and decoded at runtime (base64 + zlib). The WASM exports its linear memory, as Emscripten modules do. Nothing here is obfuscation: the source is in this repository and the built file is built by CI from it.
+- **AI providers.** Companion sends only the content a workflow needs (the note you asked about, plus any context a feature documents). API keys are stored in your plugin data file.
+- **No telemetry, no analytics, no ads, no tracking.** LearnKit does not phone home.
+
 ## License & Credits
 
 ### License

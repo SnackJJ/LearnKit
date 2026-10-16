@@ -2,6 +2,19 @@
 
 All notable changes to LearnKit are summarized here.
 
+## 1.8.5 (2026-10-16)
+
+### Fixed
+- **Anki import of a modern `.apkg`.** An export from Anki 2.1.62+ carries the real collection in `collection.anki21b` (zstd-compressed SQLite) *and* a legacy `collection.anki2` that holds nothing but Anki's own "Please update to the latest Anki version" note. The importer took the first collection-like name in ZIP order, so that placeholder imported as a single card. Candidates are now ranked newest-first and the zstd container is inflated; an unreadable `anki21b` reports the entry it could not read instead of falling back to the placeholder, and a collection whose only note is Anki's placeholder is refused with an explanation.
+- **Surface blur in translucent windows now uses a LearnKit-owned token.** Every blur declaration resolves as `var(--learnkit-blur, var(--blur-m, blur(14px)))`, and `body.is-translucent` sets `--learnkit-blur: none` instead of forcing `backdrop-filter: none !important`. Same behaviour, no `!important` in the shipped stylesheet, so host themes keep control of their own blur.
+- **Preferences never use browser storage.** The flag cache, card-browser density/columns and the assistant popup size all live in the plugin's own data file; the `localStorage` fallbacks and their one-time migrations are gone. The in-memory value survives a failed write for the session.
+- **Detached fragments come from one factory.** `document.createDocumentFragment()` at four call sites in `ui.ts`, one in the reading view and one in the assistant decorations now go through `makeFragment()` in `dom-factory.ts`, which resolves the active document and so stays correct in pop-out windows.
+- **The docs site type-checks in the review sandbox.** `astro` and `@astrojs/starlight` are root devDependencies, so `site/src/content.config.ts` resolves its build-time-generated types instead of degrading to `any`.
+
+### Changed
+- **Rebrand sweep completed.** Identifiers, UI copy, CSS classes, translation keys and payload sentinels that still said "Sprout" now say LearnKit, including the custom-CSS guidance in all seven locales (which had been telling users to target classes that no longer exist). Deliberately *not* renamed: the `sprout-*` markers that match data written by earlier versions — card anchors, IO image filenames, legacy view types and the pre-rebrand storage keys — so existing vaults keep working.
+- **Dependency hygiene.** `npm ci` installs with no flags (`react-is` is now declared rather than resolved by luck, and `obsidian` is pinned), `npm audit --omit=dev` reports no advisories, and the docs site's `astro` / `@astrojs/starlight` moved to root devDependencies so its content config resolves its build-time-generated types instead of degrading to `any`.
+
 ## 1.8.4 (2026-10-15)
 
 ### Fixed
