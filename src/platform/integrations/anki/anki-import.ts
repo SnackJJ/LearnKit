@@ -100,6 +100,31 @@ export type ImportResult = {
   warnings: string[];
 };
 
+// ── Anki's unreadable-collection placeholder ──────────────────────────────────
+
+/**
+ * Marker Anki writes into the single note it puts in place of a collection it
+ * could not open. Importing that note would look like the plugin imported the
+ * user's deck when in fact the deck is not in the file.
+ */
+const ANKI_UPGRADE_STUB_MARKER = "please update to the latest anki version";
+
+/**
+ * Returns an explanation when the collection holds nothing but that placeholder.
+ * Only a lone matching note counts, so a deck that merely quotes the sentence is
+ * still imported normally.
+ */
+export function describeAnkiUpgradeStub(notes: AnkiNoteRow[]): string | null {
+  if (notes.length !== 1) return null;
+  const fields = String(notes[0]?.flds ?? "").toLowerCase();
+  if (!fields.includes(ANKI_UPGRADE_STUB_MARKER)) return null;
+  return (
+    "This file only contains Anki's placeholder note, not your decks. That means it was " +
+    "exported from a collection Anki itself could not open, so the cards are not in the file. " +
+    "Restore your collection from an Anki backup (.colpkg or an automatic backup), then export the .apkg again."
+  );
+}
+
 // ── Preview ───────────────────────────────────────────────────────────────────
 
 /** Preview the contents of an .apkg file without importing anything. */
@@ -113,6 +138,9 @@ export async function previewApkg(apkgBytes: Uint8Array): Promise<ImportPreview>
     const decks = readDecks(db);
     const notes = readNotes(db);
     const cards = readCards(db);
+
+    const stubReason = describeAnkiUpgradeStub(notes);
+    if (stubReason) throw new Error(stubReason);
 
     let basicCount = 0;
     let clozeCount = 0;
@@ -223,6 +251,9 @@ export async function importFromApkg(
     const notes = readNotes(db);
     const cards = readCards(db);
     const collectionCrt = readCollectionCrt(db);
+
+    const stubReason = describeAnkiUpgradeStub(notes);
+    if (stubReason) throw new Error(stubReason);
 
     // ── Save media to vault ───────────────────────────────────────────────
     await options.onProgress?.(10, "Saving media files…");

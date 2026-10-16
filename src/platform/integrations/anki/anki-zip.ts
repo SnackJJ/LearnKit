@@ -2,17 +2,84 @@
  * @file src/anki/anki-zip.ts
  * @summary ZIP pack/unpack for Anki .apkg files using fflate.
  *
- * An .apkg is a ZIP archive containing:
- *   - `collection.anki2`  — the SQLite database
- *   - `media`             — a JSON file mapping numeric keys to filenames
- *   - `0`, `1`, `2`, …   — the actual media files, named by index
+ * An .apkg is a ZIP archive containing one collection database plus optional
+ * media. Which database it carries depends on the Anki version that wrote it,
+ * and a 2.1.62+ export ships BOTH a current database and a stub legacy one:
+ *
+ *   - `collection.anki21b` — Anki 2.1.62+, zstd-compressed SQLite (the real data)
+ *   - `collection.anki21`  — Anki 2.1.28+, plain SQLite, schema v18
+ *   - `collection.anki2`   — legacy SQLite, schema v11. In a 2.1.62+ export this
+ *                            holds only Anki's "Please update to the latest Anki
+ *                            version" placeholder note, so it must never be
+ *                            preferred over a newer database.
+ *   - `media`              — a JSON file mapping numeric keys to filenames
+ *   - `0`, `1`, `2`, …     — the actual media files, named by index
  *
  * @exports
  *  - packApkg   — build a .apkg from SQLite bytes + media
- *  - unpackApkg — extract SQLite bytes + media from a .apkg
+ *  - unpackApkg — extract SQLite bytes + media from an .apkg
  */
 
 import { zipSync, unzipSync, strToU8, strFromU8 } from "fflate/browser";
+import { decompress as zstdDecompress } from "fzstd";
+
+/**
+ * Collection databases in preference order (most current first). Taking the
+ * first name the ZIP happens to list is what made a 2.1.62+ export import as a
+ * single "update Anki" card: that entry is the stub `collection.anki2`.
+ */
+const COLLECTION_NAMES_BY_PREFERENCE = [
+  "collection.anki21b",
+  "collection.anki21",
+  "collection.anki2",
+] as const;
+
+const SQLITE_MAGIC = "SQLite format 3\0";
+
+function startsWithSqliteMagic(bytes: Uint8Array): boolean {
+  if (bytes.length < SQLITE_MAGIC.length) return false;
+  for (let i = 0; i < SQLITE_MAGIC.length; i++) {
+    if (bytes[i] !== SQLITE_MAGIC.charCodeAt(i)) return false;
+  }
+  return true;
+}
+
+/** Entry names that could be a collection database, best candidate first. */
+function rankCollectionEntries(names: string[]): string[] {
+  const ranked: string[] = [];
+  const push = (name: string) => {
+    if (!ranked.includes(name)) ranked.push(name);
+  };
+  for (const preferred of COLLECTION_NAMES_BY_PREFERENCE) {
+    for (const name of names) {
+      if (name === preferred || name.endsWith(`/${preferred}`)) push(name);
+    }
+  }
+  // Names we do not know, but that still look like a database, get a chance too.
+  for (const suffix of COLLECTION_NAMES_BY_PREFERENCE) {
+    for (const name of names) {
+      if (name.endsWith(suffix)) push(name);
+    }
+  }
+  return ranked;
+}
+
+/**
+ * Decodes a collection database, transparently inflating the zstd container the
+ * newer Anki format uses. Throws a message the UI can show as-is.
+ */
+function decodeCollectionBytes(name: string, bytes: Uint8Array): Uint8Array {
+  if (startsWithSqliteMagic(bytes)) return bytes;
+  try {
+    const inflated = zstdDecompress(bytes);
+    if (startsWithSqliteMagic(inflated)) return inflated;
+  } catch {
+    // Fall through to the shared error below.
+  }
+  throw new Error(
+    `Invalid Anki file: ${name} is neither a SQLite database nor a readable zstd container.`,
+  );
+}
 
 /**
  * Pack an Anki .apkg file from SQLite database bytes and optional media files.
@@ -52,14 +119,38 @@ export function unpackApkg(
   }
   const files = filesRaw as Record<string, Uint8Array>;
 
-  // Locate the SQLite database (usually collection.anki2 or collection.anki21)
-  const dbKey = Object.keys(files).find(
-    (k) => k.endsWith(".anki2") || k.endsWith(".anki21") || k === "collection.anki2",
-  );
-  if (!dbKey) {
+  const candidates = rankCollectionEntries(Object.keys(files));
+  if (candidates.length === 0) {
     throw new Error("Invalid Anki file: no .anki2 database found");
   }
-  const db = files[dbKey];
+
+  // Decode in preference order. A candidate that decodes is the collection; one
+  // that does not is only skipped if we have not already committed to a newer
+  // format, so a truncated modern export fails loudly instead of importing the
+  // placeholder database that ships alongside it.
+  let db: Uint8Array | null = null;
+  for (const name of candidates) {
+    const bytes = files[name];
+    if (!bytes) continue;
+    const looksModern = name.endsWith("anki21b");
+    if (looksModern) {
+      db = decodeCollectionBytes(name, bytes);
+      break;
+    }
+    if (startsWithSqliteMagic(bytes)) {
+      db = bytes;
+      break;
+    }
+  }
+  if (!db) {
+    // Nothing looked like SQLite. A single entry is passed through for the
+    // SQLite layer to complain about; with several candidates the archive is
+    // malformed and the user needs a message that says so.
+    db =
+      candidates.length === 1
+        ? files[candidates[0]]
+        : decodeCollectionBytes(candidates[0], files[candidates[0]]);
+  }
 
   // Parse the media manifest and collect media blobs
   const media = new Map<string, Uint8Array>();
