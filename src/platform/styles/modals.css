@@ -67,8 +67,8 @@
 /* ---- Panel ---- */
 
 .learnkit .lk-modals.modal {
-  -webkit-backdrop-filter: var(--blur-l, blur(16px) saturate(125%));
-  backdrop-filter: var(--blur-l, blur(16px) saturate(125%));
+  -webkit-backdrop-filter: var(--learnkit-blur, var(--blur-l, blur(16px) saturate(125%)));
+  backdrop-filter: var(--learnkit-blur, var(--blur-l, blur(16px) saturate(125%)));
   border-radius: var(--radius-lg);
   outline: none;
   max-width: min(550px, 95%) ;
@@ -91,8 +91,8 @@
   border-radius: var(--radius-lg);
     border: 0.5px solid color-mix(in srgb, var(--color-base-70) 20%, transparent 80%);
     background: color-mix(in srgb, var(--color-base-05) 95%, transparent 05%);
-    -webkit-backdrop-filter: var(--blur-l, blur(16px) saturate(125%));
-    backdrop-filter: var(--blur-l, blur(16px) saturate(125%));
+    -webkit-backdrop-filter: var(--learnkit-blur, var(--blur-l, blur(16px) saturate(125%)));
+    backdrop-filter: var(--learnkit-blur, var(--blur-l, blur(16px) saturate(125%)));
     max-width: min(1080px, 95%);
     height: auto;
     max-height: min(85vh);
@@ -176,8 +176,8 @@
   background: color-mix(in srgb, var(--color-base-05) 95%, transparent 05%);
   border: 0.5px solid color-mix(in srgb, var(--color-base-70) 20%, transparent 80%);
   color: var(--text-normal);
-  -webkit-backdrop-filter: var(--blur-m, blur(10px) saturate(120%));
-  backdrop-filter: var(--blur-m, blur(10px) saturate(120%));
+  -webkit-backdrop-filter: var(--learnkit-blur, var(--blur-m, blur(10px) saturate(120%)));
+  backdrop-filter: var(--learnkit-blur, var(--blur-m, blur(10px) saturate(120%)));
   box-shadow: none;
 }
 
@@ -199,8 +199,8 @@
 ) {
   background: color-mix(in srgb, var(--color-base-05) 95%, transparent 05%);
   border-color: color-mix(in srgb, var(--color-base-70) 20%, transparent 80%) ;
-  -webkit-backdrop-filter: var(--blur-m, blur(10px) saturate(120%));
-  backdrop-filter: var(--blur-m, blur(10px) saturate(120%));
+  -webkit-backdrop-filter: var(--learnkit-blur, var(--blur-m, blur(10px) saturate(120%)));
+  backdrop-filter: var(--learnkit-blur, var(--blur-m, blur(10px) saturate(120%)));
 }
 
 .learnkit .lk-modals.modal .learnkit-btn-toolbar {
@@ -628,8 +628,8 @@
   border-radius: var(--radius-l);
   border: 0.5px solid color-mix(in srgb, var(--color-base-70) 20%, transparent 80%);
   background: color-mix(in srgb, var(--color-base-05) 95%, transparent 05%);
-  -webkit-backdrop-filter: var(--blur-l, blur(16px) saturate(125%));
-  backdrop-filter: var(--blur-l, blur(16px) saturate(125%));
+  -webkit-backdrop-filter: var(--learnkit-blur, var(--blur-l, blur(16px) saturate(125%)));
+  backdrop-filter: var(--learnkit-blur, var(--blur-l, blur(16px) saturate(125%)));
   box-shadow: 0 14px 36px rgba(0, 0, 0, 0.22), 0 4px 14px rgba(0, 0, 0, 0.12);
 }
 
@@ -896,8 +896,8 @@ width: min(720px, 100%);
 ) {
   background: color-mix(in srgb, var(--color-base-00) 42%, transparent 58%) ;
   border-color: color-mix(in srgb, var(--color-base-70) 20%, transparent 80%) ;
-  -webkit-backdrop-filter: var(--blur-m, blur(10px) saturate(120%));
-  backdrop-filter: var(--blur-m, blur(10px) saturate(120%));
+  -webkit-backdrop-filter: var(--learnkit-blur, var(--blur-m, blur(10px) saturate(120%)));
+  backdrop-filter: var(--learnkit-blur, var(--blur-m, blur(10px) saturate(120%)));
 }
 
 .learnkit .learnkit-card-creator-modal :is(
@@ -1142,8 +1142,8 @@ body.is-mobile .learnkit .learnkit-cloze-mobile-actions {
   border: 0.5px solid color-mix(in srgb, var(--color-base-70) 20%, transparent 80%) ;
   border-radius: var(--radius-md);
   background: color-mix(in srgb, var(--color-base-05) 95%, transparent 05%);
-  -webkit-backdrop-filter: var(--blur-m, blur(10px) saturate(120%));
-  backdrop-filter: var(--blur-m, blur(10px) saturate(120%));
+  -webkit-backdrop-filter: var(--learnkit-blur, var(--blur-m, blur(10px) saturate(120%)));
+  backdrop-filter: var(--learnkit-blur, var(--blur-m, blur(10px) saturate(120%)));
   overflow: hidden;
   --learnkit-single-edit-height: 80px;
   --learnkit-single-edit-max-height: 80px;
@@ -1248,8 +1248,8 @@ body.is-mobile .learnkit .learnkit-cloze-mobile-actions {
   align-content: flex-start;
   background: color-mix(in srgb, var(--color-base-05) 95%, transparent 05%);
   border: 0.5px solid color-mix(in srgb, var(--color-base-70) 20%, transparent 80%);
-  -webkit-backdrop-filter: var(--blur-m, blur(10px) saturate(120%));
-  backdrop-filter: var(--blur-m, blur(10px) saturate(120%));
+  -webkit-backdrop-filter: var(--learnkit-blur, var(--blur-m, blur(10px) saturate(120%)));
+  backdrop-filter: var(--learnkit-blur, var(--blur-m, blur(10px) saturate(120%)));
   box-shadow: none;
 }
 

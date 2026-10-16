@@ -338,7 +338,7 @@
   font-size: 0.75rem;
   font-weight: 600;
   line-height: 1.2;
-  backdrop-filter: var(--blur-s, blur(8px));
+  backdrop-filter: var(--learnkit-blur, var(--blur-s, blur(8px)));
 }
 
 .learnkit .learnkit-hotspot-prompt-target {
@@ -407,7 +407,7 @@
   color: rgba(255, 255, 255, 0.92);
   border: 0.5px solid rgba(51, 51, 51, 0.48);
   background: rgba(51, 51, 51, 0.48);
-  backdrop-filter: var(--blur-s, blur(2px));
+  backdrop-filter: var(--learnkit-blur, var(--blur-s, blur(2px)));
   font-size: 0.67rem;
   line-height: 1.25;
   font-weight: 600;

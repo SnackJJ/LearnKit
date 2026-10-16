@@ -128,8 +128,8 @@
   border-radius: var(--radius-md);
   background: color-mix(in srgb, var(--color-base-05) 74%, transparent);
   box-shadow: none;
-  -webkit-backdrop-filter: var(--blur-m, blur(10px));
-  backdrop-filter: var(--blur-m, blur(10px));
+  -webkit-backdrop-filter: var(--learnkit-blur, var(--blur-m, blur(10px)));
+  backdrop-filter: var(--learnkit-blur, var(--blur-m, blur(10px)));
 }
 
 .learnkit .learnkit-note-review-topbar-title {
@@ -173,8 +173,8 @@
   display: block;
   height: 40px;
   pointer-events: none;
-  -webkit-backdrop-filter: var(--blur-s, blur(4px));
-  backdrop-filter: var(--blur-s, blur(4px));
+  -webkit-backdrop-filter: var(--learnkit-blur, var(--blur-s, blur(4px)));
+  backdrop-filter: var(--learnkit-blur, var(--blur-s, blur(4px)));
 }
 
 .learnkit .learnkit-note-review-content::before {
@@ -347,8 +347,8 @@
   border: 0.5px solid var(--color-base-35);
   border-radius: var(--radius-md);
   background: color-mix(in srgb, var(--color-base-05) 74%, transparent);
-  -webkit-backdrop-filter: var(--blur-m, blur(10px));
-  backdrop-filter: var(--blur-m, blur(10px));
+  -webkit-backdrop-filter: var(--learnkit-blur, var(--blur-m, blur(10px)));
+  backdrop-filter: var(--learnkit-blur, var(--blur-m, blur(10px)));
 }
 
 .learnkit .learnkit-note-review-empty-title {
@@ -388,8 +388,8 @@
   border-radius: var(--radius-md);
   background: color-mix(in srgb, var(--color-base-05) 74%, transparent);
   box-shadow: none;
-  -webkit-backdrop-filter: var(--blur-m, blur(10px));
-  backdrop-filter: var(--blur-m, blur(10px));
+  -webkit-backdrop-filter: var(--learnkit-blur, var(--blur-m, blur(10px)));
+  backdrop-filter: var(--learnkit-blur, var(--blur-m, blur(10px)));
 }
 
 .learnkit .learnkit-note-review-dock :is(button, .learnkit-note-review-more-menu) {

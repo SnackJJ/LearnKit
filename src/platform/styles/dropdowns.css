@@ -205,8 +205,8 @@
 .learnkit .learnkit-dd-popover .learnkit-dd-panel {
   background: color-mix(in srgb, var(--color-base-05) 95%, transparent 05%) ;
   border: 0.5px solid var(--color-base-35) ;
-  -webkit-backdrop-filter: var(--blur-m, blur(14px));
-  backdrop-filter: var(--blur-m, blur(14px));
+  -webkit-backdrop-filter: var(--learnkit-blur, var(--blur-m, blur(14px)));
+  backdrop-filter: var(--learnkit-blur, var(--blur-m, blur(14px)));
 }
 
 .learnkit .learnkit-dd-popover [role="menuitemradio"].group {
@@ -330,16 +330,16 @@
 .learnkit-header-menu-panel {
   background: color-mix(in srgb, var(--color-base-05) 95%, transparent 05%) ;
   border: var(--color-base-35) 0.5px solid;
-  -webkit-backdrop-filter: var(--blur-m, blur(14px));
-  backdrop-filter: var(--blur-m, blur(14px));
+  -webkit-backdrop-filter: var(--learnkit-blur, var(--blur-m, blur(14px)));
+  backdrop-filter: var(--learnkit-blur, var(--blur-m, blur(14px)));
 }
 
 /* Keep reviewer/note-review More menus on the same panel surface as header dropdowns. */
 .learnkit :is(.learnkit-session-more-popover, .learnkit-note-review-more-popover).learnkit-header-menu-panel {
   background: color-mix(in srgb, var(--color-base-05) 95%, transparent 05%) ;
   border: 0.5px solid var(--color-base-35) ;
-  -webkit-backdrop-filter: var(--blur-m, blur(14px));
-  backdrop-filter: var(--blur-m, blur(14px));
+  -webkit-backdrop-filter: var(--learnkit-blur, var(--blur-m, blur(14px)));
+  backdrop-filter: var(--learnkit-blur, var(--blur-m, blur(14px)));
 }
 
 /* Keep header menu items visually soft: transparent base border + transparent hover fill. */

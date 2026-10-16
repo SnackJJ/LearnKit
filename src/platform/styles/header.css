@@ -56,8 +56,8 @@
     border-radius: var(--radius-md);
   background: var(--learnkit-header-surface-bg);
   border: 0.5px solid var(--color-base-30);
-  -webkit-backdrop-filter: var(--blur-m, blur(14px));
-  backdrop-filter: var(--blur-m, blur(14px));
+  -webkit-backdrop-filter: var(--learnkit-blur, var(--blur-m, blur(14px)));
+  backdrop-filter: var(--learnkit-blur, var(--blur-m, blur(14px)));
     height: auto;
     box-shadow: none;
     align-items: center;
@@ -76,8 +76,8 @@ body:not(.is-phone) .learnkit .view-header.learnkit-header {
   border: transparent ;
   opacity: 1 ;
   filter: none ;
-  -webkit-backdrop-filter: var(--blur-m, blur(14px));
-  backdrop-filter: var(--blur-m, blur(14px));
+  -webkit-backdrop-filter: var(--learnkit-blur, var(--blur-m, blur(14px)));
+  backdrop-filter: var(--learnkit-blur, var(--blur-m, blur(14px)));
 }
 
 /* Keep desktop header surface identical across focused/unfocused host states. */
@@ -91,8 +91,8 @@ body:not(.is-phone) .workspace-leaf-content.mod-fade .learnkit .view-header.lear
   border: transparent ;
   opacity: 1 ;
   filter: none ;
-  -webkit-backdrop-filter: var(--blur-m, blur(14px));
-  backdrop-filter: var(--blur-m, blur(14px));
+  -webkit-backdrop-filter: var(--learnkit-blur, var(--blur-m, blur(14px)));
+  backdrop-filter: var(--learnkit-blur, var(--blur-m, blur(14px)));
 }
 
 .learnkit .view-header.learnkit-header .view-header-left {
@@ -416,8 +416,8 @@ body.is-phone .learnkit .view-header.learnkit-header {
   border: 0.5px solid var(--color-base-30);
   border-radius: var(--radius-md);
   background: color-mix(in srgb, var(--background) 74%, transparent);
-  -webkit-backdrop-filter: var(--blur-m, blur(10px));
-  backdrop-filter: var(--blur-m, blur(10px));
+  -webkit-backdrop-filter: var(--learnkit-blur, var(--blur-m, blur(10px)));
+  backdrop-filter: var(--learnkit-blur, var(--blur-m, blur(10px)));
 }
 
 /* Nuke any Obsidian-injected white bg on the view-actions bar */

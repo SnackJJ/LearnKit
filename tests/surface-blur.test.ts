@@ -13,8 +13,9 @@
  * Obsidian core exposes `--blur-s/m/l` (built from `--blur-radius-s/m/l` + the saturation and
  * brightness tokens) exactly so a theme can switch surface blur off, and Baseline's
  * `.is-translucent` sets them to `none`. Hardcoding a radius overrides that decision and brings
- * the artefacts back, so every LearnKit surface must read the token with the old radius only as
- * a `var()` fallback for hosts that predate the tokens.
+ * the artefacts back, so every LearnKit surface reads `--learnkit-blur` first (switched to `none`
+ * under `body.is-translucent`), then the host token, then the old radius as a last-resort
+ * `var()` fallback for hosts that predate the tokens.
  */
 
 import fs from "node:fs";
@@ -25,7 +26,7 @@ import { describe, expect, it } from "vitest";
 const STYLES_DIR = path.join(__dirname, "..", "src", "platform", "styles");
 const DIST_STYLES = path.join(__dirname, "..", "dist", "styles.css");
 
-const BLUR_TOKEN_RE = /^var\(\s*--blur-(?:s|m|l)\s*,/;
+const BLUR_TOKEN_RE = /^var\(\s*--learnkit-blur\s*,\s*var\(\s*--blur-(?:s|m|l)\s*,/;
 
 /** Every `backdrop-filter` declaration that blurs, with the value as written. */
 function backdropBlurDecls(css: string, label: string): string[] {
@@ -69,18 +70,42 @@ describe("surface blur uses the host theme's tokens", () => {
 
   it("still blurs somewhere, so the var() migration did not silently drop the look", () => {
     const css = fs.readFileSync(path.join(STYLES_DIR, "header.css"), "utf8");
-    expect(css).toContain("backdrop-filter: var(--blur-m, blur(14px))");
+    expect(css).toContain("backdrop-filter: var(--learnkit-blur, var(--blur-m, blur(14px)))");
   });
 
-  it("neutralises backdrop-filter inside LearnKit when the window is translucent", () => {
+  it("neutralises LearnKit blur in a translucent window through its own token", () => {
     const css = fs.readFileSync(path.join(STYLES_DIR, "layout.css"), "utf8");
 
+    // The switch is a custom property on body, so it reaches every LearnKit surface
+    // including the portalled .lk-modals / .learnkit-popover-overlay trees, and it
+    // needs no !important: themes control --blur-s/m/l, LearnKit controls this one.
+    expect(css).toMatch(/body\.is-translucent \.learnkit[\s\S]{0,900}--learnkit-blur: none;/);
+    expect(css).not.toContain("backdrop-filter: none !important");
+  });
+
+  it("ships the translucent-window switch, scoped, in the built stylesheet", () => {
+    if (!fs.existsSync(DIST_STYLES)) return;
+
+    const css = fs.readFileSync(DIST_STYLES, "utf8");
+    // The build scopes/drops bare page-level rules; if this selector were rewritten to
+    // `.learnkit` the switch would apply unconditionally and blur would never work.
     expect(css).toContain("body.is-translucent .learnkit");
-    // `!important` is required: header.css declares a blur on
-    // `body:not(.is-phone) .learnkit .view-header.learnkit-header`, which outranks
-    // `body.is-translucent .learnkit *`.
-    expect(css).toMatch(
-      /body\.is-translucent \.learnkit[\s\S]{0,400}backdrop-filter: none !important/,
-    );
+    expect(css).toMatch(/body\.is-translucent[^{}]{0,200}\{[^{}]*--learnkit-blur:none/);
+    // and it must not appear as an unconditional rule on the root
+    expect(css).not.toMatch(/\.learnkit\{--learnkit-blur:none\}/);
+  });
+
+  it("declares no !important anywhere in the stylesheets", () => {
+    const offenders: string[] = [];
+    for (const name of fs.readdirSync(STYLES_DIR)) {
+      if (!name.endsWith(".css")) continue;
+      fs.readFileSync(path.join(STYLES_DIR, name), "utf8")
+        .replace(/\/\*[\s\S]*?\*\//g, "")
+        .split("\n")
+        .forEach((line, i) => {
+          if (line.includes("!important")) offenders.push(`${name}:${i + 1}`);
+        });
+    }
+    expect(offenders).toEqual([]);
   });
 });

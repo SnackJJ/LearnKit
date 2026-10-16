@@ -68,22 +68,28 @@
 
    Both were reported against the Baseline theme (LearnKit #217), which reaches
    the same conclusion itself: `.is-translucent` there sets `--blur-s/m/l: none`.
-   Every surface in this bundle now reads those tokens, so that decision is
-   honoured; this rule states it directly as well, so it also holds for host
-   themes that do not disable blur, and beats the few surfaces that declare a
-   blur with high-specificity selectors.
 
-   `!important` is load-bearing: `body:not(.is-phone) .learnkit .view-header…`
-   (header.css) is more specific than this rule's `body.is-translucent .learnkit *`.
+   Every LearnKit blur declaration resolves in this order:
+
+       var(--learnkit-blur, var(--blur-m, blur(14px)))
+
+   so switching `--learnkit-blur` to `none` here turns all of them off at once,
+   for every host theme, whatever the specificity of the rule that declared the
+   blur. This is LearnKit's own property, it inherits into the portalled modal
+   and popover trees, and it needs no `override` flag of its own.
    ========================================================================== */
+/* The selectors must keep a descendant: the build scopes and drops bare page-level
+   rules, so `body.is-translucent` on its own would be rewritten. Custom properties
+   inherit, so setting the switch on the three LearnKit roots is enough. */
 body.is-translucent .learnkit,
-body.is-translucent .learnkit *,
 body.is-translucent .lk-modals,
-body.is-translucent .lk-modals *,
-body.is-translucent .learnkit-popover-overlay,
-body.is-translucent .learnkit-popover-overlay * {
-  -webkit-backdrop-filter: none !important;
-  backdrop-filter: none !important;
+body.is-translucent .learnkit-popover-overlay {
+  /* In a macOS vibrancy window any backdrop-filter makes Chromium keep and re-sample a
+     backdrop root, which flickers the whole app (see tests/surface-blur.test.ts). Every
+     LearnKit blur declaration reads --learnkit-blur first, so switching it off here
+     neutralises all of them - including the portalled modal and popover trees - with no
+     override flag for host themes to fight against. */
+  --learnkit-blur: none;
 }
 
 /* View-header wrappers: transparent so header card margins are clean */

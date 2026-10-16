@@ -110,8 +110,8 @@
   border: 0.5px solid var(--color-base-30);
   border-radius: var(--radius-md);
   background: color-mix(in srgb, var(--color-base-05) 74%, transparent);
-  -webkit-backdrop-filter: var(--blur-m, blur(10px));
-  backdrop-filter: var(--blur-m, blur(10px));
+  -webkit-backdrop-filter: var(--learnkit-blur, var(--blur-m, blur(10px)));
+  backdrop-filter: var(--learnkit-blur, var(--blur-m, blur(10px)));
   z-index: 10;
   margin: 0;
 }
@@ -132,8 +132,8 @@
   border: 0.5px solid var(--color-base-30);
   border-radius: var(--radius-md);
   background: color-mix(in srgb, var(--color-base-05) 74%, transparent);
-  -webkit-backdrop-filter: var(--blur-m, blur(10px));
-  backdrop-filter: var(--blur-m, blur(10px));
+  -webkit-backdrop-filter: var(--learnkit-blur, var(--blur-m, blur(10px)));
+  backdrop-filter: var(--learnkit-blur, var(--blur-m, blur(10px)));
   overflow: hidden;
   z-index: 10;
 }
@@ -497,8 +497,8 @@
   border: 0.5px solid var(--color-base-35);
   border-radius: var(--radius-md);
   background: color-mix(in srgb, var(--color-base-05) 74%, transparent);
-  -webkit-backdrop-filter: var(--blur-m, blur(10px));
-  backdrop-filter: var(--blur-m, blur(10px));
+  -webkit-backdrop-filter: var(--learnkit-blur, var(--blur-m, blur(10px)));
+  backdrop-filter: var(--learnkit-blur, var(--blur-m, blur(10px)));
 }
 
 .learnkit-guide-footer:empty {
@@ -2096,8 +2096,8 @@ td.learnkit-backup-cell.learnkit-backup-cell.learnkit-backup-actions.learnkit-ba
   border: 0.5px solid var(--color-base-30);
   border-radius: var(--radius-md);
   background: color-mix(in srgb, var(--color-base-05) 74%, transparent);
-  -webkit-backdrop-filter: var(--blur-m, blur(10px));
-  backdrop-filter: var(--blur-m, blur(10px));
+  -webkit-backdrop-filter: var(--learnkit-blur, var(--blur-m, blur(10px)));
+  backdrop-filter: var(--learnkit-blur, var(--blur-m, blur(10px)));
 }
 
 .learnkit-settings-layout-content {
