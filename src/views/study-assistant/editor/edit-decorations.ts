@@ -25,7 +25,7 @@ import {
   classifyEditProposalRender,
   type InlineDiffSegment,
 } from "./edit-diff-helpers";
-import { makeEl } from "../../../platform/core/dom-factory";
+import { makeEl, makeFragment } from "../../../platform/core/dom-factory";
 
 // ── Types ──
 
@@ -128,7 +128,7 @@ function renderProposalContent(
 }
 
 function renderSourceProposalFragment(contentEl: HTMLElement, text: string): void {
-  const fragment = activeDocument.createDocumentFragment();
+  const fragment = makeFragment();
   const lines = text.split("\n");
 
   for (const line of lines) {

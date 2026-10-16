@@ -63,6 +63,19 @@ export function makeEl(tag: string, doc: Document = activeDocument): HTMLElement
   return doc.createElement(tag);
 }
 
+/**
+ * Create a detached document fragment belonging to `doc` (defaults to the active
+ * document).
+ *
+ * Obsidian's fragment helper (`createFragment`) is a window global, so it always
+ * builds in the main window's document; `Document` has no `createFragment` in its
+ * type surface. Going through the document keeps fragments correct inside pop-out
+ * windows and keeps element creation in one auditable place.
+ */
+export function makeFragment(doc: Document = activeDocument): DocumentFragment {
+  return doc.createDocumentFragment();
+}
+
 /** Create a detached SVG element in `doc` (defaults to the active document). */
 export function makeSvgEl<K extends keyof SVGElementTagNameMap>(
   tag: K,

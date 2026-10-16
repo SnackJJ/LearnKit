@@ -14,7 +14,7 @@ import createDOMPurify from "dompurify";
 import { finishRenderMath, renderMath, setIcon } from "obsidian";
 import { hydrateCircleFlagsInElement, renderFlagPreviewHtml, replaceCircleFlagTokens, escapeFlagHtml } from "../../platform/flags/flag-tokens";
 import { collectMathSegments, protectMathRanges } from "./shared-utils";
-import { makeEl } from "./dom-factory";
+import { makeEl, makeFragment } from "./dom-factory";
 
 export type CssPropValue = string | number | null | undefined;
 
@@ -279,12 +279,12 @@ export function smallToggleButton(isOpen: boolean, onClick: () => void): HTMLBut
 
 export function createFragmentFromHTML(html: string): DocumentFragment {
   const safeHtml = String(html ?? "");
-  if (!safeHtml) return hasDom ? activeDocument.createDocumentFragment() : ({} as DocumentFragment);
+  if (!safeHtml) return hasDom ? makeFragment() : ({} as DocumentFragment);
 
   if (!hasDom) return {} as DocumentFragment;
 
   const sanitizer = getDomPurify();
-  if (!sanitizer) return activeDocument.createDocumentFragment();
+  if (!sanitizer) return makeFragment();
 
   const sanitized = sanitizer.sanitize(safeHtml, { RETURN_DOM_FRAGMENT: true });
   if (
@@ -296,7 +296,7 @@ export function createFragmentFromHTML(html: string): DocumentFragment {
     return sanitized;
   }
 
-  const frag = activeDocument.createDocumentFragment();
+  const frag = makeFragment();
   const parser = new DOMParser();
   const sanitizedHtml = typeof sanitized === "string" ? sanitized : "";
   const doc = parser.parseFromString(sanitizedHtml, "text/html");
@@ -340,7 +340,7 @@ function renderLatexInElement(container: HTMLElement): void {
     const nonOverlapping = collectMathSegments(sourceText).filter((seg) => seg.source.trim());
     if (!nonOverlapping.length) continue;
 
-    const frag = activeDocument.createDocumentFragment();
+    const frag = makeFragment();
     let pos = 0;
 
     for (const m of nonOverlapping) {

@@ -42,7 +42,7 @@ import { getTtsService } from "../../platform/integrations/tts/tts-service";
 import { hasCardAnchorForId } from "../../platform/core/identity";
 import { buildReadingFlashcardCloze } from "./reading-flashcard-cloze";
 import { computeContentSignature } from "./reading-refresh-runtime";
-import { makeEl, makeSvgEl } from "../../platform/core/dom-factory";
+import { makeEl, makeFragment, makeSvgEl } from "../../platform/core/dom-factory";
 
 /* -----------------------
    Module-level mutable state
@@ -2476,7 +2476,7 @@ function renderLatexInContainer(container: HTMLElement): void {
     if (filtered.length === 0) continue;
 
     // Build a document fragment with text + math interleaved
-    const frag = activeDocument.createDocumentFragment();
+    const frag = makeFragment();
     let cursor = 0;
 
     for (const seg of filtered) {
