@@ -8,9 +8,11 @@
  * entry, or failing to inflate zstd, imports that placeholder as a card - which
  * is exactly the symptom this suite exists to prevent regressing.
  */
+import fs from "node:fs";
+import path from "node:path";
 import { describe, expect, it } from "vitest";
-import zlib from "node:zlib";
 import { zipSync, strToU8 } from "fflate";
+import { decompress as zstdInflate } from "fzstd";
 
 import { packApkg, unpackApkg } from "../src/platform/integrations/anki/anki-zip";
 import { describeAnkiUpgradeStub } from "../src/platform/integrations/anki/anki-import";
@@ -23,8 +25,20 @@ function sqliteish(body: string): Uint8Array {
   return strToU8(SQLITE_MAGIC + body);
 }
 
-function zstd(bytes: Uint8Array): Uint8Array {
-  return new Uint8Array(zlib.zstdCompressSync(Buffer.from(bytes)));
+/**
+ * A real zstd frame of `SQLite format 3\0REAL-COLLECTION`, generated once with
+ * Node's zstd encoder and committed as a binary fixture.
+ *
+ * Node only gained `zlib.zstdCompressSync` in 22.15, so compressing at test time
+ * would fail on the Node 20 that CI runs - and what matters is that the *reader*
+ * inflates what Anki writes, not that this machine can write zstd. `fzstd`
+ * inflates the fixture at run time, exactly as the importer does.
+ */
+const ZSTD_FIXTURE_PATH = path.join(__dirname, "fixtures", "collection.anki21b.zst");
+const ZSTD_PLAINTEXT = "SQLite format 3\0REAL-COLLECTION";
+
+function zstdFixture(): Uint8Array {
+  return new Uint8Array(fs.readFileSync(ZSTD_FIXTURE_PATH));
 }
 
 function noteRow(flds: string): AnkiNoteRow {
@@ -44,13 +58,18 @@ function noteRow(flds: string): AnkiNoteRow {
 }
 
 describe("unpackApkg across Anki export formats", () => {
+  it("carries a valid zstd fixture", () => {
+    const inflated = zstdInflate(zstdFixture());
+    expect(Buffer.from(inflated).toString("binary")).toBe(ZSTD_PLAINTEXT);
+  });
+
   it("prefers the zstd collection over the legacy placeholder entry", () => {
-    const real = sqliteish("REAL-COLLECTION");
+    const real = strToU8(ZSTD_PLAINTEXT);
     const apkg = zipSync({
       // Deliberately listed first: the stub used to win because the old code
       // took the first matching name in ZIP order.
       "collection.anki2": sqliteish("PLACEHOLDER"),
-      "collection.anki21b": zstd(real),
+      "collection.anki21b": zstdFixture(),
       media: strToU8("{}"),
     });
 
@@ -78,7 +97,7 @@ describe("unpackApkg across Anki export formats", () => {
   it("reads media from a modern archive as well", () => {
     const image = new Uint8Array([1, 2, 3, 4]);
     const apkg = zipSync({
-      "collection.anki21b": zstd(sqliteish("REAL")),
+      "collection.anki21b": zstdFixture(),
       media: strToU8(JSON.stringify({ 0: "pic.png" })),
       0: image,
     });
