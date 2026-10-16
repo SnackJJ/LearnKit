@@ -2,6 +2,11 @@
 
 All notable changes to LearnKit are summarized here.
 
+## 1.8.6 (2026-10-16)
+
+### Fixed
+- **Re-release of 1.8.5 under a fresh version number.** 1.8.5's GitHub release was published and then re-pointed while it was being set up (its tag was moved to the commit whose CI run is green, and its release title was edited), which left the community scan reading an inconsistent release. 1.8.6 carries the same code and exists so the directory has a clean, self-consistent release to scan: tag, `manifest.json` version and release title all agree. No functional change from 1.8.5 — the Anki import fix, the `!important` removal, the browser-storage removal and the rebrand sweep it shipped are all here.
+
 ## 1.8.5 (2026-10-16)
 
 ### Fixed
