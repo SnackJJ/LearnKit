@@ -13,13 +13,13 @@ type OpenCardAnchorOptions = {
   preferredLeaf?: WorkspaceLeaf;
 };
 
-function normalizeSproutAnchorId(cardId: string): string {
+function normalizeLearnKitAnchorId(cardId: string): string {
   const raw = String(cardId || "").trim();
   const noHash = raw.startsWith("#^") ? raw.slice(2) : raw;
   const noCaret = noHash.startsWith("^") ? noHash.slice(1) : noHash;
   if (!noCaret) return "";
-  if (noCaret.startsWith("sprout-")) return noCaret;
-  if (/^\d{9}$/.test(noCaret)) return `sprout-${noCaret}`;
+  if (noCaret.startsWith("learnkit-")) return noCaret;
+  if (/^\d{9}$/.test(noCaret)) return `learnkit-${noCaret}`;
   return noCaret;
 }
 
@@ -30,7 +30,7 @@ export async function openCardAnchorInNote(
   opts?: OpenCardAnchorOptions,
 ): Promise<boolean> {
   const path = String(sourceNotePath || "").trim();
-  const anchorId = normalizeSproutAnchorId(cardId);
+  const anchorId = normalizeLearnKitAnchorId(cardId);
   if (!path || !anchorId) return false;
 
   const file = app.vault.getAbstractFileByPath(path);

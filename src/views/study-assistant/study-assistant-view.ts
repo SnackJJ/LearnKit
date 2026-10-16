@@ -3,7 +3,7 @@
  * @summary Module for study assistant view.
  *
  * @exports
- *  - SproutStudyAssistantView
+ *  - LearnKitStudyAssistantView
  */
 
-export { SproutStudyAssistantView } from "./view/study-assistant-view";
+export { LearnKitStudyAssistantView } from "./view/study-assistant-view";

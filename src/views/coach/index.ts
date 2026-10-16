@@ -3,7 +3,7 @@
  * @summary Module for index.
  *
  * @exports
- *  - SproutCoachView
+ *  - LearnKitCoachView
  */
 
-export { SproutCoachView } from "./coach-view";
+export { LearnKitCoachView } from "./coach-view";

@@ -689,7 +689,7 @@ export function renderImageOcclusionReviewInto(args: {
   hotspotReview?: HotspotReviewOptions;
 }) {
   const { app, plugin, containerEl, card, sourcePath, reveal, ioModule } = args;
-  const widgetMode = containerEl?.dataset?.sproutIoWidget === "1";
+  const widgetMode = containerEl?.dataset?.learnkitIoWidget === "1";
   const enableWidgetModal = args.enableWidgetModal !== false;
   const isHotspot = card.type === "hq" || card.type === "hq-child";
   const hotspotReview = args.hotspotReview;
@@ -808,7 +808,7 @@ export function renderImageOcclusionReviewInto(args: {
         const zoomHost = this.contentEl.createDiv({ cls: "learnkit-zoom-host learnkit-zoom-host" });
         const zoomCanvas = zoomHost.createDiv({ cls: "learnkit-zoom-canvas learnkit-zoom-canvas" });
         const zoomSurface = zoomCanvas.createDiv({ cls: "learnkit-zoom-surface learnkit-zoom-surface" });
-        zoomSurface.dataset.sproutIoWidget = "1";
+        zoomSurface.dataset.learnkitIoWidget = "1";
 
         const closeIfOutsideSurface = (ev: MouseEvent) => {
           const target = ev.target as HTMLElement | null;

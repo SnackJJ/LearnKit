@@ -1,6 +1,6 @@
 /**
  * @file src/widget/widget-buttons.ts
- * @summary Standalone UI factory functions for the Sprout sidebar widget. Provides reusable button builders (icon-only and text variants), styling helpers for action buttons and hover states, and the "More" dropdown menu attachment logic.
+ * @summary Standalone UI factory functions for the LearnKit sidebar widget. Provides reusable button builders (icon-only and text variants), styling helpers for action buttons and hover states, and the "More" dropdown menu attachment logic.
  *
  * @exports
  *  - applyWidgetHoverDarken       — adds hover colour-darken transitions to an element
@@ -92,16 +92,16 @@ export function makeTextButton(opts: {
   btn.setAttribute("data-tooltip-position", "top");
 
   if (opts.subtitle) {
-    btn.classList.add("sprout-widget-btn-with-subtitle");
+    btn.classList.add("learnkit-widget-btn-with-subtitle");
     const labelWrap = makeEl("span");
-    labelWrap.className = "sprout-widget-btn-label-wrap";
+    labelWrap.className = "learnkit-widget-btn-label-wrap";
 
     const labelLine = makeEl("span");
     labelLine.className = "learnkit-grade-btn-label";
     labelLine.textContent = opts.label;
 
     const subtitleLine = makeEl("span");
-    subtitleLine.className = "sprout-widget-btn-subtitle";
+    subtitleLine.className = "learnkit-widget-btn-subtitle";
     subtitleLine.textContent = opts.subtitle;
 
     labelWrap.appendChild(labelLine);
@@ -115,7 +115,7 @@ export function makeTextButton(opts: {
 
   if (opts.kbd) {
     const kbd = makeEl("kbd");
-    kbd.className = "kbd sprout-widget-kbd";
+    kbd.className = "kbd learnkit-widget-kbd";
     kbd.textContent = opts.kbd;
     btn.appendChild(kbd);
   }
@@ -133,7 +133,7 @@ export function makeTextButton(opts: {
 /*  Action button styling                                              */
 /* ------------------------------------------------------------------ */
 
-/** Adds the shared `sprout-widget-action-btn` class to a button. */
+/** Adds the shared `learnkit-widget-action-btn` class to a button. */
 export function applyWidgetActionButtonStyles(btn: HTMLButtonElement) {
   btn.classList.add("learnkit-widget-action-btn", "learnkit-widget-action-btn");
 }

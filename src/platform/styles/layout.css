@@ -41,9 +41,9 @@
   width: 380px;
 }
 
-/* Sprout-scoped pinch zoom: only Sprout leaves, never other plugins */
+/* LearnKit-scoped pinch zoom: only LearnKit leaves, never other plugins */
 .workspace-leaf-content.learnkit {
-  /* No zoom context unless the athlete actually zoomed (see _applySproutZoom):
+  /* No zoom context unless the athlete actually zoomed (see _applyLearnKitZoom):
      `zoom: 1` still spins up a scaling layer, and a zoomed subtree beside the
      translucent sidebar is a known source of ghost/repaint artefacts. */
   zoom: var(--learnkit-leaf-zoom, normal);
@@ -424,7 +424,7 @@ body.is-phone .learnkit :is(
 
 /* ---- Scrollbar management ---- */
 
-/* Hide scrollbars in Sprout while keeping scroll behaviour */
+/* Hide scrollbars in LearnKit while keeping scroll behaviour */
 .learnkit * {
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -465,7 +465,7 @@ body.is-phone .learnkit :is(
 
 /* ---- Global resets ---- */
 
-/* Hide Obsidian's global status bar only when Sprout views are active */
+/* Hide Obsidian's global status bar only when LearnKit views are active */
 body.learnkit.learnkit-hide-status-bar .status-bar {
   display: none;
 }

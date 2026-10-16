@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { generateExamQuestions, gradeSaqAnswer } from "../src/platform/integrations/ai/exam-generator-ai";
 import { DEFAULT_SETTINGS } from "../src/platform/core/default-settings";
-import type { SproutSettings } from "../src/platform/types/settings";
+import type { LearnKitSettings } from "../src/platform/types/settings";
 import { requestStudyAssistantCompletion } from "../src/platform/integrations/ai/study-assistant-provider";
 
 vi.mock("../src/platform/integrations/ai/study-assistant-provider", () => ({
@@ -11,7 +11,7 @@ vi.mock("../src/platform/integrations/ai/study-assistant-provider", () => ({
 
 const mockedCompletion = vi.mocked(requestStudyAssistantCompletion);
 
-function makeSettings(): SproutSettings["studyAssistant"] {
+function makeSettings(): LearnKitSettings["studyAssistant"] {
   return {
     ...DEFAULT_SETTINGS.studyAssistant,
     provider: "openrouter",

@@ -117,7 +117,7 @@ Release 1.1.0 focused on introducing Companion, the built-in AI companion.
     title: "1.0.6",
     releaseDate: "2026-02-18",
     content: `
-# Sprout 1.0.6
+# LearnKit 1.0.6
 Version 1.0.6 is a compatibility release focused on Obsidian Community Plugins linter compliance for plugin approval.
 
 ## What's Changed
@@ -139,7 +139,7 @@ Version 1.0.6 is a compatibility release focused on Obsidian Community Plugins l
     title: "1.0.5",
     releaseDate: "2026-02-18",
     content: `
-# Sprout 1.0.5
+# LearnKit 1.0.5
 Version 1.0.5 is a major feature release introducing new card types, reading view styles, and deeper card customisation, building on the 1.0.5-beta.1 pre-release.
 
 ## What's Changed
@@ -220,7 +220,7 @@ Version 1.0.5 is a major feature release introducing new card types, reading vie
     releaseDate: "2025-05-10",
     content: `
 ## Improvements
-- Updates to Sprout settings page
+- Updates to LearnKit settings page
 - General stability improvements
 
 ## Bug Fixes
@@ -258,7 +258,7 @@ Version 1.0.5 is a major feature release introducing new card types, reading vie
     releaseDate: "2025-04-01",
     content: `
 # New Features
-- First stable release of Sprout
+- First stable release of LearnKit
 - Code refactored and source shared publicly on GitHub
 - Production-ready for wider use
     `.trim(),

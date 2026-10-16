@@ -1,6 +1,6 @@
 /**
  * @file src/widget/widget-render-session.ts
- * @summary Renders the "session" mode of the Sprout sidebar widget — the screen the user sees while studying flashcards one at a time. Extracted from SproutWidgetView.renderSession to keep the main view file lean. Builds the card front/back DOM, wires grading buttons and keyboard shortcuts, and handles answer reveal transitions.
+ * @summary Renders the "session" mode of the LearnKit sidebar widget — the screen the user sees while studying flashcards one at a time. Extracted from LearnKitWidgetView.renderSession to keep the main view file lean. Builds the card front/back DOM, wires grading buttons and keyboard shortcuts, and handles answer reveal transitions.
  *
  * @exports
  *  - renderWidgetSession — builds and mounts the session-mode DOM into the widget container
@@ -121,7 +121,7 @@ function fallbackWidgetTitle(view: WidgetViewLike, card: CardRecord): string {
 /**
  * Build and append the session-mode DOM tree into `root`.
  *
- * @param view – the `SproutWidgetView` instance (typed loosely to avoid
+ * @param view – the `LearnKitWidgetView` instance (typed loosely to avoid
  *               circular imports)
  * @param root – container element to render into
  */
@@ -130,7 +130,7 @@ export function renderWidgetSession(view: WidgetViewLike, root: HTMLElement): vo
   const wrap = el("div", "bg-background");
   wrap.classList.add("learnkit-widget", "learnkit-widget", "learnkit", "learnkit");
   // ---- Header -------------------------------------------------------
-  const header = el("div", "sprout-widget-header");
+  const header = el("div", "learnkit-widget-header");
 
   const backBtn = makeEl("button");
   backBtn.type = "button";
@@ -144,19 +144,19 @@ export function renderWidgetSession(view: WidgetViewLike, root: HTMLElement): vo
     view.backToSummary();
   });
 
-  const studyingWrap = el("div", "sprout-widget-header-labels");
+  const studyingWrap = el("div", "learnkit-widget-header-labels");
   const scopeLabel = view.session?.scopeType === "folder"
     ? tx(view, "ui.widget.scope.folder", "Folder")
     : tx(view, "ui.widget.scope.note", "Note");
   const studyingScope = `${view.session?.scopeName || tx(view, "ui.widget.scope.note", "Note")} ${scopeLabel}`;
-  const studyingTitle = el("div", "sprout-widget-study-label", tx(view, "ui.widget.studyingScope", "Studying {scope}", { scope: studyingScope }));
+  const studyingTitle = el("div", "learnkit-widget-study-label", tx(view, "ui.widget.studyingScope", "Studying {scope}", { scope: studyingScope }));
 
   const remainingCount = Math.max(0, (view.session?.stats.total || 0) - (view.session?.stats.done || 0));
   const remainingLabel = tx(view, "ui.widget.remainingCards", "{count} Card{suffix} Remaining", {
     count: remainingCount,
     suffix: remainingCount === 1 ? "" : "s",
   });
-  const remainingLine = el("div", "sprout-widget-remaining-label", remainingLabel);
+  const remainingLine = el("div", "learnkit-widget-remaining-label", remainingLabel);
 
   studyingWrap.appendChild(studyingTitle);
   studyingWrap.appendChild(remainingLine);
@@ -179,14 +179,14 @@ export function renderWidgetSession(view: WidgetViewLike, root: HTMLElement): vo
     body.appendChild(
       el(
         "div",
-        "text-lg font-semibold sprout-widget-session-complete-title",
+        "text-lg font-semibold learnkit-widget-session-complete-title",
         tx(view, "ui.widget.sessionComplete", "Session Complete!"),
       ),
     );
     body.appendChild(
       el(
         "div",
-        "text-sm text-muted-foreground sprout-widget-session-complete-meta",
+        "text-sm text-muted-foreground learnkit-widget-session-complete-meta",
         tx(view, "ui.widget.reviewedProgress", "Reviewed: {done}/{total}", {
           done: view.session?.stats?.done || 0,
           total: view.session?.stats?.total || 0,
@@ -210,7 +210,7 @@ export function renderWidgetSession(view: WidgetViewLike, root: HTMLElement): vo
   const graded = view.session?.graded[id] || null;
 
   // ---- Body: card content -------------------------------------------
-  const body = el("div", "card sprout-widget-card-body");
+  const body = el("div", "card learnkit-widget-card-body");
 
   const applySectionStyles = (e: HTMLElement) => {
     e.classList.add("learnkit-widget-section", "learnkit-widget-section");
@@ -228,7 +228,7 @@ export function renderWidgetSession(view: WidgetViewLike, root: HTMLElement): vo
   if (TYPE_LABELS.has(cardTitle.toLowerCase())) cardTitle = "";
 
   const titleText = cardTitle || fallbackWidgetTitle(view, card);
-  const titleEl = el("div", "sprout-widget-note-title sprout-widget-text learnkit-widget-section");
+  const titleEl = el("div", "learnkit-widget-note-title learnkit-widget-text learnkit-widget-section");
   replaceChildrenWithHTML(titleEl, processMarkdownFeatures(titleText));
   applySectionStyles(titleEl);
   wrap.appendChild(titleEl);
@@ -254,7 +254,7 @@ export function renderWidgetSession(view: WidgetViewLike, root: HTMLElement): vo
   wrap.appendChild(body);
 
   // ---- Footer: controls ---------------------------------------------
-  const footer = el("div", "sprout-widget-footer");
+  const footer = el("div", "learnkit-widget-footer");
 
   if (view.session.mode === "practice") {
     renderPracticeFooter(view, footer, card, ioLike);
@@ -296,7 +296,7 @@ function renderBasicCard(
 
   const qEl = el("div", "widget-question");
   const questionLabel = makeEl("div");
-  questionLabel.className = "sprout-widget-question-label";
+  questionLabel.className = "learnkit-widget-question-label";
   questionLabel.textContent = tx(view, "ui.widget.label.question", "Question:");
   qEl.appendChild(questionLabel);
 
@@ -327,7 +327,7 @@ function renderBasicCard(
 
     const aEl = el("div", "widget-answer");
     const answerLabel = makeEl("div");
-    answerLabel.className = "sprout-widget-answer-label";
+    answerLabel.className = "learnkit-widget-answer-label";
     answerLabel.textContent = tx(view, "ui.widget.label.answer", "Answer:");
     aEl.appendChild(answerLabel);
 
@@ -373,9 +373,9 @@ function renderClozeCard(
   const clozeSectionClass = reveal ? "widget-answer" : "widget-question";
 
   if (text.includes("$") || text.includes("\\(") || text.includes("\\[") || text.includes("[[") || hasMarkdownTable(text) || hasMarkdownList(text)) {
-    const clozeEl = el("div", `sprout-widget-cloze sprout-widget-text w-full ${clozeSectionClass}`);
+    const clozeEl = el("div", `learnkit-widget-cloze learnkit-widget-text w-full ${clozeSectionClass}`);
     const clozeLabel = makeEl("div");
-    clozeLabel.className = reveal ? "sprout-widget-answer-label" : "sprout-widget-question-label";
+    clozeLabel.className = reveal ? "learnkit-widget-answer-label" : "learnkit-widget-question-label";
     clozeLabel.textContent = clozeLabelText;
     clozeEl.appendChild(clozeLabel);
 
@@ -444,7 +444,7 @@ function renderClozeCard(
       },
     });
     const clozeLabel = makeEl("div");
-    clozeLabel.className = reveal ? "sprout-widget-answer-label" : "sprout-widget-question-label";
+    clozeLabel.className = reveal ? "learnkit-widget-answer-label" : "learnkit-widget-question-label";
     clozeLabel.textContent = clozeLabelText;
     clozeEl.prepend(clozeLabel);
 
@@ -468,9 +468,9 @@ function renderMcqCard(
 ) {
   const stemText = card.stem || "";
   const sourcePath = String(card.sourceNotePath || view.activeFile?.path || "");
-  const stemEl = el("div", "sprout-widget-text widget-question");
+  const stemEl = el("div", "learnkit-widget-text widget-question");
   const mcqQuestionLabel = makeEl("div");
-  mcqQuestionLabel.className = "sprout-widget-question-label";
+  mcqQuestionLabel.className = "learnkit-widget-question-label";
   mcqQuestionLabel.textContent = tx(view, "ui.widget.label.question", "Question:");
   stemEl.appendChild(mcqQuestionLabel);
   if (stemText.includes("$") || stemText.includes("\\(") || stemText.includes("\\[") || stemText.includes("[[")) {
@@ -508,33 +508,33 @@ function renderMcqCard(
 
   // Label for multi-answer
   if (isMulti && !graded) {
-    const hint = el("div", "sprout-widget-info sprout-widget-mcq-hint");
+    const hint = el("div", "learnkit-widget-info learnkit-widget-mcq-hint");
     hint.textContent = tx(view, "ui.widget.mcq.selectAllCorrect", "Select all correct answers");
     body.appendChild(hint);
   }
 
-  const optsContainer = el("div", "sprout-widget-section sprout-widget-mcq-options");
+  const optsContainer = el("div", "learnkit-widget-section learnkit-widget-mcq-options");
 
   const mcqSectionLabel = makeEl("div");
-  mcqSectionLabel.className = (view.showAnswer || graded) ? "sprout-widget-answer-label" : "sprout-widget-question-label";
+  mcqSectionLabel.className = (view.showAnswer || graded) ? "learnkit-widget-answer-label" : "learnkit-widget-question-label";
   mcqSectionLabel.textContent = (view.showAnswer || graded)
     ? tx(view, "ui.widget.label.answer", "Answer:")
     : tx(view, "ui.widget.label.options", "Options:");
   optsContainer.appendChild(mcqSectionLabel);
 
-  const mcqOptionsList = el("div", "sprout-widget-mcq-options-list");
+  const mcqOptionsList = el("div", "learnkit-widget-mcq-options-list");
 
   opts.forEach((opt: string, displayIdx: number) => {
     const text = typeof opt === "string" ? opt : "";
-    const d = el("div", "sprout-widget-text sprout-widget-mcq-option");
+    const d = el("div", "learnkit-widget-text learnkit-widget-mcq-option");
     const origIdx = order[displayIdx];
 
-    const left = el("span", "sprout-widget-mcq-option-content");
+    const left = el("span", "learnkit-widget-mcq-option-content");
     const key = el("kbd", "kbd");
     key.textContent = String(displayIdx + 1);
     left.appendChild(key);
 
-    const textEl = el("span", "sprout-widget-mcq-text");
+    const textEl = el("span", "learnkit-widget-mcq-text");
     if (text && (text.includes("$") || text.includes("\\(") || text.includes("\\[") || text.includes("[["))) {
       void view.renderMarkdownInto(textEl, forceSingleLineDisplayMathInline(text), sourcePath);
     } else if (text && text.includes("\n")) {
@@ -588,14 +588,14 @@ function renderMcqCard(
 
   // Submit button for multi-answer (when not graded)
   if (isMulti && !graded) {
-    const submitBtn = el("button", "btn-primary sprout-widget-btn sprout-widget-btn-full sprout-mcq-submit-btn");
+    const submitBtn = el("button", "btn-primary learnkit-widget-btn learnkit-widget-btn-full learnkit-mcq-submit-btn");
 
     const submitLabel = makeEl("span");
     submitLabel.textContent = tx(view, "ui.widget.submit", "Submit");
     submitBtn.appendChild(submitLabel);
 
     const submitKbd = makeEl("kbd");
-    submitKbd.className = "kbd sprout-widget-kbd";
+    submitKbd.className = "kbd learnkit-widget-kbd";
     submitKbd.textContent = "\u21B5";
     submitBtn.appendChild(submitKbd);
 
@@ -641,14 +641,14 @@ function renderIoCard(
   const sectionClass = reveal ? "widget-answer" : "widget-question";
   const qEl = el("div", sectionClass);
   const ioLabel = makeEl("div");
-  ioLabel.className = (reveal ? "sprout-widget-answer-label" : "sprout-widget-question-label") + " sprout-widget-io-label";
+  ioLabel.className = (reveal ? "learnkit-widget-answer-label" : "learnkit-widget-question-label") + " learnkit-widget-io-label";
   ioLabel.textContent = reveal
     ? tx(view, "ui.widget.label.answer", "Answer:")
     : tx(view, "ui.widget.label.question", "Question:");
   qEl.appendChild(ioLabel);
 
-  const ioContainer = el("div", "rounded border border-border bg-muted overflow-auto sprout-widget-io-container");
-  ioContainer.dataset.sproutIoWidget = "1";
+  const ioContainer = el("div", "rounded border border-border bg-muted overflow-auto learnkit-widget-io-container");
+  ioContainer.dataset.learnkitIoWidget = "1";
   qEl.appendChild(ioContainer);
   qEl.classList.add("learnkit-widget-text");
   applySectionStyles(qEl);
@@ -719,9 +719,9 @@ function renderOqCard(
   const sourcePath = String(card.sourceNotePath || view.activeFile?.path || "");
 
   // Question text
-  const qEl = el("div", "sprout-widget-text widget-question");
+  const qEl = el("div", "learnkit-widget-text widget-question");
   const oqQuestionLabel = makeEl("div");
-  oqQuestionLabel.className = "sprout-widget-question-label";
+  oqQuestionLabel.className = "learnkit-widget-question-label";
   oqQuestionLabel.textContent = tx(view, "ui.widget.label.question", "Question:");
   qEl.appendChild(oqQuestionLabel);
   const qText = card.q || "";
@@ -745,15 +745,15 @@ function renderOqCard(
     const shuffled = getWidgetOqShuffledOrder(view.session as unknown as Record<string, unknown>, card, shouldShuffle);
     const currentOrder = shuffled.slice();
 
-    const orderSection = el("div", "sprout-widget-text");
+    const orderSection = el("div", "learnkit-widget-text");
     applySectionStyles(orderSection);
 
     const orderLabel = makeEl("div");
-    orderLabel.className = "sprout-widget-question-label";
+    orderLabel.className = "learnkit-widget-question-label";
     orderLabel.textContent = tx(view, "ui.widget.label.order", "Order:");
     orderSection.appendChild(orderLabel);
 
-    const listWrap = el("div", "flex flex-col gap-2 sprout-oq-step-list");
+    const listWrap = el("div", "flex flex-col gap-2 learnkit-oq-step-list");
     orderSection.appendChild(listWrap);
 
     body.appendChild(orderSection);
@@ -866,15 +866,15 @@ function renderOqCard(
 
   } else {
     // ── Back: user order with highlights ──
-    const answerSection = el("div", "sprout-widget-text");
+    const answerSection = el("div", "learnkit-widget-text");
     applySectionStyles(answerSection);
 
     const oqAnswerLabel = makeEl("div");
-    oqAnswerLabel.className = "sprout-widget-answer-label";
+    oqAnswerLabel.className = "learnkit-widget-answer-label";
     oqAnswerLabel.textContent = tx(view, "ui.widget.label.answer", "Answer:");
     answerSection.appendChild(oqAnswerLabel);
 
-    const answerList = el("div", "flex flex-col gap-2 sprout-oq-answer-list");
+    const answerList = el("div", "flex flex-col gap-2 learnkit-oq-answer-list");
     answerSection.appendChild(answerList);
 
     const identity = Array.from({ length: steps.length }, (_, i) => i);
@@ -927,12 +927,12 @@ function renderInfoBlock(
   view: WidgetViewLike,
   card?: CardRecord,
 ) {
-  const infoEl = el("div", "sprout-widget-info sprout-widget-extra-info widget-information");
+  const infoEl = el("div", "learnkit-widget-info learnkit-widget-extra-info widget-information");
   const rawInfoText = infoText.trim();
   const normalizedInfoText = rawInfoText.replace(/^\s*Extra Information:\s*/i, "");
 
   const infoLabel = makeEl("div");
-  infoLabel.className = "sprout-widget-extra-info-label";
+  infoLabel.className = "learnkit-widget-extra-info-label";
   infoLabel.textContent = tx(view, "ui.widget.label.extraInformation", "Extra Information:");
   infoEl.appendChild(infoLabel);
 
@@ -960,7 +960,7 @@ function renderPracticeFooter(view: WidgetViewLike, footer: HTMLElement, card: C
   if ((card.type === "basic" || card.type === "reversed" || card.type === "reversed-child" || card.type === "combo-child" || isClozeLike(card) || ioLike) && !view.showAnswer) {
     const revealBtn = makeTextButton({
       label: tx(view, "ui.widget.showAnswer", "Show Answer"),
-      className: "learnkit-btn-toolbar sprout-widget-btn sprout-widget-btn-full",
+      className: "learnkit-btn-toolbar learnkit-widget-btn learnkit-widget-btn-full",
       onClick: () => {
         view.showAnswer = true;
         view.render();
@@ -973,7 +973,7 @@ function renderPracticeFooter(view: WidgetViewLike, footer: HTMLElement, card: C
   } else if (card.type === "oq" && !view.showAnswer) {
     const oqSubmitBtn = makeTextButton({
       label: tx(view, "ui.widget.oq.submitOrder", "Submit order"),
-      className: "learnkit-btn-toolbar sprout-widget-btn sprout-widget-btn-full",
+      className: "learnkit-btn-toolbar learnkit-widget-btn learnkit-widget-btn-full",
       onClick: () => {
         const oqMap = ensureWidgetOqOrderMap(view.session as unknown as Record<string, unknown>);
         const steps = Array.isArray(card.oqSteps) ? card.oqSteps : [];
@@ -989,7 +989,7 @@ function renderPracticeFooter(view: WidgetViewLike, footer: HTMLElement, card: C
   } else {
     const nextBtn = makeTextButton({
       label: tx(view, "ui.widget.next", "Next"),
-      className: "learnkit-btn-toolbar sprout-widget-btn sprout-widget-btn-full",
+      className: "learnkit-btn-toolbar learnkit-widget-btn learnkit-widget-btn-full",
       onClick: () => void view.nextCard(),
       kbd: "↵",
     });
@@ -1004,7 +1004,7 @@ function renderScheduledFooter(view: WidgetViewLike, footer: HTMLElement, card: 
     const revealBtn = makeTextButton({
       label: tx(view, "ui.widget.revealAnswer", "Reveal Answer"),
       title: "Reveal answer",
-      className: "learnkit-btn-toolbar sprout-widget-btn sprout-widget-btn-full",
+      className: "learnkit-btn-toolbar learnkit-widget-btn learnkit-widget-btn-full",
       onClick: () => {
         view.showAnswer = true;
         view.render();
@@ -1039,9 +1039,9 @@ function renderScheduledFooter(view: WidgetViewLike, footer: HTMLElement, card: 
       };
       let gradingGrid: HTMLElement;
       if (fourButton) {
-        gradingGrid = el("div", "sprout-widget-grading-grid");
+        gradingGrid = el("div", "learnkit-widget-grading-grid");
       } else {
-        gradingGrid = el("div", "sprout-widget-grading-row");
+        gradingGrid = el("div", "learnkit-widget-grading-row");
       }
 
       // Always show Again
@@ -1050,8 +1050,8 @@ function renderScheduledFooter(view: WidgetViewLike, footer: HTMLElement, card: 
         subtitle: getSubtitle("again"),
         title: tx(view, "ui.widget.grade.againTooltip", "Not recalled easily (1)"),
         className: fourButton
-          ? "learnkit-btn-toolbar sprout-widget-btn sprout-widget-btn-full"
-          : "learnkit-btn-toolbar sprout-widget-btn sprout-widget-btn-half",
+          ? "learnkit-btn-toolbar learnkit-widget-btn learnkit-widget-btn-full"
+          : "learnkit-btn-toolbar learnkit-widget-btn learnkit-widget-btn-half",
         onClick: () => {
           void (async () => {
             await view.gradeCurrentRating("again", {});
@@ -1068,7 +1068,7 @@ function renderScheduledFooter(view: WidgetViewLike, footer: HTMLElement, card: 
           label: tx(view, "ui.widget.grade.hard", "Hard"),
           subtitle: getSubtitle("hard"),
           title: tx(view, "ui.widget.grade.hardTooltip", "Recalled with difficulty (2)"),
-          className: "learnkit-btn-toolbar sprout-widget-btn sprout-widget-btn-full",
+          className: "learnkit-btn-toolbar learnkit-widget-btn learnkit-widget-btn-full",
           onClick: () => {
             void (async () => {
               await view.gradeCurrentRating("hard", {});
@@ -1089,8 +1089,8 @@ function renderScheduledFooter(view: WidgetViewLike, footer: HTMLElement, card: 
           ? tx(view, "ui.widget.grade.goodTooltipFour", "Recalled with effort (3)")
           : tx(view, "ui.widget.grade.goodTooltipTwo", "Recalled easily (2)"),
         className: fourButton
-          ? "learnkit-btn-toolbar sprout-widget-btn sprout-widget-btn-full"
-          : "learnkit-btn-toolbar sprout-widget-btn sprout-widget-btn-half",
+          ? "learnkit-btn-toolbar learnkit-widget-btn learnkit-widget-btn-full"
+          : "learnkit-btn-toolbar learnkit-widget-btn learnkit-widget-btn-half",
         onClick: () => {
           void (async () => {
             await view.gradeCurrentRating("good", {});
@@ -1107,7 +1107,7 @@ function renderScheduledFooter(view: WidgetViewLike, footer: HTMLElement, card: 
           label: tx(view, "ui.widget.grade.easy", "Easy"),
           subtitle: getSubtitle("easy"),
           title: tx(view, "ui.widget.grade.easyTooltip", "Recalled easily (4)"),
-          className: "learnkit-btn-toolbar sprout-widget-btn sprout-widget-btn-full",
+          className: "learnkit-btn-toolbar learnkit-widget-btn learnkit-widget-btn-full",
           onClick: () => {
             void (async () => {
               await view.gradeCurrentRating("easy", {});
@@ -1122,7 +1122,7 @@ function renderScheduledFooter(view: WidgetViewLike, footer: HTMLElement, card: 
 
       footer.appendChild(gradingGrid);
     } else if (card.type === "mcq") {
-      const mcqNote = el("div", "text-muted-foreground w-full text-center sprout-widget-info");
+      const mcqNote = el("div", "text-muted-foreground w-full text-center learnkit-widget-info");
       mcqNote.textContent = isMultiAnswerMcq(card)
         ? tx(view, "ui.widget.mcq.selectAllThenSubmit", "Select all correct answers, then submit")
         : tx(view, "ui.widget.mcq.selectOption", "Select an option");
@@ -1130,7 +1130,7 @@ function renderScheduledFooter(view: WidgetViewLike, footer: HTMLElement, card: 
     } else if (card.type === "oq") {
       const oqSubmitBtn = makeTextButton({
         label: tx(view, "ui.widget.oq.submitOrder", "Submit order"),
-        className: "learnkit-btn-toolbar sprout-widget-btn sprout-widget-btn-full",
+        className: "learnkit-btn-toolbar learnkit-widget-btn learnkit-widget-btn-full",
         onClick: () => {
           const oqMap = ensureWidgetOqOrderMap(view.session as unknown as Record<string, unknown>);
           const steps = Array.isArray(card.oqSteps) ? card.oqSteps : [];
@@ -1145,7 +1145,7 @@ function renderScheduledFooter(view: WidgetViewLike, footer: HTMLElement, card: 
   } else {
     const nextBtn = makeTextButton({
       label: tx(view, "ui.widget.next", "Next"),
-      className: "learnkit-btn-toolbar sprout-widget-btn sprout-widget-btn-full",
+      className: "learnkit-btn-toolbar learnkit-widget-btn learnkit-widget-btn-full",
       onClick: () => void view.nextCard(),
       kbd: "↵",
     });
@@ -1155,12 +1155,12 @@ function renderScheduledFooter(view: WidgetViewLike, footer: HTMLElement, card: 
 }
 
 function renderActionRow(view: WidgetViewLike, footer: HTMLElement, card: CardRecord, graded: { rating: ReviewRating; at: number; meta: ReviewMeta | null } | null) {
-  const actionRow = el("div", "sprout-widget-action-row");
+  const actionRow = el("div", "learnkit-widget-action-row");
 
   const editBtn = makeTextButton({
     label: tx(view, "ui.widget.edit", "Edit"),
     title: "Edit flashcard",
-    className: "learnkit-btn-toolbar sprout-widget-btn sprout-widget-btn-half",
+    className: "learnkit-btn-toolbar learnkit-widget-btn learnkit-widget-btn-half",
     onClick: () => view.openEditModalForCurrentCard(),
     kbd: "E",
   });
@@ -1169,7 +1169,7 @@ function renderActionRow(view: WidgetViewLike, footer: HTMLElement, card: CardRe
 
   const moreBtn = makeEl("button");
   moreBtn.type = "button";
-  moreBtn.className = "learnkit-btn-toolbar sprout-widget-btn sprout-widget-btn-half";
+  moreBtn.className = "learnkit-btn-toolbar learnkit-widget-btn learnkit-widget-btn-half";
   moreBtn.setAttribute("aria-label", tx(view, "ui.widget.more.tooltip", "Open menu"));
   moreBtn.setAttribute("data-tooltip-position", "top");
   applyWidgetHoverDarken(moreBtn);
@@ -1177,7 +1177,7 @@ function renderActionRow(view: WidgetViewLike, footer: HTMLElement, card: CardRe
   const moreText = makeEl("span");
   moreText.textContent = tx(view, "ui.widget.more.label", "More");
   const moreKbd = makeEl("kbd");
-  moreKbd.className = "kbd sprout-widget-kbd";
+  moreKbd.className = "kbd learnkit-widget-kbd";
   moreKbd.textContent = "M";
   moreBtn.appendChild(moreText);
   moreBtn.appendChild(moreKbd);
@@ -1224,14 +1224,14 @@ function renderActionRow(view: WidgetViewLike, footer: HTMLElement, card: CardRe
 }
 
 function renderProgressBar(view: WidgetViewLike, wrap: HTMLElement) {
-  const progressBar = el("div", "sprout-widget-progress");
+  const progressBar = el("div", "learnkit-widget-progress");
 
   const total = Math.max(0, view.session?.stats?.total || 0);
   const done = Math.max(0, view.session?.stats?.done || 0);
   const progressPercent = total > 0 ? (Math.min(done, total) / total) * 100 : 0;
-  const barBg = el("div", "sprout-widget-progress-track");
+  const barBg = el("div", "learnkit-widget-progress-track");
 
-  const barFill = el("div", "sprout-widget-progress-fill");
+  const barFill = el("div", "learnkit-widget-progress-fill");
   setCssProps(barFill, "--learnkit-progress", `${progressPercent}%`);
   barBg.appendChild(barFill);
   progressBar.appendChild(barBg);

@@ -1185,7 +1185,7 @@ margin: 0.5rem 0;
 
 /* ---- IO toolbar ---- */
 
-/* Sprout IO Toolbar: Remove padding and border */
+/* LearnKit IO Toolbar: Remove padding and border */
 .learnkit [role="toolbar"][data-learnkit-toolbar="1"] {
   padding: 0;
   border: none;

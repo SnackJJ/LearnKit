@@ -3,7 +3,7 @@
  * @summary Module for widget view.
  *
  * @exports
- *  - SproutWidgetView
+ *  - LearnKitWidgetView
  */
 
-export { SproutWidgetView } from "../widget-view";
+export { LearnKitWidgetView } from "../widget-view";

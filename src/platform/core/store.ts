@@ -1,6 +1,6 @@
 /**
  * @file src/core/store.ts
- * @summary Persistent JSON data store for the Sprout plugin. Wraps all card records, scheduling
+ * @summary Persistent JSON data store for the LearnKit plugin. Wraps all card records, scheduling
  * states, review logs, image-occlusion definitions, and analytics events. Provides mutation
  * methods used by sync, the reviewer, and the widget, along with data migration logic and
  * backup/restore utilities. Re-exports shared type definitions from src/types/ for

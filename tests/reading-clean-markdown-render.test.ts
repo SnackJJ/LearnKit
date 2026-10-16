@@ -188,7 +188,7 @@ describe("dangling residue detection", () => {
           <div
             class="el-p learnkit-pretty-card learnkit-macro-flashcards"
             data-learnkit-processed="true"
-            data-sprout-processed="true"
+            data-learnkit-processed="true"
           ></div>
         </div>
         <div class="el-ol">
@@ -223,7 +223,7 @@ describe("dangling residue detection", () => {
         <div
           class="el-p learnkit-pretty-card learnkit-macro-markdown"
           data-learnkit-processed="true"
-          data-sprout-processed="true"
+          data-learnkit-processed="true"
         ></div>
         <div class="el-ul">
           <ul>
@@ -306,7 +306,7 @@ describe("deterministic spillover ownership", () => {
           <div
             class="el-p learnkit-pretty-card learnkit-macro-flashcards"
             data-learnkit-processed="true"
-            data-sprout-processed="true"
+            data-learnkit-processed="true"
             data-learnkit-id="889933406"
           ></div>
         </div>

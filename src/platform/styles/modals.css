@@ -1943,7 +1943,7 @@ z-index: 11;
 
 /* ---- Modal content overflow ---- */
 
-/* Ensure Sprout modal-content includes padding in width to prevent horizontal scrollbar */
+/* Ensure LearnKit modal-content includes padding in width to prevent horizontal scrollbar */
 .learnkit .modal-content,
 .lk-modals .modal-content {
   box-sizing: border-box;

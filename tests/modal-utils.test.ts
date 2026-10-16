@@ -30,8 +30,8 @@ describe("bestEffortAttachmentPath", () => {
       cardAttachmentFolderPath: "Attachments/Cards/",
     });
 
-    expect(bestEffortAttachmentPath(plugin, makeFile("Notes/A.md"), "sprout-hq.png", "hq")).toBe(
-      "Attachments/Hotspots/sprout-hq.png",
+    expect(bestEffortAttachmentPath(plugin, makeFile("Notes/A.md"), "learnkit-hq.png", "hq")).toBe(
+      "Attachments/Hotspots/learnkit-hq.png",
     );
   });
 
@@ -42,8 +42,8 @@ describe("bestEffortAttachmentPath", () => {
       cardAttachmentFolderPath: "Attachments/Cards/",
     });
 
-    expect(bestEffortAttachmentPath(plugin, makeFile("Notes/A.md"), "sprout-hq.png", "hq")).toBe(
-      "Attachments/Image Occlusion/sprout-hq.png",
+    expect(bestEffortAttachmentPath(plugin, makeFile("Notes/A.md"), "learnkit-hq.png", "hq")).toBe(
+      "Attachments/Image Occlusion/learnkit-hq.png",
     );
   });
 });

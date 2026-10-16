@@ -17,15 +17,15 @@ import { Platform, setIcon } from "obsidian";
 import { PitchShifter } from "soundtouchjs";
 import { log } from "../../core/logger";
 import { t } from "../../translations/translator";
-import type { SproutSettings } from "../../types/settings";
+import type { LearnKitSettings } from "../../types/settings";
 import { splitClozeAnswerAndHint } from "../../core/shared-utils";
 import { getCircleFlagTokenMatches, stripCircleFlagTokens } from "../../../platform/flags/flag-tokens";
 import { makeEl } from "../../core/dom-factory";
 
 // ── TTS debug mode ─────────────────────────────────────────────
-// Type  sproutTtsDebug()       in the dev console to enable.
-// Type  sproutTtsDebug(false)  to disable.
-// Type  sproutTtsVoices()      to dump all system voices + scores.
+// Type  learnkitTtsDebug()       in the dev console to enable.
+// Type  learnkitTtsDebug(false)  to disable.
+// Type  learnkitTtsVoices()      to dump all system voices + scores.
 let _ttsDebug = false;
 
 function ttsLog(...args: unknown[]) {
@@ -49,7 +49,7 @@ function clampSpeechValue(value: number | null | undefined): number {
   return Math.max(0.5, Math.min(2.0, Number.isFinite(value) ? (value as number) : 1.0));
 }
 
-function getExternalPlaybackProfile(settings: SproutSettings["audio"]): ExternalPlaybackProfile {
+function getExternalPlaybackProfile(settings: LearnKitSettings["audio"]): ExternalPlaybackProfile {
   return {
     playbackRate: clampSpeechValue(settings.rate),
     pitch: clampSpeechValue(settings.pitch),
@@ -77,7 +77,7 @@ function getAudioContextConstructor(): AudioContextConstructor | null {
  */
 export function applyExternalPlaybackSettings(
   audioEl: HTMLAudioElement,
-  settings: SproutSettings["audio"],
+  settings: LearnKitSettings["audio"],
 ): ExternalPlaybackProfile {
   const profile = getExternalPlaybackProfile(settings);
 
@@ -140,8 +140,8 @@ function dumpVoiceTable(voices: SpeechSynthesisVoice[]) {
 }
 
 if (typeof window !== "undefined") {
-  // ── sproutTtsDebug() ──────────────────────────────────────────
-  (window as unknown as Record<string, unknown>).sproutTtsDebug = (on = true) => {
+  // ── learnkitTtsDebug() ──────────────────────────────────────────
+  (window as unknown as Record<string, unknown>).learnkitTtsDebug = (on = true) => {
     _ttsDebug = !!on;
     if (_ttsDebug) {
       log.debug("[TTS] Debug ON — voice selection will be logged for speak() calls.");
@@ -154,8 +154,8 @@ if (typeof window !== "undefined") {
     return "debug disabled";
   };
 
-  // ── sproutTtsVoices() ─────────────────────────────────────────
-  (window as unknown as Record<string, unknown>).sproutTtsVoices = () => {
+  // ── learnkitTtsVoices() ─────────────────────────────────────────
+  (window as unknown as Record<string, unknown>).learnkitTtsVoices = () => {
     void ensureVoicesLoaded().then((voices) => dumpVoiceTable(voices)).catch((error: unknown) => {
       log.debug("[TTS] Failed loading voices", error);
     });
@@ -521,7 +521,7 @@ const DETECTED_LANG_TO_SCRIPT: Record<string, "cyrillic" | "arabic" | "cjk" | "d
  */
 function resolveDetectedLanguage(
   detected: string,
-  scriptLangs?: SproutSettings["audio"]["scriptLanguages"],
+  scriptLangs?: LearnKitSettings["audio"]["scriptLanguages"],
 ): string {
   if (!scriptLangs) return detected;
   const key = DETECTED_LANG_TO_SCRIPT[detected.toLowerCase()];
@@ -1092,7 +1092,7 @@ type FlagSpeechSegment = {
 function buildFlagSpeechSegments(
   rawText: string,
   fallbackLang: string,
-  settings: SproutSettings["audio"],
+  settings: LearnKitSettings["audio"],
   autoDetect: boolean,
 ): FlagSpeechSegment[] {
   const flagEnabled = (settings as Record<string, unknown>)["useFlagsForVoiceSelection"];
@@ -1353,7 +1353,7 @@ export class TtsService {
 
   private async _playExternalAudioElement(
     audioData: ArrayBuffer,
-    settings: SproutSettings["audio"],
+    settings: LearnKitSettings["audio"],
   ): Promise<ExternalPlaybackProfile> {
     const blob = new Blob([audioData], { type: "audio/mpeg" });
     const objectUrl = URL.createObjectURL(blob);
@@ -1382,7 +1382,7 @@ export class TtsService {
 
   private async _playExternalAudioLocally(
     audioData: ArrayBuffer,
-    settings: SproutSettings["audio"],
+    settings: LearnKitSettings["audio"],
     session: number,
   ): Promise<ExternalPlaybackProfile> {
     const profile = getExternalPlaybackProfile(settings);
@@ -1442,7 +1442,7 @@ export class TtsService {
     }
   }
 
-  private shouldAutoDetectLanguage(settings: SproutSettings["audio"]): boolean {
+  private shouldAutoDetectLanguage(settings: LearnKitSettings["audio"]): boolean {
     const raw = (settings as Record<string, unknown>)["autoDetectLanguage"];
     return typeof raw === "boolean" ? raw : true;
   }
@@ -1464,7 +1464,7 @@ export class TtsService {
   speak(
     text: string,
     lang: string,
-    settings: SproutSettings["audio"],
+    settings: LearnKitSettings["audio"],
     autoDetect = true,
     bypassEnabled = false,
     cacheId?: string,
@@ -1627,7 +1627,7 @@ export class TtsService {
    * Handles caching: checks cache first, falls back to API, stores result in cache.
    * Falls back to Web Speech API on error if the browser supports it.
    */
-  private _speakExternal(text: string, lang: string, settings: SproutSettings["audio"], cacheId?: string): void {
+  private _speakExternal(text: string, lang: string, settings: LearnKitSettings["audio"], cacheId?: string): void {
     // Detect circle-flag tokens (e.g. {{es}}) and use them for language selection
     const flagMatches = getCircleFlagTokenMatches(text);
     const plainText = stripToPlainText(stripCircleFlagTokens(text));
@@ -1705,7 +1705,7 @@ export class TtsService {
 
         // Fallback to browser TTS
         if (this.isSupported) {
-          const fallbackSettings: SproutSettings["audio"] = {
+          const fallbackSettings: LearnKitSettings["audio"] = {
             ...settings,
             ttsProvider: "browser",
           };
@@ -1722,7 +1722,7 @@ export class TtsService {
    */
   speakBasicCard(
     text: string,
-    settings: SproutSettings["audio"],
+    settings: LearnKitSettings["audio"],
     cacheId?: string,
   ): void {
     this.speak(text, settings.defaultLanguage, settings, this.shouldAutoDetectLanguage(settings), false, cacheId);
@@ -1740,7 +1740,7 @@ export class TtsService {
     clozeText: string,
     reveal: boolean,
     targetIndex: number | null,
-    settings: SproutSettings["audio"],
+    settings: LearnKitSettings["audio"],
     cacheId?: string,
   ): void {
     let prepared: string;
@@ -1785,7 +1785,7 @@ export class TtsService {
     displayOrder: number[],
     reveal: boolean,
     correctIndices: number[],
-    settings: SproutSettings["audio"],
+    settings: LearnKitSettings["audio"],
     cacheId?: string,
   ): void {
     const text = formatMcqTextForTts(stem, options, displayOrder, reveal, correctIndices);
@@ -1804,7 +1804,7 @@ export class TtsService {
   /** Speak only the MCQ question stem. */
   speakMcqStem(
     stem: string,
-    settings: SproutSettings["audio"],
+    settings: LearnKitSettings["audio"],
     cacheId?: string,
   ): void {
     if (!stem.trim()) return;
@@ -1815,7 +1815,7 @@ export class TtsService {
   speakMcqOptions(
     options: string[],
     displayOrder: number[],
-    settings: SproutSettings["audio"],
+    settings: LearnKitSettings["audio"],
     cacheId?: string,
   ): void {
     const text = formatMcqOptionsForTts(options, displayOrder);
@@ -1830,7 +1830,7 @@ export class TtsService {
     options: string[],
     displayOrder: number[],
     correctIndices: number[],
-    settings: SproutSettings["audio"],
+    settings: LearnKitSettings["audio"],
     cacheId?: string,
   ): void {
     const text = formatMcqAnswerForTts(options, displayOrder, correctIndices);
@@ -1848,7 +1848,7 @@ export class TtsService {
   speakOqFront(
     question: string,
     steps: string[],
-    settings: SproutSettings["audio"],
+    settings: LearnKitSettings["audio"],
     cacheId?: string,
   ): void {
     const text = formatOqFrontForTts(question, steps);
@@ -1859,7 +1859,7 @@ export class TtsService {
   /** Speak only the OQ question stem. */
   speakOqQuestion(
     question: string,
-    settings: SproutSettings["audio"],
+    settings: LearnKitSettings["audio"],
     cacheId?: string,
   ): void {
     if (!question.trim()) return;
@@ -1869,7 +1869,7 @@ export class TtsService {
   /** Speak just the OQ steps (unnumbered, as a list). */
   speakOqSteps(
     steps: string[],
-    settings: SproutSettings["audio"],
+    settings: LearnKitSettings["audio"],
     cacheId?: string,
   ): void {
     const text = formatOqStepsForTts(steps);
@@ -1883,7 +1883,7 @@ export class TtsService {
   speakOqAnswer(
     steps: string[],
     pass: boolean,
-    settings: SproutSettings["audio"],
+    settings: LearnKitSettings["audio"],
     cacheId?: string,
   ): void {
     const text = formatOqAnswerForTts(steps, pass);

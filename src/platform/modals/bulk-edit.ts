@@ -1054,7 +1054,7 @@ export class BulkEditCardModal extends Modal {
   form.appendChild(groupsWrapper);
 
   // Location (read-only)
-  form.appendChild(createReadonlyField(this._tx("ui.common.location", "Location"), fmtLocation(card0.sourceNotePath), "sprout-location-input"));
+  form.appendChild(createReadonlyField(this._tx("ui.common.location", "Location"), fmtLocation(card0.sourceNotePath), "learnkit-location-input"));
 
   contentEl.appendChild(form);
 

@@ -3,7 +3,7 @@
  * @summary Pure utility functions and regex constants used by LearnKitSettingsTab for parsing, formatting, vault path handling, and card-block detection. None of these depend on Obsidian UI classes so they are safe to import from anywhere in the codebase.
  *
  * @exports
- *  - ANCHOR_LINE_RE            — regex matching a ^sprout anchor line
+ *  - ANCHOR_LINE_RE            — regex matching a ^learnkit anchor line
  *  - CARD_START_RE             — regex matching a card-start line (Q|MCQ|CQ|IO pipe)
  *  - FIELD_LINE_RE             — regex matching a field line (A|T|O|I|G pipe)
  *  - parsePositiveNumberListCsv — parses a CSV string into an array of positive numbers
@@ -35,7 +35,7 @@ import { CARD_ANCHOR_LINE_RE } from "../../platform/core/identity";
 // Regex constants for card-block detection
 // ────────────────────────────────────────────
 
-/** Matches a Sprout anchor line, e.g. `^sprout-123456789`. */
+/** Matches a LearnKit anchor line, e.g. `^learnkit-123456789`. */
 export const ANCHOR_LINE_RE = CARD_ANCHOR_LINE_RE;
 
 /**
@@ -107,7 +107,7 @@ export function fmtSettingValue(v: unknown): string {
 // Card-block detection helpers
 // ────────────────────────────────────────────
 
-/** Returns true if `line` is a Sprout anchor (e.g. `^sprout-123456789`). */
+/** Returns true if `line` is a LearnKit anchor (e.g. `^learnkit-123456789`). */
 export function isAnchorLine(line: string): boolean {
   return ANCHOR_LINE_RE.test(line.trim());
 }

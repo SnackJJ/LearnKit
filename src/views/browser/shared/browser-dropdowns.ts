@@ -36,7 +36,7 @@ export interface DropdownMenuArgs<T extends string> {
 export function makeDropdownMenu<T extends string>(
   args: DropdownMenuArgs<T>,
 ): { root: HTMLElement; setValue: (v: T) => void; dispose: () => void } {
-  const id = `sprout-dd-${Math.random().toString(36).slice(2, 9)}`;
+  const id = `learnkit-dd-${Math.random().toString(36).slice(2, 9)}`;
 
   const root = makeEl("div");
   root.id = id;
@@ -68,8 +68,8 @@ export function makeDropdownMenu<T extends string>(
   const labelFor = (v: T) => args.options.find((o) => o.v === v)?.label ?? String(v);
 
   // Body-portal popover (fixed) avoids clipping/z-index issues in Obsidian panes.
-  const sproutWrapper = makeEl("div");
-  sproutWrapper.className = "learnkit";
+  const learnkitWrapper = makeEl("div");
+  learnkitWrapper.className = "learnkit";
   const popover = makeEl("div");
   popover.id = `${id}-popover`;
   popover.setAttribute("aria-hidden", "true");
@@ -78,7 +78,7 @@ export function makeDropdownMenu<T extends string>(
   const panel = makeEl("div");
   panel.className = "rounded-md border border-border bg-popover text-popover-foreground shadow-lg p-1 learnkit-pointer-auto learnkit-dd-panel";
   popover.appendChild(panel);
-  sproutWrapper.appendChild(popover);
+  learnkitWrapper.appendChild(popover);
 
   const menu = makeEl("div");
   menu.setAttribute("role", "menu");
@@ -185,9 +185,9 @@ export function makeDropdownMenu<T extends string>(
     } catch (e) { log.swallow("dropdown menu cleanup", e); }
     cleanup = null;
 
-    // Instead of removing popover, detach sproutWrapper from body if present
-    if (sproutWrapper.parentNode === activeDocument.body) {
-      activeDocument.body.removeChild(sproutWrapper);
+    // Instead of removing popover, detach learnkitWrapper from body if present
+    if (learnkitWrapper.parentNode === activeDocument.body) {
+      activeDocument.body.removeChild(learnkitWrapper);
     }
   };
 
@@ -199,7 +199,7 @@ export function makeDropdownMenu<T extends string>(
     popover.setAttribute("aria-hidden", "false");
     popover.classList.add("is-open");
 
-    activeDocument.body.appendChild(sproutWrapper);
+    activeDocument.body.appendChild(learnkitWrapper);
 
     // place after attach (more reliable)
     window.requestAnimationFrame(() => place());
@@ -282,7 +282,7 @@ export function makeColumnsDropdown(
   args: ColumnsDropdownArgs,
   ctx: ColumnsDropdownContext,
 ): { root: HTMLElement; dispose: () => void } {
-  const id = `sprout-cols-${Math.random().toString(36).slice(2, 9)}`;
+  const id = `learnkit-cols-${Math.random().toString(36).slice(2, 9)}`;
   const autoCloseMs = Math.max(0, Math.floor(args.autoCloseMs ?? 10000));
 
   const root = makeEl("div");
@@ -311,8 +311,8 @@ export function makeColumnsDropdown(
   trigger.appendChild(trigText);
 
   // Create a single .learnkit wrapper around the popover menu
-  const sproutWrapper = makeEl("div");
-  sproutWrapper.className = "learnkit";
+  const learnkitWrapper = makeEl("div");
+  learnkitWrapper.className = "learnkit";
 
   const popover = makeEl("div");
   popover.id = `${id}-popover`;
@@ -331,7 +331,7 @@ export function makeColumnsDropdown(
   menu.className = "flex flex-col";
   panel.appendChild(menu);
 
-  sproutWrapper.appendChild(popover);
+  learnkitWrapper.appendChild(popover);
 
   const items: Array<{ v: ColKey; el: HTMLElement }> = [];
 
@@ -436,7 +436,7 @@ export function makeColumnsDropdown(
     autoCloseTimer = null;
 
     try {
-      sproutWrapper.remove();
+      learnkitWrapper.remove();
     } catch (e) { log.swallow("remove columns dropdown wrapper", e); }
   };
 
@@ -447,7 +447,7 @@ export function makeColumnsDropdown(
     popover.setAttribute("aria-hidden", "false");
     popover.classList.add("is-open");
 
-    activeDocument.body.appendChild(sproutWrapper);
+    activeDocument.body.appendChild(learnkitWrapper);
     window.requestAnimationFrame(() => place());
     armAutoClose();
 

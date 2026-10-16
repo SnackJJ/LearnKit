@@ -10,7 +10,7 @@ import { describe, it, expect } from "vitest";
 import {
   collectMediaRefs,
   rewriteFieldForAnki,
-  rewriteFieldForSprout,
+  rewriteFieldForLearnKit,
 } from "../src/platform/integrations/anki/anki-media";
 
 describe("collectMediaRefs", () => {
@@ -67,23 +67,23 @@ describe("rewriteFieldForAnki", () => {
   });
 });
 
-describe("rewriteFieldForSprout", () => {
+describe("rewriteFieldForLearnKit", () => {
   const soundTag = "[sou" + "nd:audio.mp3]";
 
   it("converts <img src> to ![[...]]", () => {
     const nameMap = new Map([["test.png", "media/test.png"]]);
-    const result = rewriteFieldForSprout('<img src="test.png">', nameMap);
+    const result = rewriteFieldForLearnKit('<img src="test.png">', nameMap);
     expect(result).toBe("![[media/test.png]]");
   });
 
   it("converts Anki sound marker to ![[...]]", () => {
     const nameMap = new Map([["audio.mp3", "media/audio.mp3"]]);
-    const result = rewriteFieldForSprout(soundTag, nameMap);
+    const result = rewriteFieldForLearnKit(soundTag, nameMap);
     expect(result).toBe("![[media/audio.mp3]]");
   });
 
   it("falls back to original name when not in map", () => {
-    const result = rewriteFieldForSprout('<img src="missing.png">', new Map());
+    const result = rewriteFieldForLearnKit('<img src="missing.png">', new Map());
     expect(result).toBe("![[missing.png]]");
   });
 });

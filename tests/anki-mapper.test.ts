@@ -105,7 +105,7 @@ describe("anki mapper", () => {
     expect(rev.ivl).toBe(1);
   });
 
-  it("maps Anki note to Sprout card", () => {
+  it("maps Anki note to LearnKit card", () => {
     const note: AnkiNoteRow = {
       id: 10,
       guid: "g",
@@ -149,7 +149,7 @@ describe("anki mapper", () => {
     expect(card.groups).toEqual(expect.arrayContaining(["Deck/Sub", "Tag1", "Tag2"]));
   });
 
-  it("maps Anki card to Sprout state", () => {
+  it("maps Anki card to LearnKit state", () => {
     const ankiCard: AnkiCardRow = {
       id: 20,
       nid: 10,
@@ -171,7 +171,7 @@ describe("anki mapper", () => {
       data: "",
     };
 
-    const st = ankiCardToCardState(ankiCard, "sprout-1", 1700000000);
+    const st = ankiCardToCardState(ankiCard, "learnkit-1", 1700000000);
     expect(st.stage).toBe("review");
     expect(st.due).toBe(1700864000000);
     expect(st.fsrsState).toBe(FsrsState.Review);

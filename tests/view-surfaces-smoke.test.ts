@@ -56,15 +56,15 @@ describe("key entry points are still exported", () => {
   // Each of these is a surface the codemod touched. If one of these names goes
   // missing, the view that consumes it silently stops rendering.
   const EXPECTED: Array<[string, string[]]> = [
-    ["browser/card-browser-view", ["SproutCardBrowserView"]],
-    ["analytics/analytics-view", ["SproutAnalyticsView"]],
-    ["coach/coach-view", ["SproutCoachView"]],
+    ["browser/card-browser-view", ["LearnKitCardBrowserView"]],
+    ["analytics/analytics-view", ["LearnKitAnalyticsView"]],
+    ["coach/coach-view", ["LearnKitCoachView"]],
     ["settings/settings-view", ["LearnKitSettingsView"]],
-    ["reviewer/review-view", ["SproutReviewerView"]],
-    ["note-review/note-review-view", ["SproutNoteReviewView"]],
+    ["reviewer/review-view", ["LearnKitReviewerView"]],
+    ["note-review/note-review-view", ["LearnKitNoteReviewView"]],
     ["reading/reading-view", ["renderReadingViewPreviewCard", "syncReadingViewStyles"]],
-    ["exam-generator/exam-generator-view", ["SproutExamGeneratorView"]],
-    ["home/home-view", ["SproutHomeView"]],
+    ["exam-generator/exam-generator-view", ["LearnKitExamGeneratorView"]],
+    ["home/home-view", ["LearnKitHomeView"]],
   ];
 
   it.each(EXPECTED)("views/%s exports %j", async (rel, names) => {

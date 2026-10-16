@@ -154,7 +154,7 @@ function makeField(name: string, ord: number): AnkiModel["flds"][number] {
 export function makeBasicModel(id = BASIC_MODEL_ID): AnkiModel {
   return {
     id,
-    name: "Sprout Basic",
+    name: "LearnKit Basic",
     type: 0,
     flds: [makeField("Front", 0), makeField("Back", 1), makeField("Explanation", 2)],
     tmpls: [
@@ -184,7 +184,7 @@ export function makeBasicModel(id = BASIC_MODEL_ID): AnkiModel {
 export function makeClozeModel(id = CLOZE_MODEL_ID): AnkiModel {
   return {
     id,
-    name: "Sprout Cloze",
+    name: "LearnKit Cloze",
     type: 1,
     flds: [makeField("Cloze", 0), makeField("Explanation", 1)],
     tmpls: [

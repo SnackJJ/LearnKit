@@ -10,7 +10,7 @@
 // ---------------------------------------------------------------------------
 // Tests for the sync engine's pure/exported helpers — formatSyncNotice,
 // and the re-exported backup utilities (countObjectKeys, joinPath,
-// likelySproutStateKey, extractStatesFromDataJsonObject).
+// likelyLearnKitStateKey, extractStatesFromDataJsonObject).
 //
 // NOTE: syncOneFile and syncQuestionBank depend heavily on the Obsidian
 // plugin API (vault, adapter, TFile, etc.), so we test only the
@@ -22,7 +22,7 @@ import { formatSyncNotice } from "../src/platform/integrations/sync/sync-engine"
 import {
   countObjectKeys,
   joinPath,
-  likelySproutStateKey,
+  likelyLearnKitStateKey,
   extractStatesFromDataJsonObject,
   isPlainObject,
 } from "../src/platform/integrations/sync/backup";
@@ -245,7 +245,7 @@ describe("joinPath", () => {
   });
 
   it("joins multiple segments", () => {
-    expect(joinPath(".obsidian", "plugins", "sprout")).toBe(".obsidian/plugins/sprout");
+    expect(joinPath(".obsidian", "plugins", "learnkit")).toBe(".obsidian/plugins/learnkit");
   });
 
   it("collapses duplicate slashes", () => {
@@ -263,40 +263,40 @@ describe("joinPath", () => {
   });
 
   it("builds a plugin data.json path correctly", () => {
-    expect(joinPath(".obsidian/plugins", "sprout", "data.json")).toBe(
-      ".obsidian/plugins/sprout/data.json",
+    expect(joinPath(".obsidian/plugins", "learnkit", "data.json")).toBe(
+      ".obsidian/plugins/learnkit/data.json",
     );
   });
 });
 
-// ── likelySproutStateKey ────────────────────────────────────────────────────
+// ── likelyLearnKitStateKey ────────────────────────────────────────────────────
 
-describe("likelySproutStateKey", () => {
+describe("likelyLearnKitStateKey", () => {
   it("matches a 9-digit parent key", () => {
-    expect(likelySproutStateKey("123456789")).toBe(true);
-    expect(likelySproutStateKey("000000001")).toBe(true);
+    expect(likelyLearnKitStateKey("123456789")).toBe(true);
+    expect(likelyLearnKitStateKey("000000001")).toBe(true);
   });
 
   it("matches a cloze child key (parent::cloze::cN)", () => {
-    expect(likelySproutStateKey("123456789::cloze::c1")).toBe(true);
-    expect(likelySproutStateKey("999999999::cloze::c12")).toBe(true);
+    expect(likelyLearnKitStateKey("123456789::cloze::c1")).toBe(true);
+    expect(likelyLearnKitStateKey("999999999::cloze::c12")).toBe(true);
   });
 
   it("matches other child patterns (parent::*)", () => {
-    expect(likelySproutStateKey("123456789::io::rect1")).toBe(true);
-    expect(likelySproutStateKey("123456789::group::a")).toBe(true);
+    expect(likelyLearnKitStateKey("123456789::io::rect1")).toBe(true);
+    expect(likelyLearnKitStateKey("123456789::group::a")).toBe(true);
   });
 
   it("rejects keys that are not 9 digits", () => {
-    expect(likelySproutStateKey("12345678")).toBe(false); // 8 digits
-    expect(likelySproutStateKey("1234567890")).toBe(false); // 10 digits
-    expect(likelySproutStateKey("abc")).toBe(false);
-    expect(likelySproutStateKey("")).toBe(false);
+    expect(likelyLearnKitStateKey("12345678")).toBe(false); // 8 digits
+    expect(likelyLearnKitStateKey("1234567890")).toBe(false); // 10 digits
+    expect(likelyLearnKitStateKey("abc")).toBe(false);
+    expect(likelyLearnKitStateKey("")).toBe(false);
   });
 
   it("rejects non-numeric prefixes", () => {
-    expect(likelySproutStateKey("abcdefghi")).toBe(false);
-    expect(likelySproutStateKey("card-123")).toBe(false);
+    expect(likelyLearnKitStateKey("abcdefghi")).toBe(false);
+    expect(likelyLearnKitStateKey("card-123")).toBe(false);
   });
 });
 

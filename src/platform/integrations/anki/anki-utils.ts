@@ -1,19 +1,19 @@
 /**
  * @file src/anki/anki-utils.ts
  * @summary Shared utility functions for Anki import/export. Provides bidirectional
- * conversions between Sprout and Anki representations for deck paths, card stages,
+ * conversions between LearnKit and Anki representations for deck paths, card stages,
  * review ratings, FSRS parameters, due dates, tags, checksums, and ID generation.
  *
  * @exports
  *  - ankiDeckToGroupPath / groupPathToAnkiDeck — deck ↔ group path conversion
  *  - deckToFolderAndFile — deck name → vault folder + .md file path
  *  - generateAnkiId / generateAnkiGuid — Anki-compatible ID generation
- *  - sproutRatingToAnkiEase / ankiEaseToSproutRating — rating mapping
- *  - sproutStageToAnkiTypeQueue / ankiTypeQueueToSproutStage — lifecycle stage mapping
+ *  - learnkitRatingToAnkiEase / ankiEaseToLearnKitRating — rating mapping
+ *  - learnkitStageToAnkiTypeQueue / ankiTypeQueueToLearnKitStage — lifecycle stage mapping
  *  - fsrsDifficultyToAnkiFactor / ankiFactorToFsrsDifficulty — FSRS param conversion
- *  - sproutDueToAnki* / anki*ToSproutDue — due-date conversion
+ *  - learnkitDueToAnki* / anki*ToLearnKitDue — due-date conversion
  *  - computeFieldChecksum — Anki csum for duplicate detection
- *  - sproutGroupsToAnkiTags / ankiTagsToSproutGroups — tag format conversion
+ *  - learnkitGroupsToAnkiTags / ankiTagsToLearnKitGroups — tag format conversion
  */
 
 import type { CardStage, ReviewRating } from "../../types/scheduler";
@@ -34,7 +34,7 @@ import {
 
 // ── Deck ↔ Group path conversion ──────────────────────────────────────────────
 
-/** Convert Anki deck name to Sprout group path: `"A::B::C"` → `"A/B/C"`. */
+/** Convert Anki deck name to LearnKit group path: `"A::B::C"` → `"A/B/C"`. */
 export function ankiDeckToGroupPath(deck: string): string {
   return String(deck ?? "")
     .split("::")
@@ -43,7 +43,7 @@ export function ankiDeckToGroupPath(deck: string): string {
     .join("/");
 }
 
-/** Convert Sprout group path to Anki deck name: `"A/B/C"` → `"A::B::C"`. */
+/** Convert LearnKit group path to Anki deck name: `"A/B/C"` → `"A::B::C"`. */
 export function groupPathToAnkiDeck(group: string): string {
   return String(group ?? "")
     .split("/")
@@ -110,8 +110,8 @@ export function generateAnkiGuid(): string {
 
 // ── Rating ↔ Ease conversion ──────────────────────────────────────────────────
 
-/** Convert Sprout ReviewRating to Anki ease integer (1–4). */
-export function sproutRatingToAnkiEase(rating: ReviewRating | "pass" | "fail" | "skip"): number {
+/** Convert LearnKit ReviewRating to Anki ease integer (1–4). */
+export function learnkitRatingToAnkiEase(rating: ReviewRating | "pass" | "fail" | "skip"): number {
   switch (rating) {
     case "again":
     case "fail":
@@ -129,8 +129,8 @@ export function sproutRatingToAnkiEase(rating: ReviewRating | "pass" | "fail" | 
   }
 }
 
-/** Convert Anki ease integer (1–4) to Sprout ReviewRating. */
-export function ankiEaseToSproutRating(ease: number): ReviewRating {
+/** Convert Anki ease integer (1–4) to LearnKit ReviewRating. */
+export function ankiEaseToLearnKitRating(ease: number): ReviewRating {
   switch (ease) {
     case ANKI_EASE_AGAIN:
       return "again";
@@ -147,8 +147,8 @@ export function ankiEaseToSproutRating(ease: number): ReviewRating {
 
 // ── Stage ↔ Type/Queue conversion ─────────────────────────────────────────────
 
-/** Convert Sprout CardStage to Anki `cards.type` + `cards.queue`. */
-export function sproutStageToAnkiTypeQueue(stage: CardStage): { type: number; queue: number } {
+/** Convert LearnKit CardStage to Anki `cards.type` + `cards.queue`. */
+export function learnkitStageToAnkiTypeQueue(stage: CardStage): { type: number; queue: number } {
   switch (stage) {
     case "new":
       return { type: ANKI_CARD_TYPE_NEW, queue: ANKI_QUEUE_NEW };
@@ -165,8 +165,8 @@ export function sproutStageToAnkiTypeQueue(stage: CardStage): { type: number; qu
   }
 }
 
-/** Convert Anki type + queue to Sprout CardStage. */
-export function ankiTypeQueueToSproutStage(type: number, queue: number): CardStage {
+/** Convert Anki type + queue to LearnKit CardStage. */
+export function ankiTypeQueueToLearnKitStage(type: number, queue: number): CardStage {
   if (queue === ANKI_QUEUE_SUSPENDED) return "suspended";
   switch (type) {
     case ANKI_CARD_TYPE_NEW:
@@ -204,24 +204,24 @@ export function ankiFactorToFsrsDifficulty(factor: number): number {
 
 // ── Due date conversions ──────────────────────────────────────────────────────
 
-/** Sprout due (epoch ms) → Anki review due (days since collection creation). */
-export function sproutDueToAnkiReviewDue(dueMs: number, collectionCrtSec: number): number {
+/** LearnKit due (epoch ms) → Anki review due (days since collection creation). */
+export function learnkitDueToAnkiReviewDue(dueMs: number, collectionCrtSec: number): number {
   const dueSec = Math.floor(dueMs / 1000);
   return Math.max(0, Math.floor((dueSec - collectionCrtSec) / 86400));
 }
 
-/** Sprout due (epoch ms) → Anki learning due (epoch seconds). */
-export function sproutDueToAnkiLearningDue(dueMs: number): number {
+/** LearnKit due (epoch ms) → Anki learning due (epoch seconds). */
+export function learnkitDueToAnkiLearningDue(dueMs: number): number {
   return Math.floor(dueMs / 1000);
 }
 
-/** Anki review due (days since collection creation) → Sprout due (epoch ms). */
-export function ankiReviewDueToSproutDue(ankiDue: number, collectionCrtSec: number): number {
+/** Anki review due (days since collection creation) → LearnKit due (epoch ms). */
+export function ankiReviewDueToLearnKitDue(ankiDue: number, collectionCrtSec: number): number {
   return (collectionCrtSec + ankiDue * 86400) * 1000;
 }
 
-/** Anki learning due (epoch seconds) → Sprout due (epoch ms). */
-export function ankiLearningDueToSproutDue(ankiDue: number): number {
+/** Anki learning due (epoch seconds) → LearnKit due (epoch ms). */
+export function ankiLearningDueToLearnKitDue(ankiDue: number): number {
   return ankiDue * 1000;
 }
 
@@ -242,8 +242,8 @@ export function computeFieldChecksum(field: string): number {
 
 // ── Tag conversion ────────────────────────────────────────────────────────────
 
-/** Convert Sprout groups to Anki tag string (space-separated, `::` hierarchy). */
-export function sproutGroupsToAnkiTags(groups: string[] | null | undefined): string {
+/** Convert LearnKit groups to Anki tag string (space-separated, `::` hierarchy). */
+export function learnkitGroupsToAnkiTags(groups: string[] | null | undefined): string {
   if (!groups || !Array.isArray(groups) || groups.length === 0) return "";
   const tags = groups
     .map((g) => groupPathToAnkiDeck(g).replace(/ /g, "_"))
@@ -251,8 +251,8 @@ export function sproutGroupsToAnkiTags(groups: string[] | null | undefined): str
   return tags.length ? ` ${tags.join(" ")} ` : "";
 }
 
-/** Convert Anki tag string to Sprout groups. */
-export function ankiTagsToSproutGroups(tags: string): string[] {
+/** Convert Anki tag string to LearnKit groups. */
+export function ankiTagsToLearnKitGroups(tags: string): string[] {
   return String(tags ?? "")
     .trim()
     .split(/\s+/)

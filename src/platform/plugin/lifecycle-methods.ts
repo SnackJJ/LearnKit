@@ -33,7 +33,7 @@ import {
   BRAND,
   DEFAULT_SETTINGS,
   deepMerge,
-  type SproutSettings,
+  type LearnKitSettings,
 } from "../core/constants";
 import { log } from "../core/logger";
 import { isPlainObject, type FlashcardType } from "../core/utils";
@@ -46,18 +46,18 @@ import { loadFlagCacheFromDataJson } from "../flags/flag-tokens";
 import { JsonStore } from "../core/store";
 import { SqliteStore, isSqliteDatabasePresent, reconcileAllDbsFromVaultSync } from "../core/sqlite-store";
 import { migrateJsonToSqlite } from "../core/migration";
-import { SproutReviewerView } from "../../views/reviewer/review-view";
-import { SproutWidgetView } from "../../views/widget/view/widget-view";
-import { SproutAssistantPopup } from "../../views/study-assistant/popup/assistant-popup";
-import { SproutStudyAssistantView } from "../../views/study-assistant/view/study-assistant-view";
-import { SproutCardBrowserView } from "../../views/browser/card-browser-view";
-import { SproutAnalyticsView } from "../../views/analytics/analytics-view";
-import { SproutHomeView } from "../../views/home/home-view";
+import { LearnKitReviewerView } from "../../views/reviewer/review-view";
+import { LearnKitWidgetView } from "../../views/widget/view/widget-view";
+import { LearnKitAssistantPopup } from "../../views/study-assistant/popup/assistant-popup";
+import { LearnKitStudyAssistantView } from "../../views/study-assistant/view/study-assistant-view";
+import { LearnKitCardBrowserView } from "../../views/browser/card-browser-view";
+import { LearnKitAnalyticsView } from "../../views/analytics/analytics-view";
+import { LearnKitHomeView } from "../../views/home/home-view";
 import { LearnKitSettingsTab } from "../../views/settings/settings-tab";
 import { LearnKitSettingsView } from "../../views/settings/view/settings-view";
-import { SproutNoteReviewView } from "../../views/note-review/view/note-review-view";
-import { SproutExamGeneratorView } from "../../views/exam-generator/exam-generator-view";
-import { SproutCoachView } from "../../views/coach";
+import { LearnKitNoteReviewView } from "../../views/note-review/view/note-review-view";
+import { LearnKitExamGeneratorView } from "../../views/exam-generator/exam-generator-view";
+import { LearnKitCoachView } from "../../views/coach";
 import { CoachPlanSqlite } from "../core/coach-plan-sqlite";
 import { syncQuestionBank, findOrphanedCards, pruneOrphanedCards } from "../integrations/sync/sync-engine";
 import { CardCreatorModal } from "../modals/card-creator-modal";
@@ -332,11 +332,11 @@ export function WithLifecycleMethods<T extends Constructor<LearnKitPluginBase>>(
           BRAND,
           DEFAULT_SETTINGS,
           deepMerge,
-          SproutReviewerView,
-          SproutWidgetView,
-          SproutCardBrowserView,
-          SproutAnalyticsView,
-          SproutHomeView,
+          LearnKitReviewerView,
+          LearnKitWidgetView,
+          LearnKitCardBrowserView,
+          LearnKitAnalyticsView,
+          LearnKitHomeView,
           LearnKitSettingsView,
           LearnKitSettingsTab,
           syncQuestionBank,
@@ -351,7 +351,7 @@ export function WithLifecycleMethods<T extends Constructor<LearnKitPluginBase>>(
         loadFlagCacheFromDataJson(rootObj.flagCache);
 
         const rootSettings = isPlainObject(rootObj.settings)
-          ? (rootObj.settings as Partial<SproutSettings>)
+          ? (rootObj.settings as Partial<LearnKitSettings>)
           : {};
         this.settings = deepMerge(DEFAULT_SETTINGS, rootSettings);
         await migrateLegacyConfigFiles({
@@ -361,8 +361,8 @@ export function WithLifecycleMethods<T extends Constructor<LearnKitPluginBase>>(
         });
         this._migrateSettingsInPlace();
         this._normaliseSettingsInPlace();
-        this._applySproutThemePreset();
-        this._applySproutThemeAccentOverride();
+        this._applyLearnKitThemePreset();
+        this._applyLearnKitThemeAccentOverride();
         await initialiseDedicatedApiKeyStorage({
           adapter: this.app?.vault?.adapter,
           dirPath: this._getConfigDirPath(),
@@ -387,7 +387,7 @@ export function WithLifecycleMethods<T extends Constructor<LearnKitPluginBase>>(
           }
         }
 
-        this._registerSproutPinchZoom();
+        this._registerLearnKitPinchZoom();
 
         setDelimiter(this.settings.indexing.delimiter ?? "|");
 
@@ -433,27 +433,27 @@ export function WithLifecycleMethods<T extends Constructor<LearnKitPluginBase>>(
         // CM6 extension: inline diff decorations for AI-proposed note edits
         this.registerEditorExtension(editDecorationExtension);
 
-        this.registerView(VIEW_TYPE_REVIEWER, (leaf: WorkspaceLeaf) => new SproutReviewerView(leaf, this));
-        this.registerView(VIEW_TYPE_NOTE_REVIEW, (leaf: WorkspaceLeaf) => new SproutNoteReviewView(leaf, this));
-        this.registerView(VIEW_TYPE_WIDGET, (leaf: WorkspaceLeaf) => new SproutWidgetView(leaf, this));
-        this.registerView(VIEW_TYPE_STUDY_ASSISTANT, (leaf: WorkspaceLeaf) => new SproutStudyAssistantView(leaf, this));
-        this.registerView(VIEW_TYPE_BROWSER, (leaf: WorkspaceLeaf) => new SproutCardBrowserView(leaf, this));
-        this.registerView(VIEW_TYPE_ANALYTICS, (leaf: WorkspaceLeaf) => new SproutAnalyticsView(leaf, this));
-        this.registerView(VIEW_TYPE_HOME, (leaf: WorkspaceLeaf) => new SproutHomeView(leaf, this));
+        this.registerView(VIEW_TYPE_REVIEWER, (leaf: WorkspaceLeaf) => new LearnKitReviewerView(leaf, this));
+        this.registerView(VIEW_TYPE_NOTE_REVIEW, (leaf: WorkspaceLeaf) => new LearnKitNoteReviewView(leaf, this));
+        this.registerView(VIEW_TYPE_WIDGET, (leaf: WorkspaceLeaf) => new LearnKitWidgetView(leaf, this));
+        this.registerView(VIEW_TYPE_STUDY_ASSISTANT, (leaf: WorkspaceLeaf) => new LearnKitStudyAssistantView(leaf, this));
+        this.registerView(VIEW_TYPE_BROWSER, (leaf: WorkspaceLeaf) => new LearnKitCardBrowserView(leaf, this));
+        this.registerView(VIEW_TYPE_ANALYTICS, (leaf: WorkspaceLeaf) => new LearnKitAnalyticsView(leaf, this));
+        this.registerView(VIEW_TYPE_HOME, (leaf: WorkspaceLeaf) => new LearnKitHomeView(leaf, this));
         this.registerView(VIEW_TYPE_SETTINGS, (leaf: WorkspaceLeaf) => new LearnKitSettingsView(leaf, this));
-        this.registerView(VIEW_TYPE_EXAM_GENERATOR, (leaf: WorkspaceLeaf) => new SproutExamGeneratorView(leaf, this));
-        this.registerView(VIEW_TYPE_COACH, (leaf: WorkspaceLeaf) => new SproutCoachView(leaf, this));
+        this.registerView(VIEW_TYPE_EXAM_GENERATOR, (leaf: WorkspaceLeaf) => new LearnKitExamGeneratorView(leaf, this));
+        this.registerView(VIEW_TYPE_COACH, (leaf: WorkspaceLeaf) => new LearnKitCoachView(leaf, this));
 
         // Legacy view-type aliases keep existing workspace tabs functional after renaming IDs.
-        this.registerView(LEGACY_VIEW_TYPE_REVIEWER, (leaf: WorkspaceLeaf) => new SproutReviewerView(leaf, this));
-        this.registerView(LEGACY_VIEW_TYPE_WIDGET, (leaf: WorkspaceLeaf) => new SproutWidgetView(leaf, this));
-        this.registerView(LEGACY_VIEW_TYPE_STUDY_ASSISTANT, (leaf: WorkspaceLeaf) => new SproutStudyAssistantView(leaf, this));
-        this.registerView(LEGACY_VIEW_TYPE_BROWSER, (leaf: WorkspaceLeaf) => new SproutCardBrowserView(leaf, this));
-        this.registerView(LEGACY_VIEW_TYPE_ANALYTICS, (leaf: WorkspaceLeaf) => new SproutAnalyticsView(leaf, this));
-        this.registerView(LEGACY_VIEW_TYPE_HOME, (leaf: WorkspaceLeaf) => new SproutHomeView(leaf, this));
+        this.registerView(LEGACY_VIEW_TYPE_REVIEWER, (leaf: WorkspaceLeaf) => new LearnKitReviewerView(leaf, this));
+        this.registerView(LEGACY_VIEW_TYPE_WIDGET, (leaf: WorkspaceLeaf) => new LearnKitWidgetView(leaf, this));
+        this.registerView(LEGACY_VIEW_TYPE_STUDY_ASSISTANT, (leaf: WorkspaceLeaf) => new LearnKitStudyAssistantView(leaf, this));
+        this.registerView(LEGACY_VIEW_TYPE_BROWSER, (leaf: WorkspaceLeaf) => new LearnKitCardBrowserView(leaf, this));
+        this.registerView(LEGACY_VIEW_TYPE_ANALYTICS, (leaf: WorkspaceLeaf) => new LearnKitAnalyticsView(leaf, this));
+        this.registerView(LEGACY_VIEW_TYPE_HOME, (leaf: WorkspaceLeaf) => new LearnKitHomeView(leaf, this));
         this.registerView(LEGACY_VIEW_TYPE_SETTINGS, (leaf: WorkspaceLeaf) => new LearnKitSettingsView(leaf, this));
-        this.registerView(LEGACY_VIEW_TYPE_EXAM_GENERATOR, (leaf: WorkspaceLeaf) => new SproutExamGeneratorView(leaf, this));
-        this.registerView(LEGACY_VIEW_TYPE_COACH, (leaf: WorkspaceLeaf) => new SproutCoachView(leaf, this));
+        this.registerView(LEGACY_VIEW_TYPE_EXAM_GENERATOR, (leaf: WorkspaceLeaf) => new LearnKitExamGeneratorView(leaf, this));
+        this.registerView(LEGACY_VIEW_TYPE_COACH, (leaf: WorkspaceLeaf) => new LearnKitCoachView(leaf, this));
 
         this._coachDb = new CoachPlanSqlite(this);
         await this._coachDb.open();
@@ -521,7 +521,7 @@ export function WithLifecycleMethods<T extends Constructor<LearnKitPluginBase>>(
 
           this._updateStatusBarVisibility(null);
 
-          this._assistantPopup = new SproutAssistantPopup(this);
+          this._assistantPopup = new LearnKitAssistantPopup(this);
           this._assistantPopup.mount();
           this._assistantPopup.onActiveLeafChange();
           this.refreshAssistantPopupFromSettings();
@@ -578,9 +578,9 @@ export function WithLifecycleMethods<T extends Constructor<LearnKitPluginBase>>(
       activeDocument.body.classList.remove("is-phone");
       activeDocument.body.style.removeProperty("--learnkit-theme-accent-override");
       activeDocument.body.style.removeProperty("--learnkit-leaf-zoom");
-      if (this._sproutZoomSaveTimer != null) {
-        window.clearTimeout(this._sproutZoomSaveTimer);
-        this._sproutZoomSaveTimer = null;
+      if (this._learnkitZoomSaveTimer != null) {
+        window.clearTimeout(this._learnkitZoomSaveTimer);
+        this._learnkitZoomSaveTimer = null;
       }
       if (this._readingViewRefreshTimer != null) {
         window.clearTimeout(this._readingViewRefreshTimer);

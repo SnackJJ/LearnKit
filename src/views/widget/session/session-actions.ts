@@ -1,6 +1,6 @@
 /**
  * @file src/widget/widget-session-actions.ts
- * @summary Session-level actions for the Sprout sidebar widget: grading, undo, bury, suspend, MCQ answering, next-card navigation, and inline editing. Every function receives the view instance as its first argument so the module stays decoupled from the class definition, avoiding circular imports.
+ * @summary Session-level actions for the LearnKit sidebar widget: grading, undo, bury, suspend, MCQ answering, next-card navigation, and inline editing. Every function receives the view instance as its first argument so the module stays decoupled from the class definition, avoiding circular imports.
  *
  * @exports
  *  - gradeCurrentRating          — grades the current card with a specific FSRS rating

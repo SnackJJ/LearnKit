@@ -1,6 +1,6 @@
 /**
  * @file src/parser/parser.ts
- * @summary Parses raw markdown text into structured flashcard representations. Recognises cards by their pipe-delimited structure (Q/MCQ/CQ/IO + fields), attaches existing ^sprout anchor IDs when present, and leaves card.id null for the sync engine to assign. Supports basic, cloze, MCQ, and image-occlusion card types with title, answer, extra-info, group, and option fields.
+ * @summary Parses raw markdown text into structured flashcard representations. Recognises cards by their pipe-delimited structure (Q/MCQ/CQ/IO + fields), attaches existing ^learnkit anchor IDs when present, and leaves card.id null for the sync engine to assign. Supports basic, cloze, MCQ, and image-occlusion card types with title, answer, extra-info, group, and option fields.
  *
  * @exports
  *  - McqOption          — type describing a single MCQ option (text + isCorrect flag)

@@ -1,14 +1,14 @@
 /**
  * @file src/settings/settings-normalisation.ts
- * @summary Normalises (validates/defaults) SproutSettings fields after loading or migration.
+ * @summary Normalises (validates/defaults) LearnKitSettings fields after loading or migration.
  * Ensures every expected key exists, clamps numeric values, and fills in missing macro
  * configs. Mutates `settings` in place.
  *
  * @exports
- *   - normaliseSettingsInPlace — fill defaults and clamp values on a SproutSettings object
+ *   - normaliseSettingsInPlace — fill defaults and clamp values on a LearnKitSettings object
  */
 
-import { DEFAULT_SETTINGS, type SproutSettings } from "../../../platform/core/constants";
+import { DEFAULT_SETTINGS, type LearnKitSettings } from "../../../platform/core/constants";
 import { clamp, cleanPositiveNumberArray, clonePlain } from "../../../platform/core/utils";
 import { normaliseSyncPrivilegesChoiceVersion } from "../../../platform/integrations/sync/sync-privileges";
 import { resolveInterfaceLocalePreference } from "../../../platform/translations/locale-registry";
@@ -26,10 +26,10 @@ function normaliseHexColorOrEmpty(value: unknown): string {
 }
 
 /**
- * Normalise a SproutSettings object in place: fill missing keys with defaults,
+ * Normalise a LearnKitSettings object in place: fill missing keys with defaults,
  * clamp numeric ranges, and remove legacy scheduling keys.
  */
-export function normaliseSettingsInPlace(s: SproutSettings): void {
+export function normaliseSettingsInPlace(s: LearnKitSettings): void {
   const LEGACY_ASSISTANT_PROMPT = "You are a helpful study assistant. Answer using only the provided note context where possible.";
   const LEGACY_OPENAI_MODEL_MAP: Record<string, string> = {
     "gpt-5.4": "gpt-5",
@@ -48,8 +48,8 @@ export function normaliseSettingsInPlace(s: SproutSettings): void {
     "grok-4-1-fast-non-reasoning": "grok-3-mini",
   };
 
-  s.scheduling ??= {} as SproutSettings["scheduling"];
-  s.general ??= {} as SproutSettings["general"];
+  s.scheduling ??= {} as LearnKitSettings["scheduling"];
+  s.general ??= {} as LearnKitSettings["general"];
   s.general.enableReadingStyles ??= DEFAULT_SETTINGS.general.enableReadingStyles;
   s.general.interfaceLanguage = resolveInterfaceLocalePreference(
     s.general.interfaceLanguage ?? DEFAULT_SETTINGS.general.interfaceLanguage,
@@ -81,7 +81,7 @@ export function normaliseSettingsInPlace(s: SproutSettings): void {
     s.general.syncPrivilegesChoiceVersion,
   );
 
-  s.studyAssistant ??= {} as SproutSettings["studyAssistant"];
+  s.studyAssistant ??= {} as LearnKitSettings["studyAssistant"];
   s.studyAssistant.enabled ??= DEFAULT_SETTINGS.studyAssistant.enabled;
   s.studyAssistant.location = "modal";
   const modalButtonVisibility = String(
@@ -186,7 +186,7 @@ export function normaliseSettingsInPlace(s: SproutSettings): void {
   s.studyAssistant.privacy.saveChatHistory ??= DEFAULT_SETTINGS.studyAssistant.privacy.saveChatHistory;
   s.studyAssistant.privacy.syncDeletesToProvider ??= DEFAULT_SETTINGS.studyAssistant.privacy.syncDeletesToProvider;
 
-  s.reminders ??= {} as SproutSettings["reminders"];
+  s.reminders ??= {} as LearnKitSettings["reminders"];
   s.reminders.showOnStartup ??= DEFAULT_SETTINGS.reminders.showOnStartup;
   s.reminders.startupDelayMs = clamp(
     Number(s.reminders.startupDelayMs ?? DEFAULT_SETTINGS.reminders.startupDelayMs),
@@ -228,7 +228,7 @@ export function normaliseSettingsInPlace(s: SproutSettings): void {
       : DEFAULT_SETTINGS.reminders.clickAction;
 
   // Ensure imageOcclusion group exists (may have been deleted by an older migration)
-  s.imageOcclusion ??= {} as SproutSettings["imageOcclusion"];
+  s.imageOcclusion ??= {} as LearnKitSettings["imageOcclusion"];
   s.imageOcclusion.defaultMaskMode ??= DEFAULT_SETTINGS.imageOcclusion.defaultMaskMode;
   s.imageOcclusion.revealMode ??= (
     s.imageOcclusion.defaultMaskMode === "all" ? "all" : DEFAULT_SETTINGS.imageOcclusion.revealMode
@@ -315,7 +315,7 @@ export function normaliseSettingsInPlace(s: SproutSettings): void {
   s.readingView ??= clonePlain(DEFAULT_SETTINGS.readingView);
   const rv = s.readingView;
 
-  const toMacro = (raw: unknown): SproutSettings["readingView"]["activeMacro"] => {
+  const toMacro = (raw: unknown): LearnKitSettings["readingView"]["activeMacro"] => {
     const key = typeof raw === "string" ? raw.trim().toLowerCase() : "";
     if (key === "minimal-flip") return "flashcards";
     if (key === "full-card") return "classic";
@@ -336,9 +336,9 @@ export function normaliseSettingsInPlace(s: SproutSettings): void {
   rv.macroConfigs.custom ??= defaultMacroConfigs.custom;
 
   const normaliseFields = (
-    fields: Partial<SproutSettings["readingView"]["macroConfigs"]["classic"]["fields"]> | undefined,
-    fallback: SproutSettings["readingView"]["macroConfigs"]["classic"]["fields"],
-  ): SproutSettings["readingView"]["macroConfigs"]["classic"]["fields"] => ({
+    fields: Partial<LearnKitSettings["readingView"]["macroConfigs"]["classic"]["fields"]> | undefined,
+    fallback: LearnKitSettings["readingView"]["macroConfigs"]["classic"]["fields"],
+  ): LearnKitSettings["readingView"]["macroConfigs"]["classic"]["fields"] => ({
     title: fields?.title ?? fallback.title,
     question: fields?.question ?? fallback.question,
     options: fields?.options ?? fallback.options,
@@ -360,9 +360,9 @@ export function normaliseSettingsInPlace(s: SproutSettings): void {
   rv.macroConfigs.custom.fields = normaliseFields(rv.macroConfigs.custom.fields, defaultMacroConfigs.custom.fields);
 
   const normaliseColours = (
-    colours: Partial<SproutSettings["readingView"]["macroConfigs"]["classic"]["colours"]> | undefined,
-    fallback: SproutSettings["readingView"]["macroConfigs"]["classic"]["colours"],
-  ): SproutSettings["readingView"]["macroConfigs"]["classic"]["colours"] => ({
+    colours: Partial<LearnKitSettings["readingView"]["macroConfigs"]["classic"]["colours"]> | undefined,
+    fallback: LearnKitSettings["readingView"]["macroConfigs"]["classic"]["colours"],
+  ): LearnKitSettings["readingView"]["macroConfigs"]["classic"]["colours"] => ({
     autoDarkAdjust: colours?.autoDarkAdjust ?? fallback.autoDarkAdjust,
     cardBgLight: colours?.cardBgLight ?? fallback.cardBgLight,
     cardBgDark: colours?.cardBgDark ?? fallback.cardBgDark,
@@ -398,7 +398,7 @@ export function normaliseSettingsInPlace(s: SproutSettings): void {
   };
   rv.displayLabels ??= rv.macroConfigs[rv.activeMacro].fields.labels;
 
-  s.storage ??= {} as SproutSettings["storage"];
+  s.storage ??= {} as LearnKitSettings["storage"];
   s.storage.backups ??= clonePlain(DEFAULT_SETTINGS.storage.backups);
   s.storage.backups.recentCount = clamp(
     Number(s.storage.backups.recentCount ?? DEFAULT_SETTINGS.storage.backups.recentCount),
@@ -450,7 +450,7 @@ export function normaliseSettingsInPlace(s: SproutSettings): void {
   else if (!s.general.prettifyCards || s.general.prettifyCards === "off") s.general.prettifyCards = "accent";
 
   // ── Audio / TTS provider ──
-  s.audio ??= {} as SproutSettings["audio"];
+  s.audio ??= {} as LearnKitSettings["audio"];
   const ttsProvider = String(s.audio.ttsProvider ?? DEFAULT_SETTINGS.audio.ttsProvider);
   s.audio.ttsProvider =
     ttsProvider === "elevenlabs" || ttsProvider === "openai" || ttsProvider === "google-cloud" || ttsProvider === "custom"

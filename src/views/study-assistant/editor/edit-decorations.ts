@@ -46,7 +46,7 @@ export type EditProposalResolvedEventDetail = {
 
 export const setEditProposals = StateEffect.define<EditProposalEntry[]>();
 export const clearEditProposals = StateEffect.define<null>();
-export const EDIT_PROPOSAL_RESOLVED_EVENT_NAME = "sprout-study-assistant-edit-proposal-resolved";
+export const EDIT_PROPOSAL_RESOLVED_EVENT_NAME = "learnkit-study-assistant-edit-proposal-resolved";
 export const resolveEditProposal = StateEffect.define<{
   from: number;
   to: number;

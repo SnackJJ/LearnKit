@@ -1,6 +1,6 @@
 /**
  * @file src/sync/sync-engine.ts
- * @summary Core sync engine for Sprout flashcards. Synchronises parsed card data from markdown files with the in-memory store and data.json on disk. Handles markdown prefix stripping, scheduling-state safety, recovery from lost scheduling data, card-signature diffing, anchor ID insertion and orphan removal, IO/cloze child management, and MCQ option conversion.
+ * @summary Core sync engine for LearnKit flashcards. Synchronises parsed card data from markdown files with the in-memory store and data.json on disk. Handles markdown prefix stripping, scheduling-state safety, recovery from lost scheduling data, card-signature diffing, anchor ID insertion and orphan removal, IO/cloze child management, and MCQ option conversion.
  *
  * @exports
  *  - formatSyncNotice  — formats a human-readable notice string summarising sync results
@@ -47,7 +47,7 @@ import {
 import {
   countObjectKeys,
   joinPath,
-  likelySproutStateKey,
+  likelyLearnKitStateKey,
   extractStatesFromDataJsonObject,
   tryReadJson,
   ensureRoutineBackupIfNeeded,
@@ -120,7 +120,7 @@ type LockQueue = Map<string, Promise<void>>;
 
 const FILE_SYNC_LOCKS: LockQueue = new Map();
 const VAULT_SYNC_LOCKS: LockQueue = new Map();
-const VAULT_LOCK_KEY = "__sprout-vault-sync__";
+const VAULT_LOCK_KEY = "__learnkit-vault-sync__";
 
 async function withLock<T>(lockMap: LockQueue, key: string, fn: () => Promise<T>): Promise<T> {
   const prev = lockMap.get(key) ?? Promise.resolve();
@@ -411,7 +411,7 @@ function normaliseTextForParsing(originalText: string): string {
   return out.join("\n");
 }
 
-/** Matches a Sprout anchor ID even inside list/quote prefixes. */
+/** Matches a LearnKit anchor ID even inside list/quote prefixes. */
 function matchAnchorId(line: string): string | null {
   const { rest } = splitMdPrefix(line);
   return extractCardAnchorId(rest);
@@ -489,7 +489,7 @@ async function loadBestSchedulingSnapshot(plugin: LearnKitPlugin): Promise<State
       const states = extractStatesFromDataJsonObject(obj);
       if (!states || Object.keys(states).length === 0) continue;
       const keys = Object.keys(states);
-      const validKeyCount = keys.reduce((acc, k) => acc + (likelySproutStateKey(k) ? 1 : 0), 0);
+      const validKeyCount = keys.reduce((acc, k) => acc + (likelyLearnKitStateKey(k) ? 1 : 0), 0);
       if (keys.length > 0 && validKeyCount / keys.length < 0.7) continue;
       return states;
     }
@@ -504,7 +504,7 @@ async function loadBestSchedulingSnapshot(plugin: LearnKitPlugin): Promise<State
       if (!validated?.states) continue;
 
       const keys = Object.keys(validated.states);
-      const validKeyCount = keys.reduce((acc, k) => acc + (likelySproutStateKey(k) ? 1 : 0), 0);
+      const validKeyCount = keys.reduce((acc, k) => acc + (likelyLearnKitStateKey(k) ? 1 : 0), 0);
       if (keys.length > 0 && validKeyCount / keys.length < 0.7) continue;
 
       return validated.states;
@@ -513,7 +513,7 @@ async function loadBestSchedulingSnapshot(plugin: LearnKitPlugin): Promise<State
 
   // NOTE: Only scans this plugin's own data.json variants and backup folder.
   // extractStatesFromDataJsonObject() validates state structure to prevent
-  // loading corrupted or foreign data (checks for FSRS fields, Sprout key patterns).
+  // loading corrupted or foreign data (checks for FSRS fields, LearnKit key patterns).
 
   return null;
 }
@@ -705,7 +705,7 @@ function findAnchorInsertLineIndex(lines: string[], cardStartLine: number): numb
   return start;
 }
 
-/** Collects all Sprout anchor IDs found in the line array. */
+/** Collects all LearnKit anchor IDs found in the line array. */
 function collectAnchorIdsFromLines(lines: string[]): Set<string> {
   const out = new Set<string>();
   for (const ln of lines) {
@@ -1496,7 +1496,7 @@ export async function pruneOrphanedCards(
 
 /**
  * Deletes orphaned IO / HQ images from the vault.
- * Matches both the legacy `sprout-io-*` pattern and the new
+ * Matches the legacy `sprout-io-*` / `learnkit-io-*` patterns and the new
  * `{page} - LK-(IO|HQ)-NN.*` convention.
  */
 async function deleteOrphanedIoImages(plugin: LearnKitPlugin): Promise<number> {
@@ -1531,8 +1531,8 @@ async function deleteOrphanedIoImages(plugin: LearnKitPlugin): Promise<number> {
     if (def?.imageRef) referencedImagePaths.add(def.imageRef);
   }
 
-  // ── Legacy: scan markdown for sprout-io-(\d{9}) references ───────────
-  const oldRe = /sprout-io-(\d{9})/g;
+  // ── Legacy: scan markdown for (sprout|learnkit)-io-(\d{9}) references ──
+  const oldRe = /(?:sprout|learnkit)-io-(\d{9})/g;
   const referencedIoIds = new Set<string>();
 
   // ── New-style: scan markdown for LearnKit image embeds ────────────────
@@ -1558,7 +1558,7 @@ async function deleteOrphanedIoImages(plugin: LearnKitPlugin): Promise<number> {
   }
 
   // ── Patterns for file names ───────────────────────────────────────────
-  const OLD_IO_RE = /sprout-io-(\d{9})/;
+  const OLD_IO_RE = /(?:sprout|learnkit)-io-(\d{9})/;
   const NEW_LK_RE = / - LK-(IO|HQ)-\d{2}\./;
 
   let deleted = 0;
@@ -1998,8 +1998,8 @@ function hqFieldsFromParsed(
   return { imageRef, hqRegions, interactionMode };
 }
 
-/** Regex to extract a Sprout IO card ID from a legacy `sprout-io-NNNNNNNNN` filename. */
-const IO_IMAGE_ID_RE = /sprout-io-(\d{9})/i;
+/** Regex to extract a card ID from a legacy `sprout-io-NNNNNNNNN` / `learnkit-io-NNNNNNNNN` filename. */
+const IO_IMAGE_ID_RE = /(?:sprout|learnkit)-io-(\d{9})/i;
 
 /** Attempts to infer the card ID from an IO card's image reference (legacy naming only). */
 function inferIoIdFromCard(c: ParsedCard): string | null {
@@ -2047,7 +2047,7 @@ async function pruneTtsCacheForCards(plugin: LearnKitPlugin, cardIds: readonly s
 // ────────────────────────────────────────────
 
 /**
- * Syncs a single markdown file with the Sprout card database.
+ * Syncs a single markdown file with the LearnKit card database.
  *
  * Steps:
  *  1. Ensures a routine backup exists (throttled)

@@ -323,7 +323,7 @@ export function WithNavigationMethods<T extends Constructor<LearnKitPluginBase>>
       }
 
       settings.open();
-      const pluginId = this.manifest?.id || "sprout";
+      const pluginId = this.manifest?.id || "learnkit";
 
       try {
         if (typeof settings.openTabById === "function") settings.openTabById(pluginId);

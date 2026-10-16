@@ -10,7 +10,7 @@
  */
 
 import { requestUrl } from "obsidian";
-import type { SproutSettings } from "../../types/settings";
+import type { LearnKitSettings } from "../../types/settings";
 import {
   getTextAttachmentLimits,
   type ContextLimitPreset,
@@ -78,7 +78,7 @@ function isValidHttpUrl(value: string): boolean {
   }
 }
 
-function providerBaseUrl(settings: SproutSettings["studyAssistant"]): string {
+function providerBaseUrl(settings: LearnKitSettings["studyAssistant"]): string {
   const override = String(settings.endpointOverride || "").trim();
   if (settings.provider === "ollama") {
     const ollamaBase = override || DEFAULT_OLLAMA_BASE_URL;
@@ -114,7 +114,7 @@ function providerRequiresApiKey(provider: StudyAssistantProvider): boolean {
 
 export function providerApiKey(
   provider: StudyAssistantProvider,
-  apiKeys: SproutSettings["studyAssistant"]["apiKeys"],
+  apiKeys: LearnKitSettings["studyAssistant"]["apiKeys"],
 ): string {
   if (provider === "ollama") return "";
   if (provider === "openai") return String(apiKeys.openai || "").trim();
@@ -1364,7 +1364,7 @@ function buildTextAttachmentContext(dataUrls: string[], preset?: ContextLimitPre
 }
 
 export async function requestStudyAssistantCompletionDetailed(params: {
-  settings: SproutSettings["studyAssistant"];
+  settings: LearnKitSettings["studyAssistant"];
   systemPrompt: string;
   userPrompt: string;
   imageDataUrls?: string[];
@@ -1953,7 +1953,7 @@ export async function requestStudyAssistantCompletionDetailed(params: {
 }
 
 export async function requestStudyAssistantCompletion(params: {
-  settings: SproutSettings["studyAssistant"];
+  settings: LearnKitSettings["studyAssistant"];
   systemPrompt: string;
   userPrompt: string;
   imageDataUrls?: string[];
@@ -2033,7 +2033,7 @@ function extractDeltaTextAnthropic(payload: string): string {
 }
 
 export async function requestStudyAssistantStreamingCompletion(params: {
-  settings: SproutSettings["studyAssistant"];
+  settings: LearnKitSettings["studyAssistant"];
   systemPrompt: string;
   userPrompt: string;
   mode?: CompletionMode;
@@ -2456,7 +2456,7 @@ export async function requestStudyAssistantStreamingCompletion(params: {
 }
 
 export async function deleteStudyAssistantConversation(params: {
-  settings: SproutSettings["studyAssistant"];
+  settings: LearnKitSettings["studyAssistant"];
   conversationId: string;
 }): Promise<DeleteConversationResult> {
   const { settings } = params;

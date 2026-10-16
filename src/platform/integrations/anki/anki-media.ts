@@ -1,15 +1,15 @@
 /**
  * @file src/anki/anki-media.ts
  * @summary Media file handling for Anki import/export. Collects image references
- * from Sprout card fields, resolves them to vault binary files, rewrites references
- * between Sprout wikilink format and Anki HTML img format, and saves imported
+ * from LearnKit card fields, resolves them to vault binary files, rewrites references
+ * between LearnKit wikilink format and Anki HTML img format, and saves imported
  * media files into the vault.
  *
  * @exports
  *  - collectMediaRefs       — scan fields for image references
  *  - resolveVaultMedia      — read binary content of referenced vault images
  *  - rewriteFieldForAnki    — ![[img]] → <img src="img">
- *  - rewriteFieldForSprout  — <img src="img"> → ![[img]]
+ *  - rewriteFieldForLearnKit  — <img src="img"> → ![[img]]
  *  - saveMediaToVault       — write imported media bytes to vault folder
  */
 
@@ -24,7 +24,7 @@ const ANKI_SOUND_RE = new RegExp("\\[" + "sou" + "nd:([^\\]]+)\\]", "g");
 
 // ── Export helpers ────────────────────────────────────────────────────────────
 
-/** Scan Sprout card fields for image references. Returns a set of file paths/names. */
+/** Scan LearnKit card fields for image references. Returns a set of file paths/names. */
 export function collectMediaRefs(fields: (string | null | undefined)[]): Set<string> {
   const refs = new Set<string>();
 
@@ -100,7 +100,7 @@ export async function resolveVaultMedia(
   return media;
 }
 
-/** Rewrite Sprout wikilink/markdown image refs to Anki HTML img tags. */
+/** Rewrite LearnKit wikilink/markdown image refs to Anki HTML img tags. */
 export function rewriteFieldForAnki(field: string, _mediaNames: Set<string>): string {
   if (!field) return field;
   let text = field;
@@ -124,8 +124,8 @@ export function rewriteFieldForAnki(field: string, _mediaNames: Set<string>): st
 
 // ── Import helpers ────────────────────────────────────────────────────────────
 
-/** Rewrite Anki HTML img tags and sound refs to Sprout wikilinks. */
-export function rewriteFieldForSprout(
+/** Rewrite Anki HTML img tags and sound refs to LearnKit wikilinks. */
+export function rewriteFieldForLearnKit(
   html: string,
   mediaNameMap: Map<string, string>,
 ): string {

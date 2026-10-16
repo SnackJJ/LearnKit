@@ -12,7 +12,7 @@
  */
 
 import type { TFile, WorkspaceLeaf } from "obsidian";
-import type { SproutSettings } from "../../../platform/types/settings";
+import type { LearnKitSettings } from "../../../platform/types/settings";
 import type {
   StudyAssistantConversationRef,
   StudyAssistantEditChange,
@@ -21,8 +21,8 @@ import type {
 } from "../../../platform/integrations/ai/study-assistant-types";
 
 export type AssistantMode = "assistant" | "review" | "generate";
-export type StudyAssistantLocation = SproutSettings["studyAssistant"]["location"];
-export type StudyAssistantModalButtonVisibility = SproutSettings["studyAssistant"]["modalButtonVisibility"];
+export type StudyAssistantLocation = LearnKitSettings["studyAssistant"]["location"];
+export type StudyAssistantModalButtonVisibility = LearnKitSettings["studyAssistant"]["modalButtonVisibility"];
 
 export type EditProposalStatus = "pending" | "accepted" | "rejected" | "partial" | "expired";
 

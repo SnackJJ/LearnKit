@@ -9,20 +9,20 @@
  * manages AOS scroll animations and wide-mode layout toggling.
  *
  * @exports
- *   - SproutAnalyticsView — Obsidian ItemView class implementing the analytics dashboard
+ *   - LearnKitAnalyticsView — Obsidian ItemView class implementing the analytics dashboard
  */
 
 import { ItemView, type WorkspaceLeaf, setIcon } from "obsidian";
 import * as React from "react";
 import { createRoot, type Root as ReactRoot } from "react-dom/client";
 import { initAOS, resetAOS } from "../../platform/core/aos-loader";
-import { type SproutHeader, createViewHeader } from "../../platform/core/header";
+import { type LearnKitHeader, createViewHeader } from "../../platform/core/header";
 import { log } from "../../platform/core/logger";
 import type { CardState, ReviewLogEntry } from "../../platform/core/store";
 import { AOS_DURATION, MAX_CONTENT_WIDTH_PX, MS_DAY, VIEW_TYPE_ANALYTICS } from "../../platform/core/constants";
 import { placePopover, queryFirst, setCssProps } from "../../platform/core/ui";
 import { createTitleStripFrame } from "../../platform/core/view-primitives";
-import { SPROUT_HOME_CONTENT_SHELL_CLASS } from "../../platform/core/ui-classes";
+import { LEARNKIT_HOME_CONTENT_SHELL_CLASS } from "../../platform/core/ui-classes";
 import type LearnKitPlugin from "../../main";
 import { isParentCard } from "../../platform/core/card-utils";
 import { StagePieCard } from "./charts/pie-charts";
@@ -61,12 +61,12 @@ function localDayIndex(ts: number, timeZone: string) {
   return Math.floor(Date.UTC(year, month - 1, day) / MS_DAY);
 }
 
-export class SproutAnalyticsView extends ItemView {
+export class LearnKitAnalyticsView extends ItemView {
   plugin: LearnKitPlugin;
 
   private _activeSection: "flashcards" | "notes" | "tests" = "flashcards";
 
-  private _header: SproutHeader | null = null;
+  private _header: LearnKitHeader | null = null;
   private _rootEl: HTMLElement | null = null;
   // Removed: now uses plugin.isWideMode
   private _heatmapRoot: ReactRoot | null = null;
@@ -388,7 +388,7 @@ export class SproutAnalyticsView extends ItemView {
     titleRight.appendChild(filtersWrap);
 
     const contentShell = makeEl("div");
-    contentShell.className = `${SPROUT_HOME_CONTENT_SHELL_CLASS} learnkit-analytics-content-shell`;
+    contentShell.className = `${LEARNKIT_HOME_CONTENT_SHELL_CLASS} learnkit-analytics-content-shell`;
     root.appendChild(contentShell);
 
     applyRootAos(titleStrip, 0);
@@ -1592,12 +1592,12 @@ export class SproutAnalyticsView extends ItemView {
     rowsBtn.appendChild(rowsChevron);
 
     const rowsPopover = makeEl("div");
-    const sproutWrapper = makeEl("div");
-    sproutWrapper.className = "learnkit";
+    const learnkitWrapper = makeEl("div");
+    learnkitWrapper.className = "learnkit";
     rowsPopover.className = "";
     rowsPopover.setAttribute("aria-hidden", "true");
     rowsPopover.classList.add("learnkit-popover-overlay", "learnkit-popover-overlay");
-    sproutWrapper.appendChild(rowsPopover);
+    learnkitWrapper.appendChild(rowsPopover);
 
     const rowsPanel = makeEl("div");
     rowsPanel.className = "rounded-md border border-border bg-popover text-popover-foreground shadow-lg p-1 learnkit-pointer-auto";
@@ -1629,7 +1629,7 @@ export class SproutAnalyticsView extends ItemView {
       rowsPopover.setAttribute("aria-hidden", "true");
       rowsPopover.classList.remove("is-open");
       try {
-        sproutWrapper.remove();
+        learnkitWrapper.remove();
       } catch (e: unknown) { log.swallow("remove rows menu wrapper", e); }
       rowsOpen = false;
     };
@@ -1703,7 +1703,7 @@ export class SproutAnalyticsView extends ItemView {
       rowsChevron.classList.add("rotate-180");
       rowsPopover.setAttribute("aria-hidden", "false");
       rowsPopover.classList.add("is-open");
-      if (!sproutWrapper.parentElement) activeDocument.body.appendChild(sproutWrapper);
+      if (!learnkitWrapper.parentElement) activeDocument.body.appendChild(learnkitWrapper);
       window.requestAnimationFrame(() => placeRowsMenu());
 
       const onDocPointerDown = (ev: PointerEvent) => {

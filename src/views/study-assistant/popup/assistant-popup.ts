@@ -3,7 +3,7 @@
  * @summary Module for assistant popup.
  *
  * @exports
- *  - SproutAssistantPopup
+ *  - LearnKitAssistantPopup
  */
 
 import { MarkdownView, Modal, Notice, Platform, Setting, TFile, WorkspaceLeaf, setIcon } from "obsidian";
@@ -149,9 +149,9 @@ type AssistantAskLatencyTrace = {
 };
 
 // ---------------------------------------------------------------------------
-//  SproutAssistantPopup
+//  LearnKitAssistantPopup
 // ---------------------------------------------------------------------------
-export class SproutAssistantPopup {
+export class LearnKitAssistantPopup {
   plugin: LearnKitPlugin;
   activeFile: TFile | null = null;
   private readonly _instanceId = `assistant-popup-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
@@ -5345,7 +5345,7 @@ export class SproutAssistantPopup {
   //  Suggestion summary rendering
   // ---------------------------------------------------------------------------
 
-  private appendSuggestionText(parent: HTMLElement, value: string, cls = "sprout-assistant-popup-suggestion-line"): void {
+  private appendSuggestionText(parent: HTMLElement, value: string, cls = "learnkit-assistant-popup-suggestion-line"): void {
     if (!value) return;
     parent.createEl("p", { cls, text: value });
   }
@@ -5364,10 +5364,10 @@ export class SproutAssistantPopup {
     const summary = parent.createDiv({ cls: "learnkit-assistant-popup-suggestion-summary learnkit-assistant-popup-suggestion-summary" });
 
     if (suggestion.type === "basic" || suggestion.type === "reversed") {
-      this.appendSuggestionText(summary, data.question, "sprout-assistant-popup-suggestion-question");
-      this.appendSuggestionText(summary, data.answer, "sprout-assistant-popup-suggestion-answer");
+      this.appendSuggestionText(summary, data.question, "learnkit-assistant-popup-suggestion-question");
+      this.appendSuggestionText(summary, data.answer, "learnkit-assistant-popup-suggestion-answer");
     } else if (suggestion.type === "mcq") {
-      this.appendSuggestionText(summary, data.question, "sprout-assistant-popup-suggestion-question");
+      this.appendSuggestionText(summary, data.question, "learnkit-assistant-popup-suggestion-question");
       if (data.options.length) {
         const correct = new Set(data.correctOptionIndexes);
         const ul = summary.createEl("ul", { cls: "learnkit-assistant-popup-suggestion-list learnkit-assistant-popup-suggestion-list" });
@@ -5378,15 +5378,15 @@ export class SproutAssistantPopup {
         });
       }
     } else if (suggestion.type === "oq") {
-      this.appendSuggestionText(summary, data.question, "sprout-assistant-popup-suggestion-question");
+      this.appendSuggestionText(summary, data.question, "learnkit-assistant-popup-suggestion-question");
       if (data.steps.length) {
         const ol = summary.createEl("ol", { cls: "learnkit-assistant-popup-suggestion-list learnkit-assistant-popup-suggestion-list" });
         for (const step of data.steps) ol.createEl("li", { text: step });
       }
     } else if (suggestion.type === "cloze") {
-      this.appendSuggestionText(summary, data.clozeText, "sprout-assistant-popup-suggestion-question");
+      this.appendSuggestionText(summary, data.clozeText, "learnkit-assistant-popup-suggestion-question");
     } else if (suggestion.type === "io") {
-      this.appendSuggestionText(summary, data.ioSrc || this._tx("ui.studyAssistant.generator.io", "Image occlusion card"), "sprout-assistant-popup-suggestion-question");
+      this.appendSuggestionText(summary, data.ioSrc || this._tx("ui.studyAssistant.generator.io", "Image occlusion card"), "learnkit-assistant-popup-suggestion-question");
       if (data.ioSrc) this.renderIoSuggestionPreview(summary, data.ioSrc, suggestion.ioOcclusions);
     } else if (suggestion.type === "combo") {
       const qVariants = Array.isArray(suggestion.qVariants) ? suggestion.qVariants : [];
@@ -5397,19 +5397,19 @@ export class SproutAssistantPopup {
         : 0;
       const title = String(suggestion.title || "").trim();
       if (title) {
-        this.appendSuggestionText(summary, `${title} (${mode} · ${totalCards} cards)`, "sprout-assistant-popup-suggestion-question");
+        this.appendSuggestionText(summary, `${title} (${mode} · ${totalCards} cards)`, "learnkit-assistant-popup-suggestion-question");
       } else {
-        this.appendSuggestionText(summary, `${mode} combo · ${totalCards} cards`, "sprout-assistant-popup-suggestion-question");
+        this.appendSuggestionText(summary, `${mode} combo · ${totalCards} cards`, "learnkit-assistant-popup-suggestion-question");
       }
       if (qVariants.length) {
-        this.appendSuggestionText(summary, qVariants.join(" ::: "), "sprout-assistant-popup-suggestion-question");
+        this.appendSuggestionText(summary, qVariants.join(" ::: "), "learnkit-assistant-popup-suggestion-question");
       }
       if (aVariants.length) {
-        this.appendSuggestionText(summary, aVariants.join(" ::: "), "sprout-assistant-popup-suggestion-answer");
+        this.appendSuggestionText(summary, aVariants.join(" ::: "), "learnkit-assistant-popup-suggestion-answer");
       }
     } else {
       const fallback = trimLine(suggestion.question || suggestion.clozeText || suggestion.title || "");
-      this.appendSuggestionText(summary, fallback, "sprout-assistant-popup-suggestion-question");
+      this.appendSuggestionText(summary, fallback, "learnkit-assistant-popup-suggestion-question");
     }
   }
 

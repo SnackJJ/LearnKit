@@ -12,13 +12,13 @@ import {
   formatTtsProviderLabel,
   TtsProviderError,
 } from "../src/platform/integrations/tts/tts-provider";
-import type { SproutSettings } from "../src/platform/types/settings";
+import type { LearnKitSettings } from "../src/platform/types/settings";
 
 vi.mock("obsidian");
 
 // ── Helpers ──────────────────────────────────────────────────────
 
-function makeAudio(overrides: Partial<SproutSettings["audio"]> = {}): SproutSettings["audio"] {
+function makeAudio(overrides: Partial<LearnKitSettings["audio"]> = {}): LearnKitSettings["audio"] {
   return {
     enabled: true,
     speed: 1,
@@ -33,7 +33,7 @@ function makeAudio(overrides: Partial<SproutSettings["audio"]> = {}): SproutSett
     ttsCacheEnabled: true,
     ttsApiKeys: { elevenlabs: "", openai: "sk-test", "google-cloud": "", custom: "" },
     ...overrides,
-  } as SproutSettings["audio"];
+  } as LearnKitSettings["audio"];
 }
 
 // ── Unit tests ───────────────────────────────────────────────────

@@ -246,8 +246,8 @@ export function WithDataSyncMethods<T extends Constructor<LearnKitPluginBase>>(B
     };
 
     saveAll = async (): Promise<void> => {
-      this._applySproutThemePreset();
-      this._applySproutThemeAccentOverride();
+      this._applyLearnKitThemePreset();
+      this._applyLearnKitThemeAccentOverride();
       while (this._saving) await this._saving;
       this._saving = this._doSave();
       try {
@@ -442,7 +442,7 @@ export function WithDataSyncMethods<T extends Constructor<LearnKitPluginBase>>(B
 
       try {
         const res = await requestUrl({
-          url: "https://api.github.com/repos/ctrlaltwill/sprout",
+          url: "https://api.github.com/repos/ctrlaltwill/learnkit",
           method: "GET",
           headers: { Accept: "application/vnd.github+json" },
         });

@@ -1,9 +1,9 @@
 /**
  * @file src/types/obsidian-ex.d.ts
  * @summary Ambient module augmentations for Obsidian's undocumented internal APIs that
- * Sprout relies on (App.setting, App.commands, Vault.adapter, MenuItem.setSubmenu,
+ * LearnKit relies on (App.setting, App.commands, Vault.adapter, MenuItem.setSubmenu,
  * WorkspaceLeaf.setViewState, MarkdownView.getMode, etc.).
- * Also declares global window augmentations for Basecoat, MathJax, and the Sprout
+ * Also declares global window augmentations for Basecoat, MathJax, and the LearnKit
  * debug log handle. Only members actually used by the plugin are typed here.
  *
  * @exports None — ambient declarations only (module augmentation)
@@ -141,7 +141,7 @@ interface BasecoatApi {
   [key: string]: unknown;
 }
 
-interface SproutGlobals {
+interface LearnKitGlobals {
   /** Obsidian app instance, available globally at runtime. */
   app?: App;
   /** Basecoat UI framework (optional). */
@@ -149,32 +149,32 @@ interface SproutGlobals {
   /** MathJax renderer (optional). */
   MathJax?: { typeset?(elements: Element[]): void; [key: string]: unknown };
   /** Masonry grid helper injected by reading view. */
-  sproutApplyMasonryGrid?: () => void;
-  /** Sprout widget view reference. */
-  SproutWidgetView?: unknown;
-  /** Sprout boot flag. */
-  __sprout_started?: boolean;
+  learnkitApplyMasonryGrid?: () => void;
+  /** LearnKit widget view reference. */
+  LearnKitWidgetView?: unknown;
+  /** LearnKit boot flag. */
+  __learnkit_started?: boolean;
   /** LearnKit console AI matrix runner API. */
   learnKitAi?: StudyAssistantMatrixConsoleApi;
   /** Legacy alias for the LearnKit console AI matrix runner API. */
-  sproutAi?: StudyAssistantMatrixConsoleApi;
+  learnkitAi?: StudyAssistantMatrixConsoleApi;
   /** Shorthand runner entry point for the LearnKit AI matrix. */
   learnKitAiMatrixRun?: StudyAssistantMatrixConsoleApi["runMatrix"];
   /** Legacy shorthand runner entry point for the LearnKit AI matrix. */
-  sproutAiMatrixRun?: StudyAssistantMatrixConsoleApi["runMatrix"];
+  learnkitAiMatrixRun?: StudyAssistantMatrixConsoleApi["runMatrix"];
 }
 
 declare global {
-  interface Window extends SproutGlobals {
-    /** Sprout debug globals merged via declaration merging. */
-    readonly __sproutGlobals?: true;
+  interface Window extends LearnKitGlobals {
+    /** LearnKit debug globals merged via declaration merging. */
+    readonly __learnkitGlobals?: true;
   }
 
   /** LearnKit debug log handle, attached at init. */
   var __learnkitLog: unknown;
 
-  /** Legacy Sprout debug log alias, attached at init. */
-  var __sproutLog: unknown;
+  /** Legacy LearnKit debug log alias, attached at init. */
+  var __learnkitLog: unknown;
 
   /** structuredClone polyfill awareness — present in modern runtimes. */
   function structuredClone<T>(value: T): T;

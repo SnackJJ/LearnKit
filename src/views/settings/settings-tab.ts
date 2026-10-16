@@ -1,6 +1,6 @@
 /**
  * @file src/views/settings/settings-tab.ts
- * @summary The Obsidian PluginSettingTab for Sprout. Renders the entire Settings panel including user details, general options, image-occlusion settings, card attachments, study/reviewer tweaks, widget options, FSRS scheduling presets, indexing, backups, quarantine list, and the danger zone (delete-all / reset). Confirmation dialogs are in confirm-modals.ts and pure helpers in settings-utils.ts.
+ * @summary The Obsidian PluginSettingTab for LearnKit. Renders the entire Settings panel including user details, general options, image-occlusion settings, card attachments, study/reviewer tweaks, widget options, FSRS scheduling presets, indexing, backups, quarantine list, and the danger zone (delete-all / reset). Confirmation dialogs are in confirm-modals.ts and pure helpers in settings-utils.ts.
  *
  * @exports
  *  - LearnKitSettingsTab — Obsidian PluginSettingTab subclass that renders and manages all LearnKit plugin settings
@@ -8,7 +8,7 @@
 
 import { PluginSettingTab, Setting, TFile, type App, Notice, setIcon, requestUrl } from "obsidian";
 import type LearnKitPlugin from "../../main";
-import type { SproutSettings } from "../../platform/types/settings";
+import type { LearnKitSettings } from "../../platform/types/settings";
 import { log } from "../../platform/core/logger";
 import { placePopover, setCssProps } from "../../platform/core/ui";
 import { DEFAULT_SETTINGS, VIEW_TYPE_SETTINGS, VIEW_TYPE_WIDGET } from "../../platform/core/constants";
@@ -744,12 +744,12 @@ export class LearnKitSettingsTab extends PluginSettingTab {
 
   /**
    * Walks every markdown file in the vault and removes:
-   *  - Sprout anchor lines (`^sprout-NNNNNNNNN`)
+   *  - LearnKit anchor lines (`^learnkit-NNNNNNNNN`)
    *  - Card blocks (Q/MCQ/CQ start lines + following field lines)
    *
    * Returns counts of files modified and lines/anchors/cards removed.
    */
-  private async deleteAllSproutDataFromVault(): Promise<{
+  private async deleteAllLearnKitDataFromVault(): Promise<{
     filesTouched: number;
     anchorsRemoved: number;
     cardsRemoved: number;
@@ -820,7 +820,7 @@ export class LearnKitSettingsTab extends PluginSettingTab {
   // ── Store clearing ────────────────────────
 
   /** Clears all card data from the plugin store (cards, states, review log, quarantine). */
-  private async clearSproutStore(): Promise<void> {
+  private async clearLearnKitStore(): Promise<void> {
     const data = this.plugin.store.data;
     if (!data || typeof data !== "object") return;
 
@@ -881,7 +881,7 @@ export class LearnKitSettingsTab extends PluginSettingTab {
     containerEl.empty();
 
     // When opened from the native Obsidian settings modal (not embedded in
-    // the Sprout workspace view), show a redirect message instead of the
+    // the LearnKit workspace view), show a redirect message instead of the
     // full settings UI.
     if (!this.onRequestRerender) {
       const wrapper = containerEl.createDiv({ cls: "learnkit-settings-wrapper learnkit-settings-wrapper learnkit-settings learnkit-settings" });
@@ -1618,7 +1618,7 @@ export class LearnKitSettingsTab extends PluginSettingTab {
               separatorAfterIndex: ttsProviderStandard.length - 1,
               onChange: (v) => {
                 void (async () => {
-                  this.plugin.settings.audio.ttsProvider = v as SproutSettings["audio"]["ttsProvider"];
+                  this.plugin.settings.audio.ttsProvider = v as LearnKitSettings["audio"]["ttsProvider"];
                   await this.plugin.saveAll();
                   this._softRerender();
                 })();
@@ -3986,7 +3986,7 @@ export class LearnKitSettingsTab extends PluginSettingTab {
       );
     }
 
-    const providerKeyField: Partial<Record<StudyAssistantProvider, { key: keyof SproutSettings["studyAssistant"]["apiKeys"]; label: string; placeholder: string }>> = {
+    const providerKeyField: Partial<Record<StudyAssistantProvider, { key: keyof LearnKitSettings["studyAssistant"]["apiKeys"]; label: string; placeholder: string }>> = {
       openai: { key: "openai", label: "OpenAI API key", placeholder: "sk-..." },
       deepseek: { key: "deepseek", label: "DeepSeek API key", placeholder: "sk-..." },
       anthropic: { key: "anthropic", label: "Anthropic API key", placeholder: "sk-ant-..." },
@@ -4000,7 +4000,7 @@ export class LearnKitSettingsTab extends PluginSettingTab {
     const currentKeyField = providerKeyField[provider];
     if (currentKeyField) {
       const currentKeyToken = String(currentKeyField.key);
-      const pluginId = this.plugin.manifest?.id || "sprout";
+      const pluginId = this.plugin.manifest?.id || "learnkit";
       const apiKeysPath = `.obsidian/plugins/${pluginId}/configuration/api-keys.json`;
 
       withDependentSetting(
@@ -4231,7 +4231,7 @@ export class LearnKitSettingsTab extends PluginSettingTab {
 
     withDependentSetting(new Setting(wrapper).setName(this._tx("ui.settings.studyAssistant.sections.generatorTypes", "Flashcard types to generate")).setHeading());
 
-    type StudyAssistantGeneratorTypeKey = keyof SproutSettings["studyAssistant"]["generatorTypes"];
+    type StudyAssistantGeneratorTypeKey = keyof LearnKitSettings["studyAssistant"]["generatorTypes"];
     const cardTypes: Array<{ key: StudyAssistantGeneratorTypeKey; label: string }> = [
       { key: "basic", label: "Basic" },
       { key: "reversed", label: "Basic (reversed)" },
@@ -6188,7 +6188,7 @@ export class LearnKitSettingsTab extends PluginSettingTab {
       .addButton((b) =>
         b
           .setButtonText(this._tx("ui.settings.reset.defaults.button", "Reset"))
-          .setClass("sprout-btn-danger")
+          .setClass("learnkit-btn-danger")
           .onClick(() => {
           new ConfirmResetDefaultsModal(this.app, this.plugin, async () => {
             const before = clonePlain(this.plugin.settings);
@@ -6222,7 +6222,7 @@ export class LearnKitSettingsTab extends PluginSettingTab {
       .addButton((b) =>
         b
           .setButtonText(this._tx("ui.settings.reset.analytics.button", "Reset"))
-          .setClass("sprout-btn-danger")
+          .setClass("learnkit-btn-danger")
           .onClick(() => {
           new ConfirmResetAnalyticsModal(this.app, this.plugin).open();
         }),
@@ -6243,7 +6243,7 @@ export class LearnKitSettingsTab extends PluginSettingTab {
       .addButton((b) =>
         b
           .setButtonText(this._tx("ui.settings.reset.scheduling.button", "Reset"))
-          .setClass("sprout-btn-danger")
+          .setClass("learnkit-btn-danger")
           .onClick(() => {
           new ConfirmResetSchedulingModal(this.app, this.plugin).open();
         }),
@@ -6269,13 +6269,13 @@ export class LearnKitSettingsTab extends PluginSettingTab {
       .addButton((b) =>
         b
           .setButtonText(this._tx("ui.settings.reset.deleteAllFlashcards.button", "Delete"))
-          .setClass("sprout-btn-danger")
+          .setClass("learnkit-btn-danger")
           .onClick(() => {
           new ConfirmDeleteAllFlashcardsModal(this.app, this.plugin, async () => {
             const before = Date.now();
 
-            const { filesTouched, anchorsRemoved, cardsRemoved } = await this.deleteAllSproutDataFromVault();
-            await this.clearSproutStore();
+            const { filesTouched, anchorsRemoved, cardsRemoved } = await this.deleteAllLearnKitDataFromVault();
+            await this.clearLearnKitStore();
 
             this.refreshAllWidgetViews();
             this.refreshReviewerViewsIfPossible();
@@ -6325,7 +6325,7 @@ export class LearnKitSettingsTab extends PluginSettingTab {
       onChange: (value: string) => void;
     },
   ): { getValue: () => string; setValue: (v: string) => void } {
-    const id = `sprout-ss-${Math.random().toString(36).slice(2, 9)}`;
+    const id = `learnkit-ss-${Math.random().toString(36).slice(2, 9)}`;
 
     // ── Trigger button ──
     const trigger = makeEl("button");
@@ -6350,8 +6350,8 @@ export class LearnKitSettingsTab extends PluginSettingTab {
     controlEl.appendChild(trigger);
 
     // ── Body-portal popover ──
-    const sproutWrapper = makeEl("div");
-    sproutWrapper.className = "learnkit";
+    const learnkitWrapper = makeEl("div");
+    learnkitWrapper.className = "learnkit";
     const popover = makeEl("div");
     popover.id = `${id}-popover`;
     popover.setAttribute("aria-hidden", "true");
@@ -6360,7 +6360,7 @@ export class LearnKitSettingsTab extends PluginSettingTab {
     const panel = makeEl("div");
     panel.className = "learnkit-ss-panel learnkit-header-menu-panel";
     popover.appendChild(panel);
-    sproutWrapper.appendChild(popover);
+    learnkitWrapper.appendChild(popover);
 
     // ── Options list ──
     const listbox = makeEl("div");
@@ -6472,8 +6472,8 @@ export class LearnKitSettingsTab extends PluginSettingTab {
       popover.classList.remove("is-open");
       cleanup?.();
       cleanup = null;
-      if (sproutWrapper.parentNode === activeDocument.body) {
-        activeDocument.body.removeChild(sproutWrapper);
+      if (learnkitWrapper.parentNode === activeDocument.body) {
+        activeDocument.body.removeChild(learnkitWrapper);
       }
     };
 
@@ -6484,7 +6484,7 @@ export class LearnKitSettingsTab extends PluginSettingTab {
       popover.setAttribute("aria-hidden", "false");
       popover.classList.add("is-open");
 
-      activeDocument.body.appendChild(sproutWrapper);
+      activeDocument.body.appendChild(learnkitWrapper);
       window.requestAnimationFrame(() => {
         place();
         const sel = listbox.querySelector<HTMLElement>('[aria-selected="true"]');
@@ -6555,7 +6555,7 @@ export class LearnKitSettingsTab extends PluginSettingTab {
       onChange: (value: string) => void;
     },
   ): void {
-    const id = `sprout-ss-${Math.random().toString(36).slice(2, 9)}`;
+    const id = `learnkit-ss-${Math.random().toString(36).slice(2, 9)}`;
 
     const setting = new Setting(container).setName(args.name).setDesc(args.description);
 
@@ -6614,8 +6614,8 @@ export class LearnKitSettingsTab extends PluginSettingTab {
     setting.controlEl.appendChild(trigger);
 
     // ── Body-portal popover ──
-    const sproutWrapper = makeEl("div");
-    sproutWrapper.className = "learnkit";
+    const learnkitWrapper = makeEl("div");
+    learnkitWrapper.className = "learnkit";
     const popover = makeEl("div");
     popover.id = `${id}-popover`;
     popover.setAttribute("aria-hidden", "true");
@@ -6624,7 +6624,7 @@ export class LearnKitSettingsTab extends PluginSettingTab {
     const panel = makeEl("div");
     panel.className = "learnkit-ss-panel learnkit-header-menu-panel";
     popover.appendChild(panel);
-    sproutWrapper.appendChild(popover);
+    learnkitWrapper.appendChild(popover);
 
     // ── Search input (only for >7 options) ──
     const showSearch = args.options.length > 7;
@@ -6873,8 +6873,8 @@ export class LearnKitSettingsTab extends PluginSettingTab {
       baseContentWidth = 0;
       cleanup?.();
       cleanup = null;
-      if (sproutWrapper.parentNode === activeDocument.body) {
-        activeDocument.body.removeChild(sproutWrapper);
+      if (learnkitWrapper.parentNode === activeDocument.body) {
+        activeDocument.body.removeChild(learnkitWrapper);
       }
     };
 
@@ -6887,7 +6887,7 @@ export class LearnKitSettingsTab extends PluginSettingTab {
       popover.setAttribute("aria-hidden", "false");
       popover.classList.add("is-open");
 
-      activeDocument.body.appendChild(sproutWrapper);
+      activeDocument.body.appendChild(learnkitWrapper);
       window.requestAnimationFrame(() => {
         baseContentWidth = measureBaseContentWidth();
         applyFilter();

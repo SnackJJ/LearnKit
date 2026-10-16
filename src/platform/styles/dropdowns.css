@@ -5,7 +5,7 @@
 
 /* ---- Basecoat accent tokens passthrough ---- */
 
-/* Sprout: force Basecoat accent tokens on all Basecoat-scoped nodes */
+/* LearnKit: force Basecoat accent tokens on all Basecoat-scoped nodes */
 .learnkit :where(.bc),
 :where(.learnkit.bc) {
   --color-accent: var(--accent);
@@ -221,12 +221,12 @@
   border: 0.5px solid color-mix(in srgb, var(--color-base-70) 25%, transparent 75%);
 }
 
-/* Sprout-scoped zoom for portalled popovers / dropdowns */
+/* LearnKit-scoped zoom for portalled popovers / dropdowns */
 .learnkit .dropdown-menu.learnkit-popover-overlay,
 .learnkit.dropdown-menu.learnkit-popover-overlay,
 .learnkit .learnkit-ss-popover.learnkit-popover-overlay,
 .learnkit.learnkit-ss-popover.learnkit-popover-overlay {
-  /* No zoom context unless the athlete actually zoomed (see _applySproutZoom):
+  /* No zoom context unless the athlete actually zoomed (see _applyLearnKitZoom):
      `zoom: 1` still spins up a scaling layer, and a zoomed subtree beside the
      translucent sidebar is a known source of ghost/repaint artefacts. */
   zoom: var(--learnkit-leaf-zoom, normal);

@@ -324,7 +324,7 @@
 }
 
 .learnkit .learnkit-study-assistant-composer .learnkit-study-assistant-send-btn .svg-icon.lucide-loader-2 {
-  animation: sprout-assistant-spin 0.9s linear infinite;
+  animation: learnkit-assistant-spin 0.9s linear infinite;
 }
 
 @media (max-width: 560px) {
@@ -552,10 +552,10 @@
 }
 
 .learnkit-assistant-trigger.is-reply-bounce {
-  animation: sprout-assistant-trigger-reply-bounce 0.64s cubic-bezier(0.2, 0.85, 0.35, 1) 0s 3;
+  animation: learnkit-assistant-trigger-reply-bounce 0.64s cubic-bezier(0.2, 0.85, 0.35, 1) 0s 3;
 }
 
-@keyframes sprout-assistant-trigger-reply-bounce {
+@keyframes learnkit-assistant-trigger-reply-bounce {
   0% {
     transform: scale(1);
   }
@@ -601,12 +601,12 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  animation: sprout-popup-in 0.18s ease-out;
+  animation: learnkit-popup-in 0.18s ease-out;
 }
 
 
 .learnkit-assistant-popup.is-closing {
-  animation: sprout-popup-out 0.18s ease-in;
+  animation: learnkit-popup-out 0.18s ease-in;
   pointer-events: none;
 }
 
@@ -748,7 +748,7 @@
   stroke: currentColor;
 }
 
-@keyframes sprout-popup-in {
+@keyframes learnkit-popup-in {
   from {
     opacity: 0;
     transform: scale(0.92) translateY(12px);
@@ -759,7 +759,7 @@
   }
 }
 
-@keyframes sprout-popup-out {
+@keyframes learnkit-popup-out {
   from {
     opacity: 1;
     transform: scale(1) translateY(0);
@@ -1395,7 +1395,7 @@
   content: "";
 }
 
-@keyframes sprout-typing-bounce {
+@keyframes learnkit-typing-bounce {
   0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
   30% { transform: translateY(-4px); opacity: 1; }
 }
@@ -1405,7 +1405,7 @@
   height: 6px;
   border-radius: 50%;
   background: var(--text-muted);
-  animation: sprout-typing-bounce 1.2s infinite;
+  animation: learnkit-typing-bounce 1.2s infinite;
 }
 
 .learnkit-assistant-popup-typing::after {
@@ -1413,7 +1413,7 @@
   height: 6px;
   border-radius: 50%;
   background: var(--text-muted);
-  animation: sprout-typing-bounce 1.2s 0.2s infinite;
+  animation: learnkit-typing-bounce 1.2s 0.2s infinite;
 }
 
 /* Third dot via the element itself having a pseudo-element pattern won't work;
@@ -1545,7 +1545,7 @@
   transition: background 0.12s ease, transform 0.1s ease;
 }
 
-/* Guard against global button reset rules in Sprout core styles. */
+/* Guard against global button reset rules in LearnKit core styles. */
 .learnkit .learnkit-assistant-popup-send,
 .learnkit .learnkit-assistant-popup-attach-btn {
   width: 36px ;
@@ -1583,7 +1583,7 @@
 }
 
 .learnkit-assistant-popup-send .svg-icon.lucide-loader-2 {
-  animation: sprout-assistant-spin 0.9s linear infinite;
+  animation: learnkit-assistant-spin 0.9s linear infinite;
 }
 
 /* Keep popup send button padding against global `.learnkit button` resets. */
@@ -1591,7 +1591,7 @@
   padding: 0 ;
 }
 
-@keyframes sprout-assistant-spin {
+@keyframes learnkit-assistant-spin {
   from {
     transform: rotate(0deg);
   }
@@ -2593,7 +2593,7 @@
   display: block;
   color: inherit;
   fill: currentColor;
-  animation: sprout-reply-audio-icon-in 0.26s ease;
+  animation: learnkit-reply-audio-icon-in 0.26s ease;
 }
 
 .learnkit-assistant-reply-audio-solid-icon path {
@@ -2644,7 +2644,7 @@
   opacity: 0.5;
 }
 
-@keyframes sprout-reply-audio-icon-in {
+@keyframes learnkit-reply-audio-icon-in {
   0% {
     transform: rotate(-160deg) scale(0.4);
     opacity: 0;

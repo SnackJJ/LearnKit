@@ -5,7 +5,7 @@
 
 /* ── Top-level entrance animation (title strip → content shell) ── */
 
-@keyframes sprout-settings-fade-up {
+@keyframes learnkit-settings-fade-up {
   from {
     opacity: 0;
     transform: translate3d(0, 100px, 0);
@@ -17,7 +17,7 @@
 }
 
 .learnkit .learnkit-settings-top-enter {
-  animation: sprout-settings-fade-up 600ms ease-out both;
+  animation: learnkit-settings-fade-up 600ms ease-out both;
   animation-delay: var(--learnkit-settings-enter-delay, 0ms);
 }
 
@@ -441,7 +441,7 @@
   background: var(--theme-accent);
   border-radius: 0 2px 2px 0;
   z-index: 10;
-  animation: sprout-loading-bar 1.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  animation: learnkit-loading-bar 1.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
 .learnkit-guide-content-inner.is-loading-inline {
@@ -459,14 +459,14 @@
   background: var(--theme-accent);
   border-radius: 0 2px 2px 0;
   z-index: 10;
-  animation: sprout-loading-bar 1.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  animation: learnkit-loading-bar 1.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
 .learnkit-guide-content-inner.is-loading-inline > * {
   visibility: hidden;
 }
 
-@keyframes sprout-loading-bar {
+@keyframes learnkit-loading-bar {
   0% {
     left: -40%;
     width: 40%;
@@ -1860,51 +1860,51 @@ td.learnkit-backup-cell.learnkit-backup-cell.learnkit-backup-actions.learnkit-ba
   align-items: center;
 }
 
-.learnkit .learnkit-about-buttons :is(.learnkit-about-btn--feature, .sprout-about-btn--feature).learnkit-btn-accent,
-.learnkit .learnkit-about-buttons :is(.learnkit-about-btn--coffee, .sprout-about-btn--coffee).learnkit-btn-accent {
+.learnkit .learnkit-about-buttons :is(.learnkit-about-btn--feature, .learnkit-about-btn--feature).learnkit-btn-accent,
+.learnkit .learnkit-about-buttons :is(.learnkit-about-btn--coffee, .learnkit-about-btn--coffee).learnkit-btn-accent {
   margin-left: 0;
   border: 0.5px solid var(--theme-black-95) ;
   background: var(--theme-base-95) ;
 }
 
-.learnkit .learnkit-about-buttons :is(.learnkit-about-btn--feature, .sprout-about-btn--feature).learnkit-btn-accent:hover,
-.learnkit .learnkit-about-buttons :is(.learnkit-about-btn--feature, .sprout-about-btn--feature).learnkit-btn-accent:focus-visible,
-.learnkit .learnkit-about-buttons :is(.learnkit-about-btn--coffee, .sprout-about-btn--coffee).learnkit-btn-accent:hover,
-.learnkit .learnkit-about-buttons :is(.learnkit-about-btn--coffee, .sprout-about-btn--coffee).learnkit-btn-accent:focus-visible {
+.learnkit .learnkit-about-buttons :is(.learnkit-about-btn--feature, .learnkit-about-btn--feature).learnkit-btn-accent:hover,
+.learnkit .learnkit-about-buttons :is(.learnkit-about-btn--feature, .learnkit-about-btn--feature).learnkit-btn-accent:focus-visible,
+.learnkit .learnkit-about-buttons :is(.learnkit-about-btn--coffee, .learnkit-about-btn--coffee).learnkit-btn-accent:hover,
+.learnkit .learnkit-about-buttons :is(.learnkit-about-btn--coffee, .learnkit-about-btn--coffee).learnkit-btn-accent:focus-visible {
   border: 0.5px solid var(--theme-black-85) ;
   background: var(--theme-black-95) ;
 }
 
-.learnkit .learnkit-about-buttons :is(.learnkit-about-btn--feature, .sprout-about-btn--feature).learnkit-btn-accent:active,
-.learnkit .learnkit-about-buttons :is(.learnkit-about-btn--coffee, .sprout-about-btn--coffee).learnkit-btn-accent:active {
+.learnkit .learnkit-about-buttons :is(.learnkit-about-btn--feature, .learnkit-about-btn--feature).learnkit-btn-accent:active,
+.learnkit .learnkit-about-buttons :is(.learnkit-about-btn--coffee, .learnkit-about-btn--coffee).learnkit-btn-accent:active {
   border: 0.5px solid var(--theme-black-75) ;
   background: var(--theme-black-85) ;
 }
 
-.learnkit .learnkit-about-buttons :is(.learnkit-about-btn--feature, .sprout-about-btn--feature).learnkit-btn-accent,
-.learnkit .learnkit-about-buttons :is(.learnkit-about-btn--feature, .sprout-about-btn--feature).learnkit-btn-accent:hover,
-.learnkit .learnkit-about-buttons :is(.learnkit-about-btn--feature, .sprout-about-btn--feature).learnkit-btn-accent:focus-visible,
-.learnkit .learnkit-about-buttons :is(.learnkit-about-btn--feature, .sprout-about-btn--feature).learnkit-btn-accent:active,
-.learnkit .learnkit-about-buttons :is(.learnkit-about-btn--coffee, .sprout-about-btn--coffee).learnkit-btn-accent,
-.learnkit .learnkit-about-buttons :is(.learnkit-about-btn--coffee, .sprout-about-btn--coffee).learnkit-btn-accent:hover,
-.learnkit .learnkit-about-buttons :is(.learnkit-about-btn--coffee, .sprout-about-btn--coffee).learnkit-btn-accent:focus-visible,
-.learnkit .learnkit-about-buttons :is(.learnkit-about-btn--coffee, .sprout-about-btn--coffee).learnkit-btn-accent:active {
+.learnkit .learnkit-about-buttons :is(.learnkit-about-btn--feature, .learnkit-about-btn--feature).learnkit-btn-accent,
+.learnkit .learnkit-about-buttons :is(.learnkit-about-btn--feature, .learnkit-about-btn--feature).learnkit-btn-accent:hover,
+.learnkit .learnkit-about-buttons :is(.learnkit-about-btn--feature, .learnkit-about-btn--feature).learnkit-btn-accent:focus-visible,
+.learnkit .learnkit-about-buttons :is(.learnkit-about-btn--feature, .learnkit-about-btn--feature).learnkit-btn-accent:active,
+.learnkit .learnkit-about-buttons :is(.learnkit-about-btn--coffee, .learnkit-about-btn--coffee).learnkit-btn-accent,
+.learnkit .learnkit-about-buttons :is(.learnkit-about-btn--coffee, .learnkit-about-btn--coffee).learnkit-btn-accent:hover,
+.learnkit .learnkit-about-buttons :is(.learnkit-about-btn--coffee, .learnkit-about-btn--coffee).learnkit-btn-accent:focus-visible,
+.learnkit .learnkit-about-buttons :is(.learnkit-about-btn--coffee, .learnkit-about-btn--coffee).learnkit-btn-accent:active {
   color: #ffffff ;
 }
 
-.learnkit .learnkit-about-buttons :is(.learnkit-about-btn--feature, .sprout-about-btn--feature).learnkit-btn-accent .learnkit-about-btn-label,
-.learnkit .learnkit-about-buttons :is(.learnkit-about-btn--feature, .sprout-about-btn--feature).learnkit-btn-accent .learnkit-about-btn-icon,
-.learnkit .learnkit-about-buttons :is(.learnkit-about-btn--feature, .sprout-about-btn--feature).learnkit-btn-accent .learnkit-about-btn-icon .svg-icon,
-.learnkit .learnkit-about-buttons :is(.learnkit-about-btn--coffee, .sprout-about-btn--coffee).learnkit-btn-accent .learnkit-about-btn-label,
-.learnkit .learnkit-about-buttons :is(.learnkit-about-btn--coffee, .sprout-about-btn--coffee).learnkit-btn-accent .learnkit-about-btn-icon,
-.learnkit .learnkit-about-buttons :is(.learnkit-about-btn--coffee, .sprout-about-btn--coffee).learnkit-btn-accent .learnkit-about-btn-icon .svg-icon {
+.learnkit .learnkit-about-buttons :is(.learnkit-about-btn--feature, .learnkit-about-btn--feature).learnkit-btn-accent .learnkit-about-btn-label,
+.learnkit .learnkit-about-buttons :is(.learnkit-about-btn--feature, .learnkit-about-btn--feature).learnkit-btn-accent .learnkit-about-btn-icon,
+.learnkit .learnkit-about-buttons :is(.learnkit-about-btn--feature, .learnkit-about-btn--feature).learnkit-btn-accent .learnkit-about-btn-icon .svg-icon,
+.learnkit .learnkit-about-buttons :is(.learnkit-about-btn--coffee, .learnkit-about-btn--coffee).learnkit-btn-accent .learnkit-about-btn-label,
+.learnkit .learnkit-about-buttons :is(.learnkit-about-btn--coffee, .learnkit-about-btn--coffee).learnkit-btn-accent .learnkit-about-btn-icon,
+.learnkit .learnkit-about-buttons :is(.learnkit-about-btn--coffee, .learnkit-about-btn--coffee).learnkit-btn-accent .learnkit-about-btn-icon .svg-icon {
   color: #ffffff ;
 }
 
-.learnkit .learnkit-about-buttons :is(.learnkit-about-btn--feature, .sprout-about-btn--feature).learnkit-btn-accent .learnkit-about-btn-icon svg,
-.learnkit .learnkit-about-buttons :is(.learnkit-about-btn--feature, .sprout-about-btn--feature).learnkit-btn-accent .learnkit-about-btn-icon svg *,
-.learnkit .learnkit-about-buttons :is(.learnkit-about-btn--coffee, .sprout-about-btn--coffee).learnkit-btn-accent .learnkit-about-btn-icon svg,
-.learnkit .learnkit-about-buttons :is(.learnkit-about-btn--coffee, .sprout-about-btn--coffee).learnkit-btn-accent .learnkit-about-btn-icon svg * {
+.learnkit .learnkit-about-buttons :is(.learnkit-about-btn--feature, .learnkit-about-btn--feature).learnkit-btn-accent .learnkit-about-btn-icon svg,
+.learnkit .learnkit-about-buttons :is(.learnkit-about-btn--feature, .learnkit-about-btn--feature).learnkit-btn-accent .learnkit-about-btn-icon svg *,
+.learnkit .learnkit-about-buttons :is(.learnkit-about-btn--coffee, .learnkit-about-btn--coffee).learnkit-btn-accent .learnkit-about-btn-icon svg,
+.learnkit .learnkit-about-buttons :is(.learnkit-about-btn--coffee, .learnkit-about-btn--coffee).learnkit-btn-accent .learnkit-about-btn-icon svg * {
   color: #ffffff ;
   stroke: #ffffff ;
 }
@@ -3220,7 +3220,7 @@ body.is-phone .learnkit .learnkit-about-links-row {
   min-height: 0;
 }
 
-/* Scope the Sprout settings wrapper class for the in-view tab content */
+/* Scope the LearnKit settings wrapper class for the in-view tab content */
 .learnkit-settings-view-root .learnkit-settings-tab-content .setting-item {
   background-color: transparent;
   border-top: none;
@@ -3253,7 +3253,7 @@ body.is-phone .learnkit .learnkit-about-links-row {
 
 /* ── Cascade fade-in animation for settings tab content ── */
 
-@keyframes sprout-cascade-in {
+@keyframes learnkit-cascade-in {
   from {
     opacity: 0;
     transform: translateY(8px);
@@ -3266,7 +3266,7 @@ body.is-phone .learnkit .learnkit-about-links-row {
 
 .learnkit-cascade-item {
   opacity: 0;
-  animation: sprout-cascade-in 0.35s ease-out forwards;
+  animation: learnkit-cascade-in 0.35s ease-out forwards;
 }
 
 /* When animations are disabled, skip the cascade */

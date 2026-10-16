@@ -31,7 +31,7 @@ import { makeEl } from "../../platform/core/dom-factory";
 
 declare global {
   interface Window {
-    sproutOpenCurrentCardNote?: () => void;
+    learnkitOpenCurrentCardNote?: () => void;
   }
 }
 
@@ -642,11 +642,11 @@ function makeHeaderMenu(opts: {
   };
 
   // Open Note button
-  if (window.sproutOpenCurrentCardNote) {
+  if (window.learnkitOpenCurrentCardNote) {
     addItem(
       tx("ui.reviewer.more.openInNote", "Open in Note"),
       "O",
-      window.sproutOpenCurrentCardNote,
+      window.learnkitOpenCurrentCardNote,
       false,
       tx("ui.reviewer.more.aria.openInNote", "Open flashcard in parent note"),
     );
@@ -1511,7 +1511,7 @@ export function renderSessionMode(args: Args) {
 
     const ioHost = makeEl("div");
     ioHost.className = "learnkit-io-host";
-    ioHost.dataset.sproutIoWidget = "1";
+    ioHost.dataset.learnkitIoWidget = "1";
     section.appendChild(ioHost);
 
     if (typeof args.renderImageOcclusionInto === "function") {
@@ -1811,7 +1811,7 @@ export function renderSessionMode(args: Args) {
   footerRight.className = "flex items-center gap-2 learnkit-session-study-dock-right";
 
   // Provide open note handler globally for menu
-  window.sproutOpenCurrentCardNote = () => {
+  window.learnkitOpenCurrentCardNote = () => {
     if (!card) return;
     const filePath = card.sourceNotePath;
     if (!filePath) return;

@@ -12,7 +12,7 @@
  *  - getTtsCacheDirPath — resolve the tts-cache folder path for the plugin
  */
 
-import type { SproutSettings } from "../../types/settings";
+import type { LearnKitSettings } from "../../types/settings";
 import { log } from "../../core/logger";
 
 const TTS_CACHE_DIR = "tts-cache";
@@ -55,7 +55,7 @@ export function getTtsCacheDirPath(configDir: string, pluginId: string): string 
  */
 export function ttsCacheKey(
   text: string,
-  provider: SproutSettings["audio"]["ttsProvider"],
+  provider: LearnKitSettings["audio"]["ttsProvider"],
   voiceId: string,
   model: string,
   cacheId?: string,

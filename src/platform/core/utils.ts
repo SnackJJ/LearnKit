@@ -1,6 +1,6 @@
 /**
  * @file src/core/utils.ts
- * @summary Generic utility functions shared across the Sprout plugin. Provides numeric
+ * @summary Generic utility functions shared across the LearnKit plugin. Provides numeric
  * clamping, positive-number-array sanitisation, deep-clone, and plain-object type guard.
  *
  * @exports

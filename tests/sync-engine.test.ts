@@ -253,7 +253,7 @@ describe("sync engine", () => {
     const vault = new MemoryVault();
     const file = await vault.create(
       "Notes/Test.md",
-      "^sprout-999999999\nQ | Existing card |\nA | Yes |",
+      "^learnkit-999999999\nQ | Existing card |\nA | Yes |",
     );
     const plugin = makePlugin(vault);
 
@@ -269,19 +269,19 @@ describe("sync engine", () => {
     // First sync establishes the card
     const file = await vault.create(
       "Notes/Test.md",
-      "^sprout-888888888\nQ | Will be removed |\nA | Yes |",
+      "^learnkit-888888888\nQ | Will be removed |\nA | Yes |",
     );
     const plugin = makePlugin(vault);
     await syncOneFile(plugin, file);
     expect(plugin.store.data.cards["888888888"]).toBeDefined();
 
     // Now update file to remove the card content but keep the anchor
-    vault.files.set(file.path, { file, content: "^sprout-888888888\nJust text now" });
+    vault.files.set(file.path, { file, content: "^learnkit-888888888\nJust text now" });
     const res2 = await syncOneFile(plugin, file);
 
     expect(res2.anchorsRemoved).toBe(1);
     const content = await vault.read(file);
-    expect(content).not.toContain("^sprout-888888888");
+    expect(content).not.toContain("^learnkit-888888888");
   });
 
   it("syncs multiple cards in one file", async () => {
@@ -308,7 +308,7 @@ describe("sync engine", () => {
     const vault = new MemoryVault();
     const file = await vault.create(
       "Notes/Test.md",
-      "^sprout-111111111\nQ | Original Q |\nA | Original A |",
+      "^learnkit-111111111\nQ | Original Q |\nA | Original A |",
     );
     const plugin = makePlugin(vault);
     await syncOneFile(plugin, file);
@@ -317,7 +317,7 @@ describe("sync engine", () => {
     // Modify content
     vault.files.set(file.path, {
       file,
-      content: "^sprout-111111111\nQ | Updated Q |\nA | Updated A |",
+      content: "^learnkit-111111111\nQ | Updated Q |\nA | Updated A |",
     });
     const res2 = await syncOneFile(plugin, file);
 
@@ -329,7 +329,7 @@ describe("sync engine", () => {
     const vault = new MemoryVault();
     const file = await vault.create(
       "Notes/Test.md",
-      "^sprout-111111111\nQ | Stable Q |\nA | Stable A |",
+      "^learnkit-111111111\nQ | Stable Q |\nA | Stable A |",
     );
     const plugin = makePlugin(vault);
     await syncOneFile(plugin, file);
@@ -367,7 +367,7 @@ describe("sync engine", () => {
     const vault = new MemoryVault();
     const file = await vault.create(
       "Notes/Cloze.md",
-      "^sprout-111111111\nCQ | {{c1::Paris}} is the capital of {{c2::France}}. |",
+      "^learnkit-111111111\nCQ | {{c1::Paris}} is the capital of {{c2::France}}. |",
     );
     const plugin = makePlugin(vault);
 
@@ -389,7 +389,7 @@ describe("sync engine", () => {
     const vault = new MemoryVault();
     const file = await vault.create(
       "Notes/Cloze.md",
-      "^sprout-111111111\nCQ | {{c1::A}} and {{c2::B}} and {{c3::C}}. |",
+      "^learnkit-111111111\nCQ | {{c1::A}} and {{c2::B}} and {{c3::C}}. |",
     );
     const plugin = makePlugin(vault);
     await syncOneFile(plugin, file);
@@ -398,7 +398,7 @@ describe("sync engine", () => {
     // Remove c3
     vault.files.set(file.path, {
       file,
-      content: "^sprout-111111111\nCQ | {{c1::A}} and {{c2::B}}. |",
+      content: "^learnkit-111111111\nCQ | {{c1::A}} and {{c2::B}}. |",
     });
     await syncOneFile(plugin, file);
 
@@ -411,7 +411,7 @@ describe("sync engine", () => {
     const vault = new MemoryVault();
     const file = await vault.create(
       "Notes/Cloze.md",
-      "^sprout-111111111\nCQ | {{c1::A}} and {{c2::B}}. |",
+      "^learnkit-111111111\nCQ | {{c1::A}} and {{c2::B}}. |",
     );
     const plugin = makePlugin(vault);
 
@@ -432,7 +432,7 @@ describe("sync engine", () => {
     const vault = new MemoryVault();
     const file = await vault.create(
       "Notes/Cloze.md",
-      "^sprout-111111111\nCQ | {{c1::Paris}} and {{c3::France}} and {{c2::open |",
+      "^learnkit-111111111\nCQ | {{c1::Paris}} and {{c3::France}} and {{c2::open |",
     );
     const plugin = makePlugin(vault);
 
@@ -586,7 +586,7 @@ describe("sync engine", () => {
     const vault = new MemoryVault();
     const file = await vault.create(
       "Notes/Rev.md",
-      "^sprout-222222222\nRQ | Heart |\nA | Pumps blood |",
+      "^learnkit-222222222\nRQ | Heart |\nA | Pumps blood |",
     );
     const plugin = makePlugin(vault);
 
@@ -610,7 +610,7 @@ describe("sync engine", () => {
     // CQ without cloze tokens → parse error
     const file = await vault.create(
       "Notes/Bad.md",
-      "^sprout-333333333\nCQ | No cloze tokens here |",
+      "^learnkit-333333333\nCQ | No cloze tokens here |",
     );
     const plugin = makePlugin(vault);
 
@@ -687,7 +687,7 @@ describe("sync engine", () => {
     const vault = new MemoryVault();
     const file = await vault.create(
       "Notes/Test.md",
-      "^sprout-111111111\nQ | Q1 |\nA | A1 |\n\n^sprout-222222222\nQ | Q2 |\nA | A2 |",
+      "^learnkit-111111111\nQ | Q1 |\nA | A1 |\n\n^learnkit-222222222\nQ | Q2 |\nA | A2 |",
     );
     const plugin = makePlugin(vault);
     await syncOneFile(plugin, file);
@@ -696,7 +696,7 @@ describe("sync engine", () => {
     // Remove the second card
     vault.files.set(file.path, {
       file,
-      content: "^sprout-111111111\nQ | Q1 |\nA | A1 |",
+      content: "^learnkit-111111111\nQ | Q1 |\nA | A1 |",
     });
     const res2 = await syncOneFile(plugin, file);
 
@@ -736,7 +736,7 @@ describe("sync engine", () => {
 
   it("syncs the full question bank", async () => {
     const vault = new MemoryVault();
-    await vault.create("Notes/One.md", "^sprout-111111111\nQ | Q1 |\nA | A1 |");
+    await vault.create("Notes/One.md", "^learnkit-111111111\nQ | Q1 |\nA | A1 |");
     await vault.create("Notes/Two.md", "Q | Q2 |\nA | A2 |");
     const plugin = makePlugin(vault);
 

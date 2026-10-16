@@ -52,8 +52,8 @@ const FORMAT_TOOLTIP =
 
 type ClozeShortcut = "new" | "same";
 
-const DEV_CLOZE_FLAG_KEY = "__SPROUT_DEV_SHOW_CLOZE_BUTTONS__";
-const DEV_CLOZE_HELPER_KEY = "sproutDevClozeButtons";
+const DEV_CLOZE_FLAG_KEY = "__LEARNKIT_DEV_SHOW_CLOZE_BUTTONS__";
+const DEV_CLOZE_HELPER_KEY = "learnkitDevClozeButtons";
 
 function installDevClozeConsoleHelper() {
   if (typeof window === "undefined") return;

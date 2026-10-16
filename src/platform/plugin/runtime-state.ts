@@ -39,8 +39,8 @@ export function ensurePluginRuntimeState(plugin: LearnKitPluginBase): void {
     ]);
   }
 
-  plugin._sproutZoomValue ??= 1;
-  plugin._sproutZoomSaveTimer ??= null;
+  plugin._learnkitZoomValue ??= 1;
+  plugin._learnkitZoomSaveTimer ??= null;
 
   plugin._reminderEngine ??= null;
   plugin._assistantPopup ??= null;
@@ -57,9 +57,9 @@ export function ensurePluginRuntimeState(plugin: LearnKitPluginBase): void {
 
   if (!Array.isArray(plugin._reminderDevConsoleCommandNames)) {
     plugin._reminderDevConsoleCommandNames = [
-      "sproutReminderLaunch",
-      "sproutReminderRoutine",
-      "sproutReminderGatekeeper",
+      "learnkitReminderLaunch",
+      "learnkitReminderRoutine",
+      "learnkitReminderGatekeeper",
     ];
   }
 

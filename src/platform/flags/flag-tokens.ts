@@ -22,7 +22,12 @@ const SPECIAL_FLAG_URLS: Readonly<Record<string, string>> = {
 const SPECIAL_FLAG_FALLBACK_URLS: Readonly<Record<string, string>> = {
   checkered: "https://hatscripts.github.io/circle-flags/flags/other/chequered.svg",
 };
-const FLAG_CACHE_KEY = "sprout-circle-flag-cache-v1";
+const FLAG_CACHE_KEY = "learnkit-circle-flag-cache-v1";
+/**
+ * Pre-rebrand localStorage keys. Read once so an existing cache survives the
+ * rename, then removed by {@link flagCacheWasPersisted}. Never write to these.
+ */
+const LEGACY_FLAG_CACHE_KEYS = ["sprout-circle-flag-cache-v1"] as const;
 const FLAG_CACHE_MAX_BYTES = 2_500_000;
 
 let memoryCache: Map<string, string> | null = null;
@@ -162,9 +167,12 @@ export function getFlagCacheForDataJson(): Record<string, string> | null {
 export function flagCacheWasPersisted(): void {
   _cacheDirty = false;
   _dataJsonAvailable = true;
-  // One-time cleanup: remove legacy localStorage cache
+  // One-time cleanup: remove the current and pre-rebrand localStorage caches
   if (typeof window !== "undefined") {
-    try { window.localStorage.removeItem(FLAG_CACHE_KEY); } catch { /* ignore */ }
+    try {
+      window.localStorage.removeItem(FLAG_CACHE_KEY);
+      for (const legacyKey of LEGACY_FLAG_CACHE_KEYS) window.localStorage.removeItem(legacyKey);
+    } catch { /* ignore */ }
   }
 }
 
@@ -174,7 +182,14 @@ function ensureCache(): Map<string, string> {
   if (typeof window === "undefined") return memoryCache;
 
   try {
-    const raw = window.localStorage.getItem(FLAG_CACHE_KEY);
+    let raw = window.localStorage.getItem(FLAG_CACHE_KEY);
+    if (!raw) {
+      // One-time migration from the pre-rebrand key.
+      for (const legacyKey of LEGACY_FLAG_CACHE_KEYS) {
+        raw = window.localStorage.getItem(legacyKey);
+        if (raw) break;
+      }
+    }
     if (!raw) return memoryCache;
     const parsed = JSON.parse(raw) as Record<string, string>;
     for (const [k, v] of Object.entries(parsed || {})) {

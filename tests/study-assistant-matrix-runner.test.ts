@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { TFile } from "obsidian";
 
 import { runStudyAssistantMatrix } from "../src/platform/integrations/ai/study-assistant-matrix-runner";
-import type { SproutSettings } from "../src/platform/types/settings";
+import type { LearnKitSettings } from "../src/platform/types/settings";
 import {
   generateStudyAssistantChatReply,
   generateStudyAssistantSuggestions,
@@ -21,7 +21,7 @@ vi.mock("../src/platform/integrations/ai/study-assistant-generator", async (impo
 const mockedChatReply = vi.mocked(generateStudyAssistantChatReply);
 const mockedSuggestions = vi.mocked(generateStudyAssistantSuggestions);
 
-function makeStudyAssistantSettings(overrides: Partial<SproutSettings["studyAssistant"]> = {}): SproutSettings["studyAssistant"] {
+function makeStudyAssistantSettings(overrides: Partial<LearnKitSettings["studyAssistant"]> = {}): LearnKitSettings["studyAssistant"] {
   return {
     enabled: true,
     location: "modal",
@@ -108,7 +108,7 @@ function resolveRelativePath(sourceNotePath: string, link: string): string[] {
   ];
 }
 
-function makeHostFixture(settings: SproutSettings["studyAssistant"]) {
+function makeHostFixture(settings: LearnKitSettings["studyAssistant"]) {
   const textFiles = new Map<string, string>([
     [
       "offline/test-fixtures/test.md",
@@ -184,7 +184,7 @@ function makeHostFixture(settings: SproutSettings["studyAssistant"]) {
   };
 }
 
-function makeRootTestFolderHostFixture(settings: SproutSettings["studyAssistant"]) {
+function makeRootTestFolderHostFixture(settings: LearnKitSettings["studyAssistant"]) {
   const textFiles = new Map<string, string>([
     [
       "Test/test.md",

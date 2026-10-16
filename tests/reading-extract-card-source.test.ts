@@ -12,7 +12,7 @@ import { extractCardFromSource, parseLearnKitCard } from "../src/views/reading/r
 describe("extractCardFromSource", () => {
   it("keeps multiline heading/list content inside a delimited field until closing delimiter", () => {
     const source = [
-      "^sprout-501802774",
+      "^learnkit-501802774",
       "T | Hi |",
       "Q | # Heading 1",
       "## Heading 2",
@@ -29,7 +29,7 @@ describe("extractCardFromSource", () => {
     const extracted = extractCardFromSource(source, "501802774");
 
     expect(extracted).toBe([
-      "^sprout-501802774",
+      "^learnkit-501802774",
       "T | Hi |",
       "Q | # Heading 1",
       "## Heading 2",
@@ -70,7 +70,7 @@ describe("extractCardFromSource", () => {
 describe("parseLearnKitCard", () => {
   it("preserves nested list indentation inside multiline delimited fields", () => {
     const source = [
-      "^sprout-501802774",
+      "^learnkit-501802774",
       "T | Hi |",
       "Q | # Heading 1",
       "## Heading 2",
@@ -211,7 +211,7 @@ describe("parseLearnKitCard", () => {
 
   it("falls through to pipe-delimited parsing when no shorthand matches", () => {
     const source = [
-      "^sprout-501802774",
+      "^learnkit-501802774",
       "T | Hi |",
       "Q | What is 2+2? |",
       "A | 4 |",

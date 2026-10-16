@@ -1,6 +1,6 @@
 /**
  * @file src/reading/reading-view.ts
- * @summary Stateful, side-effectful code for Sprout's reading-view pretty-card rendering and masonry layout. Owns all mutable module-level state (sproutPluginRef, masonry timers, MutationObserver) and the Obsidian registerMarkdownPostProcessor hook that transforms card blocks into styled, interactive card elements in the editor.
+ * @summary Stateful, side-effectful code for LearnKit's reading-view pretty-card rendering and masonry layout. Owns all mutable module-level state (learnkitPluginRef, masonry timers, MutationObserver) and the Obsidian registerMarkdownPostProcessor hook that transforms card blocks into styled, interactive card elements in the editor.
  *
  * @exports
  *  - registerReadingViewPrettyCards — registers the markdown post-processor that renders pretty cards in reading view
@@ -48,10 +48,10 @@ import { makeEl, makeSvgEl } from "../../platform/core/dom-factory";
    Module-level mutable state
    ----------------------- */
 
-let sproutPluginRef: Plugin | null = null;
+let learnkitPluginRef: Plugin | null = null;
 
-/** Shape of a Sprout plugin instance for general-setting lookups. */
-type SproutPluginLike = Plugin & {
+/** Shape of a LearnKit plugin instance for general-setting lookups. */
+type LearnKitPluginLike = Plugin & {
   store?: { data?: { cards?: Record<string, CardRecord> } };
   settings?: {
     general?: { prettifyCards?: string; enableReadingStyles?: boolean; interfaceLanguage?: string };
@@ -271,15 +271,15 @@ type SproutPluginLike = Plugin & {
 };
 
 /** Shorthand for reading view settings shape. */
-type ReadingViewSettings = NonNullable<SproutPluginLike["settings"]>["readingView"];
-type AudioSettings = NonNullable<NonNullable<SproutPluginLike["settings"]>["audio"]>;
+type ReadingViewSettings = NonNullable<LearnKitPluginLike["settings"]>["readingView"];
+type AudioSettings = NonNullable<NonNullable<LearnKitPluginLike["settings"]>["audio"]>;
 
-function getSproutPlugin(): SproutPluginLike | null {
-  if (sproutPluginRef) return sproutPluginRef;
+function getLearnKitPlugin(): LearnKitPluginLike | null {
+  if (learnkitPluginRef) return learnkitPluginRef;
   try {
     const plugin = Object.values(window?.app?.plugins?.plugins ?? {}).find(
-      (p): p is SproutPluginLike => {
-        const sp = p as SproutPluginLike;
+      (p): p is LearnKitPluginLike => {
+        const sp = p as LearnKitPluginLike;
         return !!sp?.store && !!sp?.settings?.general;
       },
     );
@@ -404,7 +404,7 @@ let _lastReadingViewSettingsHash = "";
 let _lastReadingViewEnabled: boolean | null = null;
 
 export function syncReadingViewStyles(): void {
-  const plugin = getSproutPlugin();
+  const plugin = getLearnKitPlugin();
   const enabled = !!plugin?.settings?.general?.enableReadingStyles;
   const rv = plugin?.settings?.readingView;
   const macroPreset = normaliseMacroPreset((rv?.activeMacro) ?? rv?.preset);
@@ -412,7 +412,7 @@ export function syncReadingViewStyles(): void {
 
   // Skip stylesheet regeneration when settings haven't changed.
   // This avoids the expensive CSS string building + replaceSync on every
-  // sprout:prettify-cards-refresh event during typing / mode switches.
+  // learnkit:prettify-cards-refresh event during typing / mode switches.
   const settingsHash = computeContentSignature(
     JSON.stringify({ enabled, rv, macroPreset, effectiveLayout }),
   );
@@ -575,7 +575,7 @@ export function syncReadingViewStyles(): void {
 export function registerReadingViewPrettyCards(plugin: Plugin) {
   debugLog("[LearnKit] Registering reading view prettifier");
 
-  sproutPluginRef = plugin;
+  learnkitPluginRef = plugin;
 
   // Inject dynamic styles from current reading-view settings
   syncReadingViewStyles();
@@ -638,7 +638,7 @@ export function registerReadingViewPrettyCards(plugin: Plugin) {
   // re-wrap card runs. CSS `column-width` handles responsive column count natively.
   // The MutationObserver now detects re-added sections from Obsidian's virtualiser
   // and applies layout to them. Layout also recalculates on mode-switch (edit →
-  // reading) via the sprout:prettify-cards-refresh event / scheduleViewportReflow.
+  // reading) via the learnkit:prettify-cards-refresh event / scheduleViewportReflow.
 
   // Listen for prettify-cards-refresh event on each markdown view's containerEl
   function attachRefreshListenerToMarkdownViews() {
@@ -652,20 +652,20 @@ export function registerReadingViewPrettyCards(plugin: Plugin) {
         ".markdown-reading-view, .markdown-preview-view, .markdown-rendered, .markdown-preview-sizer, .markdown-preview-section"
       );
       if (content) {
-        content.removeEventListener("sprout:prettify-cards-refresh", handleRefreshEvent);
-        content.addEventListener("sprout:prettify-cards-refresh", handleRefreshEvent);
-        log.debug("Attached sprout:prettify-cards-refresh listener to", content);
+        content.removeEventListener("learnkit:prettify-cards-refresh", handleRefreshEvent);
+        content.addEventListener("learnkit:prettify-cards-refresh", handleRefreshEvent);
+        log.debug("Attached learnkit:prettify-cards-refresh listener to", content);
       }
     }
   }
 
   function handleRefreshEvent(e: Event) {
-    log.debug("sprout:prettify-cards-refresh event received", e);
+    log.debug("learnkit:prettify-cards-refresh event received", e);
 
     // Re-sync the dynamic <style> element (colours, fonts, layout, card mode)
     syncReadingViewStyles();
 
-    const pluginState = getSproutPlugin();
+    const pluginState = getLearnKitPlugin();
     const stylesEnabled = pluginState
       ? !!pluginState.settings?.general?.enableReadingStyles
       : true;
@@ -678,7 +678,7 @@ export function registerReadingViewPrettyCards(plugin: Plugin) {
       ? refreshDetail.sourceContent
       : '';
 
-    // When reading styles are disabled, remove all Sprout DOM adjustments
+    // When reading styles are disabled, remove all LearnKit DOM adjustments
     if (!stylesEnabled) {
       if (root) resetCardsToNativeReading(root);
       else resetCardsToNativeReading(activeDocument.documentElement);
@@ -709,22 +709,22 @@ export function registerReadingViewPrettyCards(plugin: Plugin) {
    ========================= */
 
 function setupManualTrigger() {
-  window.sproutApplyMasonryGrid = () => {
-    debugLog('[LearnKit] Manual sproutApplyMasonryGrid() called');
+  window.learnkitApplyMasonryGrid = () => {
+    debugLog('[LearnKit] Manual learnkitApplyMasonryGrid() called');
     window.requestAnimationFrame(() => {
       void processCardElements(activeDocument.documentElement, undefined, '');
     });
   };
 
-  addTrackedWindowListener('sprout-cards-inserted', () => {
-    debugLog('[LearnKit] Received sprout-cards-inserted event — re-processing cards');
-    window.sproutApplyMasonryGrid?.();
+  addTrackedWindowListener('learnkit-cards-inserted', () => {
+    debugLog('[LearnKit] Received learnkit-cards-inserted event — re-processing cards');
+    window.learnkitApplyMasonryGrid?.();
   });
 }
 
 async function getLiveMarkdownSourceContent(): Promise<string> {
   try {
-    const plugin = getSproutPlugin();
+    const plugin = getLearnKitPlugin();
     if (!plugin) return '';
 
     const activeMarkdownView = plugin.app.workspace?.getActiveViewOfType?.(MarkdownView);
@@ -748,7 +748,7 @@ async function getLiveMarkdownSourceContent(): Promise<string> {
 }
 
 async function forceReadingViewRefreshAfterModalSave(
-  plugin: SproutPluginLike,
+  plugin: LearnKitPluginLike,
   sourcePath: string,
   sourceContent: string,
 ): Promise<void> {
@@ -786,7 +786,7 @@ async function forceReadingViewRefreshAfterModalSave(
 
     const dispatchRefresh = () => {
       try {
-        content.dispatchEvent(new CustomEvent("sprout:prettify-cards-refresh", {
+        content.dispatchEvent(new CustomEvent("learnkit:prettify-cards-refresh", {
           bubbles: true,
           detail: dispatchPayload,
         }));
@@ -866,7 +866,7 @@ function collectAndMarkOwnedSiblings(cardEl: HTMLElement, cardRawText?: string):
   const cardTextNorm = rawSrc.replace(/\s+/g, ' ').trim();
   const cardTextStripped = rawSrc ? stripMarkdownFormatting(rawSrc) : '';
   const cardMathSig = cardTextNorm ? normalizeMathSignature(cardTextNorm) : '';
-  const anchorId = String(cardEl.getAttribute('data-learnkit-id') || cardEl.dataset.sproutId || '').trim();
+  const anchorId = String(cardEl.getAttribute('data-learnkit-id') || cardEl.dataset.learnkitId || '').trim();
 
   if (!rawSrc || !anchorId) return;
 
@@ -1006,8 +1006,8 @@ export function teardownReadingView(): void {
   }
   registeredWindowListeners = [];
   // Clear global references
-  sproutPluginRef = null;
-  delete (window as unknown as Record<string, unknown>).sproutApplyMasonryGrid;
+  learnkitPluginRef = null;
+  delete (window as unknown as Record<string, unknown>).learnkitApplyMasonryGrid;
   // Detach dynamic reading stylesheet
   if (readingDynamicStyleEl) {
     readingDynamicStyleEl.remove();
@@ -1046,8 +1046,8 @@ function setupDebouncedMutationObserver() {
             // Skip our own wrapper nodes being added
             if (el.nodeType === Node.ELEMENT_NODE && (el as HTMLElement).classList.contains('learnkit-reading-card-run')) continue;
 
-            // Only trigger if we see actual NEW .el-p or sprout cards
-            // Skip if the added node is just being moved (check if it already has sprout-processed)
+            // Only trigger if we see actual NEW .el-p or learnkit cards
+            // Skip if the added node is just being moved (check if it already has learnkit-processed)
             if (el.matches && el.matches('.el-p') && !el.hasAttribute('data-learnkit-processed')) {
               // Find the closest section or reading view container
               const section = el.closest('.markdown-preview-section') as HTMLElement;
@@ -1093,7 +1093,7 @@ function setupDebouncedMutationObserver() {
     // flicker when cards are already wrapped, and these sections have
     // unwrapped cards that need wrapping exactly once).
     if (sectionsNeedingLayout.size > 0) {
-      const pluginState = getSproutPlugin();
+      const pluginState = getLearnKitPlugin();
       const stylesEnabled = pluginState
         ? !!pluginState.settings?.general?.enableReadingStyles
         : true;
@@ -1149,7 +1149,7 @@ function setupDebouncedMutationObserver() {
 
 function isFlashcardsReadingPresetActive(): boolean {
   try {
-    const rv = getSproutPlugin()?.settings?.readingView;
+    const rv = getLearnKitPlugin()?.settings?.readingView;
     const macroPreset = normaliseMacroPreset((rv?.activeMacro) ?? rv?.preset);
     return macroPreset === 'flashcards';
   } catch {
@@ -1243,7 +1243,7 @@ function maybeScheduleFlashcardsBootstrap(scope: ParentNode, allowBootstrap: boo
 async function processCardElements(container: HTMLElement, _ctx?: MarkdownPostProcessorContext, sourceContent?: string) {
   // Skip card prettification entirely when prettify is off
   try {
-    const pluginCheck = getSproutPlugin();
+    const pluginCheck = getLearnKitPlugin();
     // If plugin state is transiently unavailable during startup/refresh,
     // avoid destructive resets that can cause flash-then-disappear behavior.
     const stylesEnabled = pluginCheck
@@ -1310,11 +1310,11 @@ async function processCardElements(container: HTMLElement, _ctx?: MarkdownPostPr
       // scroll-nudge virtualizer prod retriggers MarkdownPostProcessor),
       // its innerHTML has already been replaced with pretty-card HTML and
       // extractRawTextFromParagraph can no longer find the `^learnkit-`
-      // anchor.  Fall back to data-sprout-id so we still extract the
+      // anchor.  Fall back to data-learnkit-id so we still extract the
       // full card from source and re-run ownership marking.
       let anchorId = anchorMatch?.[1] ?? '';
-      if (!anchorId && el.classList.contains('learnkit-pretty-card') && el.dataset.sproutId) {
-        anchorId = el.dataset.sproutId;
+      if (!anchorId && el.classList.contains('learnkit-pretty-card') && el.dataset.learnkitId) {
+        anchorId = el.dataset.learnkitId;
         if (sourceContent) {
           const extracted = extractCardFromSource(sourceContent, anchorId);
           if (extracted) rawText = extracted;
@@ -1334,7 +1334,7 @@ async function processCardElements(container: HTMLElement, _ctx?: MarkdownPostPr
       const card = parseLearnKitCard(rawText);
       if (!card) continue;
 
-      el.dataset.sproutProcessed = 'true';
+      el.dataset.learnkitProcessed = 'true';
       el.setAttribute('data-learnkit-processed', 'true');
 
       enhanceCardElement(el, card, undefined, rawText);
@@ -1400,7 +1400,7 @@ async function refreshProcessedCards(container: HTMLElement, sourceContent?: str
   }
 
   if (!touchedSections.size) return;
-  const rvSettings = getSproutPlugin()?.settings?.readingView;
+  const rvSettings = getLearnKitPlugin()?.settings?.readingView;
   applyLayoutToSections(touchedSections, rvSettings);
   touchedSections.forEach((section) => hideSectionLevelOrphanDelimitedParagraphs(section));
 }
@@ -1768,7 +1768,7 @@ function collectSectionsWithPrettyCards(scope: ParentNode): Set<HTMLElement> {
 function reflowPrettyCardLayouts(scope: ParentNode = activeDocument): void {
   const sections = collectSectionsWithPrettyCards(scope);
   if (!sections.size) return;
-  const rvSettings = getSproutPlugin()?.settings?.readingView;
+  const rvSettings = getLearnKitPlugin()?.settings?.readingView;
   applyLayoutToSections(sections, rvSettings);
 }
 
@@ -2065,7 +2065,7 @@ function collectSiblingsToHide(
       continue;
     }
 
-    // Stop if we hit another sprout card (already processed)
+    // Stop if we hit another learnkit card (already processed)
     if (classes.includes('learnkit-pretty-card') || classes.includes('learnkit-reading-card-run') || sibling.hasAttribute('data-learnkit-processed')) {
       break;
     }
@@ -2074,7 +2074,7 @@ function collectSiblingsToHide(
     if (classes.includes('el-p') && !classes.includes('learnkit-pretty-card')) {
       const txt = extractRawTextFromParagraph(sibling as HTMLElement);
       const cleanTxt = clean(txt);
-      if (ANCHOR_RE.test(cleanTxt) && !hasCardAnchorForId(cleanTxt, String(cardEl.dataset.sproutId || ""))) {
+      if (ANCHOR_RE.test(cleanTxt) && !hasCardAnchorForId(cleanTxt, String(cardEl.dataset.learnkitId || ""))) {
         break;
       }
     }
@@ -2323,7 +2323,7 @@ function buildCleanMarkdownClozeSpanStyle(style?: CleanMarkdownClozeStyle): stri
   return ` style="${rules.join('; ')}"`;
 }
 
-function resolveCleanMarkdownClozeStyle(plugin: SproutPluginLike | null): CleanMarkdownClozeStyle | undefined {
+function resolveCleanMarkdownClozeStyle(plugin: LearnKitPluginLike | null): CleanMarkdownClozeStyle | undefined {
   if (!plugin) return undefined;
 
   const cards = plugin.settings?.cards;
@@ -3141,7 +3141,7 @@ function buildFlashcardContentHTML(card: LearnKitCard, options: { includeSpeaker
 
 function buildGroupsSectionHTML(groups: string[]): string {
   if (!groups.length) return '';
-  const contentId = `sprout-groups-${Math.random().toString(36).slice(2, 8)}`;
+  const contentId = `learnkit-groups-${Math.random().toString(36).slice(2, 8)}`;
   return `
     <div class="learnkit-card-section learnkit-section-groups">
       <div class="learnkit-section-label">
@@ -3267,7 +3267,7 @@ function setupGuidebookCarousel(el: HTMLElement) {
 
 function setupFlashcardFlip(el: HTMLElement) {
   if (!el.classList.contains('learnkit-macro-flashcards')) return;
-  type FlashcardFlipElement = HTMLElement & { __sproutFlipAC?: AbortController };
+  type FlashcardFlipElement = HTMLElement & { __learnkitFlipAC?: AbortController };
   const flipEl = el as FlashcardFlipElement;
   const content = el.querySelector<HTMLElement>('.learnkit-card-content');
   if (!content) return;
@@ -3277,10 +3277,10 @@ function setupFlashcardFlip(el: HTMLElement) {
 
   // Abort any previous flip handler so stale listeners referencing
   // detached Q/A elements don't block the current handler.
-  const prev = flipEl.__sproutFlipAC;
+  const prev = flipEl.__learnkitFlipAC;
   if (prev) prev.abort();
   const ac = new AbortController();
-  flipEl.__sproutFlipAC = ac;
+  flipEl.__learnkitFlipAC = ac;
 
   let showingAnswer = false;
 
@@ -3352,7 +3352,7 @@ function enhanceCardElement(
   let audioSettings: AudioSettings | null = null;
   let markdownClozeStyle: CleanMarkdownClozeStyle | undefined;
   try {
-    const activePlugin = getSproutPlugin();
+    const activePlugin = getLearnKitPlugin();
     const stylesEnabled = activePlugin
       ? !!activePlugin.settings?.general?.enableReadingStyles
       : true;
@@ -3389,8 +3389,8 @@ function enhanceCardElement(
     `learnkit-macro-${macroPreset}`,
   );
 
-  el.dataset.sproutId = card.anchorId;
-  el.dataset.sproutType = card.type;
+  el.dataset.learnkitId = card.anchorId;
+  el.dataset.learnkitType = card.type;
   
   // Store raw text for masonry grid sibling hiding
   if (cardRawText) {
@@ -3499,9 +3499,11 @@ function enhanceCardElement(
       e.preventDefault();
       e.stopPropagation();
 
-      const plugin = getSproutPlugin();
+      const plugin = getLearnKitPlugin();
       if (!plugin) {
-        new Notice("Sprout plugin not found.");
+        // There is no plugin instance here, so there are no settings to read an
+        // interface language from - pass undefined and let t() use the base locale.
+        new Notice(t(undefined, "ui.reading.notice.pluginNotFound", "LearnKit - plugin not found"));
         return;
       }
 
@@ -3612,7 +3614,7 @@ function enhanceCardElement(
       const panel = (cardContent ?? el).querySelector<HTMLElement>(panelSelector);
       if (!panel) return;
 
-      const isClozeLike = el.dataset.sproutType === "cloze" || el.dataset.sproutType === "cloze-child";
+      const isClozeLike = el.dataset.learnkitType === "cloze" || el.dataset.learnkitType === "cloze-child";
 
       const rawQuestion = card.type === "reversed"
         ? toTextField(card.fields.RQ)
@@ -3767,7 +3769,7 @@ async function renderMdInElements(el: HTMLElement, card: LearnKitCard) {
   if (!app) return;
   
   // Get the plugin instance to use as component parent
-  const plugin = getSproutPlugin();
+  const plugin = getLearnKitPlugin();
   if (!plugin) return;
   
   // Source path for resolving images/links
@@ -3784,8 +3786,8 @@ async function renderMdInElements(el: HTMLElement, card: LearnKitCard) {
       const aText = Array.isArray(card.fields.A) ? card.fields.A.join('\n') : card.fields.A;
       
       // Find Q/A elements by ID pattern
-      const qEl = queryFirst(el, '[id^="sprout-q-"]');
-      const aEl = queryFirst(el, '[id^="sprout-a-"]');
+      const qEl = queryFirst(el, '[id^="sprout-q-"], [id^="learnkit-q-"]');
+      const aEl = queryFirst(el, '[id^="sprout-a-"], [id^="learnkit-a-"]');
       
       if (qEl && qText) {
         try {
@@ -3814,7 +3816,7 @@ async function renderMdInElements(el: HTMLElement, card: LearnKitCard) {
     // Render markdown for Info fields (all card types)
     const iText = Array.isArray(card.fields.I) ? card.fields.I.join('\n') : card.fields.I;
     if (iText) {
-      const iEl = queryFirst(el, '[id^="sprout-i-"]');
+      const iEl = queryFirst(el, '[id^="sprout-i-"], [id^="learnkit-i-"]');
       if (iEl) {
         try {
           await MarkdownRenderer.render(app, iText, iEl as HTMLElement, sourcePath, component);
@@ -3831,7 +3833,7 @@ async function renderMdInElements(el: HTMLElement, card: LearnKitCard) {
     // flashcard and markdown macros (including inline math delimiters).
     const mdTargets = Array.from(el.querySelectorAll<HTMLElement>('[data-learnkit-md-source]'));
     for (const target of mdTargets) {
-      if (target.closest('[id^="sprout-q-"]') || target.closest('[id^="sprout-a-"]') || target.closest('[id^="sprout-i-"]')) {
+      if (target.closest('[id^="sprout-q-"], [id^="learnkit-q-"]') || target.closest('[id^="sprout-a-"], [id^="learnkit-a-"]') || target.closest('[id^="sprout-i-"], [id^="learnkit-i-"]')) {
         continue;
       }
 
@@ -3953,7 +3955,7 @@ function resolveEmbeddedImages(el: HTMLElement, app: App, sourcePath: string) {
 function renderIoInReadingCard(
   el: HTMLElement,
   card: LearnKitCard,
-  plugin: SproutPluginLike,
+  plugin: LearnKitPluginLike,
   sourcePath: string,
 ) {
   const toFieldText = (value: string | string[] | undefined): string =>
@@ -4625,9 +4627,9 @@ function renderIoInReadingCard(
    Expose manual trigger on window
    ========================= */
 
-declare global { interface Window { sproutApplyMasonryGrid?: () => void; } }
+declare global { interface Window { learnkitApplyMasonryGrid?: () => void; } }
 
-window.sproutApplyMasonryGrid = window.sproutApplyMasonryGrid || (() => {
-  debugLog('[LearnKit] sproutApplyMasonryGrid placeholder invoked');
+window.learnkitApplyMasonryGrid = window.learnkitApplyMasonryGrid || (() => {
+  debugLog('[LearnKit] learnkitApplyMasonryGrid placeholder invoked');
   void processCardElements(activeDocument.documentElement, undefined, '');
 });

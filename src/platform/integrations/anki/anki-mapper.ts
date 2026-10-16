@@ -1,15 +1,15 @@
 /**
  * @file src/anki/anki-mapper.ts
- * @summary Bidirectional type mapping between Sprout card/state types and Anki SQL rows.
+ * @summary Bidirectional type mapping between LearnKit card/state types and Anki SQL rows.
  * Handles Basic, Cloze, and MCQ→Basic conversion for export, and Basic/Cloze detection
  * for import. Converts scheduling state, review log entries, and strips/adds HTML.
  *
  * @exports
- *  - cardRecordToAnkiNote  — Sprout CardRecord → AnkiNoteRow (export)
- *  - cardStateToAnkiCard   — Sprout CardState → AnkiCardRow (export)
- *  - reviewLogToAnkiRevlog — Sprout ReviewLogEntry → AnkiRevlogRow (export)
- *  - ankiNoteToCardRecord  — AnkiNoteRow → Sprout CardRecord (import)
- *  - ankiCardToCardState   — AnkiCardRow → Sprout CardState (import)
+ *  - cardRecordToAnkiNote  — LearnKit CardRecord → AnkiNoteRow (export)
+ *  - cardStateToAnkiCard   — LearnKit CardState → AnkiCardRow (export)
+ *  - reviewLogToAnkiRevlog — LearnKit ReviewLogEntry → AnkiRevlogRow (export)
+ *  - ankiNoteToCardRecord  — AnkiNoteRow → LearnKit CardRecord (import)
+ *  - ankiCardToCardState   — AnkiCardRow → LearnKit CardState (import)
  *  - cleanHtmlToMarkdown   — basic HTML → markdown text conversion
  */
 import {  } from "obsidian";
@@ -27,17 +27,17 @@ import {
   generateAnkiId,
   generateAnkiGuid,
   computeFieldChecksum,
-  sproutStageToAnkiTypeQueue,
-  ankiTypeQueueToSproutStage,
+  learnkitStageToAnkiTypeQueue,
+  ankiTypeQueueToLearnKitStage,
   fsrsDifficultyToAnkiFactor,
   ankiFactorToFsrsDifficulty,
-  sproutDueToAnkiReviewDue,
-  sproutDueToAnkiLearningDue,
-  ankiReviewDueToSproutDue,
-  ankiLearningDueToSproutDue,
-  sproutGroupsToAnkiTags,
-  ankiTagsToSproutGroups,
-  sproutRatingToAnkiEase,
+  learnkitDueToAnkiReviewDue,
+  learnkitDueToAnkiLearningDue,
+  ankiReviewDueToLearnKitDue,
+  ankiLearningDueToLearnKitDue,
+  learnkitGroupsToAnkiTags,
+  ankiTagsToLearnKitGroups,
+  learnkitRatingToAnkiEase,
   ankiDeckToGroupPath,
 } from "./anki-utils";
 import type { CardRecord } from "../../types/card";
@@ -53,10 +53,10 @@ function titleFromFilePath(filePath: string): string {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
-//  Export direction: Sprout → Anki
+//  Export direction: LearnKit → Anki
 // ═══════════════════════════════════════════════════════════════════════════════
 
-/** Convert a Sprout CardRecord to an Anki note row. */
+/** Convert a LearnKit CardRecord to an Anki note row. */
 export function cardRecordToAnkiNote(card: CardRecord, modelId?: number): AnkiNoteRow {
   const now = Math.floor(Date.now() / 1000);
   let flds: string;
@@ -101,7 +101,7 @@ export function cardRecordToAnkiNote(card: CardRecord, modelId?: number): AnkiNo
   }
 
   const sfld = flds.split(ANKI_FIELD_SEPARATOR)[0] || "";
-  const tags = sproutGroupsToAnkiTags(card.groups);
+  const tags = learnkitGroupsToAnkiTags(card.groups);
 
   return {
     id: generateAnkiId(),
@@ -118,7 +118,7 @@ export function cardRecordToAnkiNote(card: CardRecord, modelId?: number): AnkiNo
   };
 }
 
-/** Convert a Sprout CardState to an Anki card row. */
+/** Convert a LearnKit CardState to an Anki card row. */
 export function cardStateToAnkiCard(
   state: CardState,
   noteId: number,
@@ -127,15 +127,15 @@ export function cardStateToAnkiCard(
   collectionCrtSec: number,
 ): AnkiCardRow {
   const now = Math.floor(Date.now() / 1000);
-  const { type, queue } = sproutStageToAnkiTypeQueue(state.stage);
+  const { type, queue } = learnkitStageToAnkiTypeQueue(state.stage);
 
   let due: number;
   if (state.stage === "new") {
     due = 0;
   } else if (state.stage === "learning" || state.stage === "relearning") {
-    due = sproutDueToAnkiLearningDue(state.due);
+    due = learnkitDueToAnkiLearningDue(state.due);
   } else {
-    due = sproutDueToAnkiReviewDue(state.due, collectionCrtSec);
+    due = learnkitDueToAnkiReviewDue(state.due, collectionCrtSec);
   }
 
   // Build the card data JSON with FSRS memory state.
@@ -175,7 +175,7 @@ export function cardStateToAnkiCard(
   };
 }
 
-/** Convert a Sprout ReviewLogEntry to an Anki revlog row. */
+/** Convert a LearnKit ReviewLogEntry to an Anki revlog row. */
 export function reviewLogToAnkiRevlog(
   entry: ReviewLogEntry,
   cardId: number,
@@ -184,17 +184,17 @@ export function reviewLogToAnkiRevlog(
     id: entry.at,
     cid: cardId,
     usn: -1,
-    ease: sproutRatingToAnkiEase(entry.result),
+    ease: learnkitRatingToAnkiEase(entry.result),
     ivl: Math.floor(Math.max(0, entry.nextDue - entry.prevDue) / 86400000) || 0,
     lastIvl: 0,
     factor: 0,
-    time: 0, // Sprout doesn't track review duration
+    time: 0, // LearnKit doesn't track review duration
     type: 0,
   };
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
-//  Import direction: Anki → Sprout
+//  Import direction: Anki → LearnKit
 // ═══════════════════════════════════════════════════════════════════════════════
 
 /** Optional user-provided field mapping for custom Anki note types. */
@@ -205,7 +205,7 @@ export type ImportFieldMapping = {
   infoFieldIdx: number;
 };
 
-/** Convert an Anki note + model into a Sprout CardRecord. */
+/** Convert an Anki note + model into a LearnKit CardRecord. */
 export function ankiNoteToCardRecord(
   note: AnkiNoteRow,
   model: AnkiModel,
@@ -255,7 +255,7 @@ export function ankiNoteToCardRecord(
   const groupPath = ankiDeckToGroupPath(deckName);
   if (groupPath) groups.push(groupPath);
   // Always convert Anki tags to groups
-  const tagGroups = ankiTagsToSproutGroups(note.tags);
+  const tagGroups = ankiTagsToLearnKitGroups(note.tags);
   for (const tg of tagGroups) {
     if (tg && !groups.includes(tg)) groups.push(tg);
   }
@@ -359,21 +359,21 @@ export function ankiNoteToCardRecord(
   };
 }
 
-/** Convert an Anki card row to a Sprout CardState. */
+/** Convert an Anki card row to a LearnKit CardState. */
 export function ankiCardToCardState(
   card: AnkiCardRow,
-  sproutCardId: string,
+  learnkitCardId: string,
   collectionCrtSec: number,
 ): CardState {
-  const stage = ankiTypeQueueToSproutStage(card.type, card.queue);
+  const stage = ankiTypeQueueToLearnKitStage(card.type, card.queue);
 
   let due: number;
   if (card.type === 0) {
     due = Date.now(); // new cards → due now
   } else if (card.type === 1 || card.type === 3) {
-    due = ankiLearningDueToSproutDue(card.due);
+    due = ankiLearningDueToLearnKitDue(card.due);
   } else {
-    due = ankiReviewDueToSproutDue(card.due, collectionCrtSec);
+    due = ankiReviewDueToLearnKitDue(card.due, collectionCrtSec);
   }
 
   let fsrsState: FsrsState;
@@ -395,7 +395,7 @@ export function ankiCardToCardState(
   }
 
   return {
-    id: sproutCardId,
+    id: learnkitCardId,
     stage,
     due,
     reps: card.reps,
@@ -652,7 +652,7 @@ export function cleanHtmlToMarkdown(html: string): string {
 
   // Preserve <u>, <sub>, <sup> tags (no native Obsidian markdown syntax) by
   // temporarily replacing angle brackets so they survive the strip-all pass.
-  const preservedTagToken = "__SPROUT_PRESERVE_TAG__";
+  const preservedTagToken = "__LEARNKIT_PRESERVE_TAG__";
   const preservedTagTokenRe = preservedTagToken.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
   text = text.replace(/<(\/?)u>/gi, `${preservedTagToken}$1u${preservedTagToken}`);

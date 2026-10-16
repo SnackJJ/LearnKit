@@ -1,5 +1,5 @@
 /* ============================================================================
-   Sprout Overrides — Master entry point
+   LearnKit Overrides — Master entry point
    ============================================================================
    Import order matters: tokens first, then layout, then component styles.
    All files are concatenated into the final styles.css by the Tailwind CLI

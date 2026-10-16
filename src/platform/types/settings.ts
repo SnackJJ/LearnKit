@@ -7,7 +7,7 @@
  *
  * @exports
  *   - LearnKitSettings — primary type describing the complete plugin settings structure
- *   - SproutSettings — compatibility alias for LearnKitSettings
+ *   - LearnKitSettings — compatibility alias for LearnKitSettings
  */
 export type LearnKitSettings = {
   // General — user identity, greeting, appearance
@@ -18,20 +18,20 @@ export type LearnKitSettings = {
     showGreeting: boolean;
     hasOpenedHome: boolean;
     pinnedDecks: string[];
-    /** Sprout-scoped zoom level (only Sprout leaves + widget). 1.0 = 100%. */
+    /** LearnKit-scoped zoom level (only LearnKit leaves + widget). 1.0 = 100%. */
     workspaceContentZoom: number;
     githubStars: {
       count: number | null;
       fetchedAt: number | null;
     };
     enableAnimations: boolean;
-    /** Active Sprout appearance theme preset. Currently only "glass" is available. */
+    /** Active LearnKit appearance theme preset. Currently only "glass" is available. */
     themePreset: "glass";
-    /** Optional Sprout-local accent override. Empty string inherits Obsidian theme accent. */
+    /** Optional LearnKit-local accent override. Empty string inherits Obsidian theme accent. */
     themeAccentOverride: string;
     /** Show a launch notice modal when Obsidian starts. */
     showLaunchNoticeModal: boolean;
-    /** Master switch for Sprout card styling in Reading View. false = native Obsidian rendering. */
+    /** Master switch for LearnKit card styling in Reading View. false = native Obsidian rendering. */
     enableReadingStyles: boolean;
     /** "off" disables card styling; "accent" uses theme accent colour; "theme" uses background/text alt colours. */
     prettifyCards: string;
@@ -190,7 +190,7 @@ export type LearnKitSettings = {
     gatekeeperDueQuestionCount: number;
     /** Scope blocked by gatekeeper: full workspace or current tab only. */
     gatekeeperScope: "workspace" | "current-tab";
-    /** Pause gatekeeper countdown while actively studying in Sprout tabs. */
+    /** Pause gatekeeper countdown while actively studying in LearnKit tabs. */
     gatekeeperPauseWhenStudying: boolean;
     /** Allow skipping/closing gatekeeper popup before completing all questions. */
     gatekeeperAllowSkip: boolean;
@@ -254,7 +254,7 @@ export type LearnKitSettings = {
   indexing: {
     /** Skip flashcard markers inside fenced code blocks. */
     ignoreInCodeFences: boolean;
-    /** Place the ^sprout-ID anchor above or below the card block. */
+    /** Place the ^learnkit-ID anchor above or below the card block. */
     idPlacement: "above" | "below";
     /**
      * The character used to delimit card fields.
@@ -678,6 +678,3 @@ export type LearnKitSettings = {
 
 /** Valid external TTS provider identifiers. */
 export type TtsProvider = LearnKitSettings["audio"]["ttsProvider"];
-
-// Backwards-compatible alias retained for Phase 1 rename safety.
-export type SproutSettings = LearnKitSettings;

@@ -56,7 +56,7 @@ vi.mock("../src/platform/integrations/anki/anki-zip", () => {
 vi.mock("../src/platform/integrations/anki/anki-media", () => {
   return {
     saveMediaToVault: vi.fn(async () => new Map()),
-    rewriteFieldForSprout: (s: string) => s,
+    rewriteFieldForLearnKit: (s: string) => s,
     collectMediaRefs: (_fields: (string | null | undefined)[]) => new Set<string>(),
     resolveVaultMedia: vi.fn(async () => new Map()),
     rewriteFieldForAnki: (s: string) => s,

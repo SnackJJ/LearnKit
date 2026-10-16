@@ -279,7 +279,7 @@ export class CardEditModal extends Modal {
 
       const radio = row.createEl("input");
       radio.type = "radio";
-      radio.name = `sprout-mcq-correct-${id}`;
+      radio.name = `learnkit-mcq-correct-${id}`;
       radio.title = tx("ui.reviewer.cardEditor.correctAnswer", "Correct answer");
       radio.checked = makeCorrect;
 
@@ -327,10 +327,10 @@ export class CardEditModal extends Modal {
 
     if (type === "cloze") {
       mkSectionTitle(contentEl, tx("ui.reviewer.cardEditor.field.cloze", "Cloze"));
-      { const r = mkPreviewTextarea(String((this.card).clozeText || ""), 5, "sprout-edit-field-question"); clozeEl = r.ta; contentEl.appendChild(r.wrap); }
+      { const r = mkPreviewTextarea(String((this.card).clozeText || ""), 5, "learnkit-edit-field-question"); clozeEl = r.ta; contentEl.appendChild(r.wrap); }
 
       mkSectionTitle(contentEl, tx("ui.reviewer.cardEditor.field.extraInfo", "Extra information"));
-      const { ta: infoEl, wrap: infoWrap } = mkPreviewTextarea(String((this.card).info || ""), 4, "sprout-edit-field-info");
+      const { ta: infoEl, wrap: infoWrap } = mkPreviewTextarea(String((this.card).info || ""), 4, "learnkit-edit-field-info");
       contentEl.appendChild(infoWrap);
 
       this.renderButtons(type, titleEl, {
@@ -346,13 +346,13 @@ export class CardEditModal extends Modal {
 
     if (type === "basic" || type === "reversed") {
       mkSectionTitle(contentEl, tx("ui.reviewer.cardEditor.field.question", "Question"));
-      { const r = mkPreviewTextarea(String((this.card).q || ""), 4, "sprout-edit-field-question"); qEl = r.ta; contentEl.appendChild(r.wrap); }
+      { const r = mkPreviewTextarea(String((this.card).q || ""), 4, "learnkit-edit-field-question"); qEl = r.ta; contentEl.appendChild(r.wrap); }
 
       mkSectionTitle(contentEl, tx("ui.reviewer.cardEditor.field.answer", "Answer"));
-      { const r = mkPreviewTextarea(String((this.card).a || ""), 4, "sprout-edit-field-answer"); aEl = r.ta; contentEl.appendChild(r.wrap); }
+      { const r = mkPreviewTextarea(String((this.card).a || ""), 4, "learnkit-edit-field-answer"); aEl = r.ta; contentEl.appendChild(r.wrap); }
 
       mkSectionTitle(contentEl, tx("ui.reviewer.cardEditor.field.extraInfo", "Extra information"));
-      const { ta: infoEl, wrap: infoWrap } = mkPreviewTextarea(String((this.card).info || ""), 4, "sprout-edit-field-info");
+      const { ta: infoEl, wrap: infoWrap } = mkPreviewTextarea(String((this.card).info || ""), 4, "learnkit-edit-field-info");
       contentEl.appendChild(infoWrap);
 
       this.renderButtons(type, titleEl, {
@@ -368,7 +368,7 @@ export class CardEditModal extends Modal {
 
     if (type === "oq") {
       mkSectionTitle(contentEl, tx("ui.reviewer.cardEditor.field.question", "Question"));
-      { const r = mkPreviewTextarea(String((this.card).q || ""), 4, "sprout-edit-field-question"); qEl = r.ta; contentEl.appendChild(r.wrap); }
+      { const r = mkPreviewTextarea(String((this.card).q || ""), 4, "learnkit-edit-field-question"); qEl = r.ta; contentEl.appendChild(r.wrap); }
 
       mkSectionTitle(contentEl, tx("ui.reviewer.cardEditor.field.stepsCorrectOrder", "Steps (correct order)"));
 
@@ -479,7 +479,7 @@ export class CardEditModal extends Modal {
       };
 
       mkSectionTitle(contentEl, tx("ui.reviewer.cardEditor.field.extraInfo", "Extra information"));
-      const { ta: infoEl, wrap: infoWrap } = mkPreviewTextarea(String((this.card).info || ""), 4, "sprout-edit-field-info");
+      const { ta: infoEl, wrap: infoWrap } = mkPreviewTextarea(String((this.card).info || ""), 4, "learnkit-edit-field-info");
       contentEl.appendChild(infoWrap);
 
       this.renderButtons(type, titleEl, {
@@ -496,7 +496,7 @@ export class CardEditModal extends Modal {
 
     // MCQ
     mkSectionTitle(contentEl, tx("ui.reviewer.cardEditor.field.question", "Question"));
-    { const r = mkPreviewTextarea(String((this.card).stem || ""), 4, "sprout-edit-field-question"); mcqStemEl = r.ta; contentEl.appendChild(r.wrap); }
+    { const r = mkPreviewTextarea(String((this.card).stem || ""), 4, "learnkit-edit-field-question"); mcqStemEl = r.ta; contentEl.appendChild(r.wrap); }
 
     mkSectionTitle(contentEl, tx("ui.reviewer.cardEditor.field.options", "Options"));
 
@@ -519,7 +519,7 @@ export class CardEditModal extends Modal {
     plusBtn.onclick = () => addMcqOptionRow("", false);
 
     mkSectionTitle(contentEl, tx("ui.reviewer.cardEditor.field.extraInfo", "Extra information"));
-    const { ta: infoEl, wrap: infoWrap } = mkPreviewTextarea(String((this.card).info || ""), 4, "sprout-edit-field-info");
+    const { ta: infoEl, wrap: infoWrap } = mkPreviewTextarea(String((this.card).info || ""), 4, "learnkit-edit-field-info");
     contentEl.appendChild(infoWrap);
 
     this.renderButtons(type, titleEl, {
@@ -635,7 +635,7 @@ export async function saveCardEdits(
 
   // Ensure we have an anchor line at/near the start; if not, do nothing risky.
   if (
-    !block.some((l) => (l || "").trim() === `^sprout-${id}`) &&
+    !block.some((l) => (l || "").trim() === `^learnkit-${id}`) &&
     !block.some((l) => (l || "").trim() === `<!--ID:${id}-->`)
   ) {
     throw new Error(

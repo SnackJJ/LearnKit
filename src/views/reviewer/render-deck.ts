@@ -49,7 +49,7 @@ function ensureBasecoatStartedOnce() {
   const bc = window?.basecoat;
   if (!bc) return;
 
-  if (window.__sprout_started) return;
+  if (window.__learnkit_started) return;
 
   try {
     if (typeof bc.start === "function") bc.start();
@@ -57,7 +57,7 @@ function ensureBasecoatStartedOnce() {
     // ignore
   }
 
-  window.__sprout_started = true;
+  window.__learnkit_started = true;
 }
 
 
@@ -176,9 +176,9 @@ export function renderDeckMode(args: Args) {
     icon: "arrow-right",
     label: tx("ui.reviewer.deck.studyAll", "Study all"),
     title: tx("ui.reviewer.deck.studyAllTooltip", "Start a vault-wide session"),
-    className: "learnkit-btn-toolbar learnkit-btn-outline-muted h-9 w-full md:w-auto inline-flex items-center gap-2 equal-height-btn sprout-deck-study-all-btn",
+    className: "learnkit-btn-toolbar learnkit-btn-outline-muted h-9 w-full md:w-auto inline-flex items-center gap-2 equal-height-btn learnkit-deck-study-all-btn",
     labelClassName: "",
-    iconClassName: "sprout-btn-icon",
+    iconClassName: "learnkit-btn-icon",
     iconAfterLabel: true,
     onClick: () => args.openSession({ type: "vault", key: "", name: vaultName }),
   });

@@ -3,14 +3,14 @@
  * @summary Module for coach view.
  *
  * @exports
- *  - SproutCoachView
+ *  - LearnKitCoachView
  */
 
 import { ItemView, Notice, TFile, setIcon, type WorkspaceLeaf } from "obsidian";
 import * as React from "react";
 import { createRoot, type Root as ReactRoot } from "react-dom/client";
 import type LearnKitPlugin from "../../main";
-import { createViewHeader, type SproutHeader } from "../../platform/core/header";
+import { createViewHeader, type LearnKitHeader } from "../../platform/core/header";
 import { log } from "../../platform/core/logger";
 import { AOS_DURATION, MAX_CONTENT_WIDTH_PX, VIEW_TYPE_COACH } from "../../platform/core/constants";
 import { setCssProps } from "../../platform/core/ui";
@@ -176,10 +176,10 @@ function switcherStatusBadge(status: CoachPlanRow["status"]): {
   return { token: "ui.view.coach.status.onTrack", fallback: "On Track", toneClass: "is-strong" };
 }
 
-export class SproutCoachView extends ItemView {
+export class LearnKitCoachView extends ItemView {
   plugin: LearnKitPlugin;
 
-  private _header: SproutHeader | null = null;
+  private _header: LearnKitHeader | null = null;
   private _rootEl: HTMLElement | null = null;
   private _shellEl: HTMLElement | null = null;
   private _coachDb: CoachPlanSqlite | null = null;
@@ -2238,8 +2238,8 @@ export class SproutCoachView extends ItemView {
 
       const titleFrame = createTitleStripFrame({
         root,
-        stripClassName: "lk-home-title-strip sprout-coach-title-strip",
-        rowClassName: "sprout-inline-sentence w-full flex items-center justify-between gap-[10px]",
+        stripClassName: "lk-home-title-strip learnkit-coach-title-strip",
+        rowClassName: "learnkit-inline-sentence w-full flex items-center justify-between gap-[10px]",
         leftClassName: "min-w-0 flex-1 flex flex-col gap-[2px]",
         rightClassName: "flex items-center gap-2",
         prepend: true,

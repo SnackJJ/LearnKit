@@ -13,8 +13,8 @@ import { scopeModalToWorkspace } from "../../platform/modals/modal-utils";
 import { createOqReorderPreviewController } from "../../platform/core/oq-reorder-preview";
 import { renderLatexMathInElement, replaceChildrenWithHTML, setCssProps } from "../../platform/core/ui";
 import { hydrateRenderedMathCloze, renderClozeFront } from "../../views/reviewer/question-cloze";
-import { SproutMarkdownHelper } from "../../views/reviewer/markdown-render";
-import { openSproutImageZoom } from "../../views/reviewer/zoom";
+import { LearnKitMarkdownHelper } from "../../views/reviewer/markdown-render";
+import { openLearnKitImageZoom } from "../../views/reviewer/zoom";
 import { gradeCard } from "../../platform/services/grading-service";
 import type { ReviewRating } from "../../platform/types/scheduler";
 import { logFsrsIfNeeded } from "../../views/reviewer/fsrs-log";
@@ -58,7 +58,7 @@ export class GatekeeperModal extends Modal {
   private index = 0;
   private reveal = false;
   private completed = false;
-  private _md: SproutMarkdownHelper | null = null;
+  private _md: LearnKitMarkdownHelper | null = null;
   private _oqOrderMap: Record<string, number[]> = {};
   private _mcqSingleSelection = new Map<string, number>();
   private _mcqMultiSelection = new Map<string, Set<number>>();
@@ -477,11 +477,11 @@ export class GatekeeperModal extends Modal {
 
   private ensureMarkdownHelper() {
     if (this._md) return;
-    this._md = new SproutMarkdownHelper({
+    this._md = new LearnKitMarkdownHelper({
       app: this.app,
       owner: this as unknown as Component,
       maxHeightPx: 260,
-      onZoom: (src, alt) => openSproutImageZoom(this.app, src, alt),
+      onZoom: (src, alt) => openLearnKitImageZoom(this.app, src, alt),
     });
   }
 
@@ -967,7 +967,7 @@ export class GatekeeperModal extends Modal {
 
   private renderIoCard(body: HTMLElement, card: CardRecord) {
     const ioContainer = body.createDiv({ cls: "rounded border border-border bg-muted overflow-auto learnkit-widget-io-container learnkit-widget-io-container" });
-    ioContainer.dataset.sproutIoWidget = "1";
+    ioContainer.dataset.learnkitIoWidget = "1";
 
     const sourcePath = String(card.sourceNotePath || "");
     const isHotspot = card.type === "hq" || card.type === "hq-child";

@@ -5,7 +5,7 @@ vi.mock("../src/platform/core/ui", () => ({
   setCssProps: vi.fn(),
 }));
 vi.mock("../src/platform/core/header", () => ({ createViewHeader: vi.fn() }));
-import { SproutExamGeneratorView } from "../src/views/exam-generator/exam-generator-view";
+import { LearnKitExamGeneratorView } from "../src/views/exam-generator/exam-generator-view";
 
 // Obsidian's DOM helpers, with real elements and browser click events.
 Object.assign(HTMLElement.prototype, {
@@ -23,7 +23,7 @@ Object.assign(HTMLElement.prototype, {
 });
 
 it("shows answer details immediately after submission", () => {
-  const view = Object.create(SproutExamGeneratorView.prototype) as any;
+  const view = Object.create(LearnKitExamGeneratorView.prototype) as any;
   Object.assign(view, {
     _finalPercent: 50, _questions: [{ id: "q" }],
     _questionResults: [{ questionId: "q", questionType: "mcq", prompt: "Select primes", scorePercent: 50, userAnswer: "2; 4", expectedAnswer: "2; 5", explanation: "Prime numbers have two divisors.", choices: [{ text: "4", selected: true, correct: false }, { text: "5", selected: false, correct: true }] }],

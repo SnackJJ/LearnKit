@@ -1,6 +1,6 @@
 /**
  * @file src/core/ui.ts
- * @summary Lightweight DOM helper utilities used across Sprout views. Provides shorthand
+ * @summary Lightweight DOM helper utilities used across LearnKit views. Provides shorthand
  * functions for creating elements, icon buttons, and toggle buttons without pulling in
  * a full UI framework.
  *

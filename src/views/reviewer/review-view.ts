@@ -1,9 +1,9 @@
 /**
  * @file src/reviewer/review-view.ts
- * @summary The main reviewer view class for Sprout. Extends Obsidian's ItemView to provide the full study experience including deck browsing, session management, card grading (FSRS-based), undo, skip, bury/suspend, practice mode, image occlusion, MCQ randomisation, Markdown rendering, and keyboard navigation.
+ * @summary The main reviewer view class for LearnKit. Extends Obsidian's ItemView to provide the full study experience including deck browsing, session management, card grading (FSRS-based), undo, skip, bury/suspend, practice mode, image occlusion, MCQ randomisation, Markdown rendering, and keyboard navigation.
  *
  * @exports
- *   - SproutReviewerView — ItemView subclass that manages the reviewer's lifecycle, state, rendering, and user interactions
+ *   - LearnKitReviewerView — ItemView subclass that manages the reviewer's lifecycle, state, rendering, and user interactions
  */
 
 import { ItemView, Notice, type WorkspaceLeaf, TFile, setIcon } from "obsidian";
@@ -12,7 +12,7 @@ import { MAX_CONTENT_WIDTH, MAX_CONTENT_WIDTH_PX, VIEW_TYPE_REVIEWER } from "../
 import { log } from "../../platform/core/logger";
 import { queryFirst, setCssProps } from "../../platform/core/ui";
 import { createTitleStripFrame } from "../../platform/core/view-primitives";
-import { SPROUT_HOME_CONTENT_SHELL_CLASS } from "../../platform/core/ui-classes";
+import { LEARNKIT_HOME_CONTENT_SHELL_CLASS } from "../../platform/core/ui-classes";
 import { gradeCard } from "../../platform/services/grading-service";
 import { undoGrade } from "../../platform/services/undo-service";
 import { buryCardAction, suspendCardAction } from "../../platform/services/card-action-service";
@@ -32,8 +32,8 @@ import type { ClozeRenderOptions } from "./question-cloze";
 import { renderDeckMode } from "./render-deck";
 import { renderSessionMode } from "./render-session";
 
-import { openSproutImageZoom } from "./zoom";
-import { SproutMarkdownHelper } from "./markdown-render";
+import { openLearnKitImageZoom } from "./zoom";
+import { LearnKitMarkdownHelper } from "./markdown-render";
 import { isRevealOrNextKey, shouldDeferSpaceToNativeControl } from "./key-actions";
 import { processCircleFlagsInMarkdown, hydrateCircleFlagsInElement } from "../../platform/flags/flag-tokens";
 
@@ -69,7 +69,7 @@ import {
 } from "../../platform/image-occlusion/image-occlusion-review-render";
 
 // ✅ shared header import (like browser.ts)
-import { type SproutHeader, createViewHeader } from "../../platform/core/header";
+import { type LearnKitHeader, createViewHeader } from "../../platform/core/header";
 import { makeEl } from "../../platform/core/dom-factory";
 
 function isFourButtonMode(plugin: LearnKitPlugin): boolean {
@@ -114,7 +114,7 @@ export type WidgetSessionHandoffPayload = {
   currentMcqOrder?: number[];
 };
 
-export class SproutReviewerView extends ItemView {
+export class LearnKitReviewerView extends ItemView {
   plugin: LearnKitPlugin;
 
   mode: "deck" | "session" = "deck";
@@ -152,7 +152,7 @@ export class SproutReviewerView extends ItemView {
   private _widthToggleActionEl: HTMLElement | null = null;
 
   private readonly _imgMaxHeightPx = 200;
-  private _md: SproutMarkdownHelper | null = null;
+  private _md: LearnKitMarkdownHelper | null = null;
 
   /** Restore keyboard focus after render() rebuilds the DOM. */
   private _restoreFocus() {
@@ -164,7 +164,7 @@ export class SproutReviewerView extends ItemView {
   }
 
   // Add shared header instance
-  private _header: SproutHeader | null = null;
+  private _header: LearnKitHeader | null = null;
   private _titleStripEl: HTMLElement | null = null;
   /** Live subtitle node inside the title strip ("N due cards remaining"). */
   private _titleSubtitleEl: HTMLElement | null = null;
@@ -546,11 +546,11 @@ export class SproutReviewerView extends ItemView {
       root,
       stripClassName:
         coachShellMode
-          ? "lk-home-title-strip sprout-coach-title-strip"
+          ? "lk-home-title-strip learnkit-coach-title-strip"
           : this.mode === "deck"
           ? "lk-home-title-strip lk-review-title-strip lk-review-title-strip-deck"
           : "lk-home-title-strip lk-review-title-strip lk-review-title-strip-session",
-      rowClassName: "sprout-inline-sentence w-full flex items-center justify-between gap-[10px] lk-review-title-row",
+      rowClassName: "learnkit-inline-sentence w-full flex items-center justify-between gap-[10px] lk-review-title-row",
     });
     const { strip, right, title, subtitle } = frame;
     title.textContent = this._reviewerTitleText();
@@ -1164,7 +1164,7 @@ export class SproutReviewerView extends ItemView {
         },
       });
     } catch (e) {
-      log.warn("Sprout: failed to log skip", e);
+      log.warn("LearnKit: failed to log skip", e);
     }
 
     if (this.isPracticeSession()) {
@@ -1183,11 +1183,11 @@ export class SproutReviewerView extends ItemView {
 
   private ensureMarkdownHelper() {
     if (this._md) return;
-    this._md = new SproutMarkdownHelper({
+    this._md = new LearnKitMarkdownHelper({
       app: this.app,
       owner: this,
       maxHeightPx: this._imgMaxHeightPx,
-      onZoom: (src, alt) => openSproutImageZoom(this.app, src, alt),
+      onZoom: (src, alt) => openLearnKitImageZoom(this.app, src, alt),
     });
   }
 
@@ -1558,8 +1558,8 @@ export class SproutReviewerView extends ItemView {
 
         prevState: null,
       });
-      if (this._undoStack.length > SproutReviewerView.UNDO_MAX)
-        this._undoStack.splice(0, this._undoStack.length - SproutReviewerView.UNDO_MAX);
+      if (this._undoStack.length > LearnKitReviewerView.UNDO_MAX)
+        this._undoStack.splice(0, this._undoStack.length - LearnKitReviewerView.UNDO_MAX);
 
       // persist analytics for practice
       try {
@@ -1610,8 +1610,8 @@ export class SproutReviewerView extends ItemView {
 
       prevState: deepClone(st),
     });
-    if (this._undoStack.length > SproutReviewerView.UNDO_MAX)
-      this._undoStack.splice(0, this._undoStack.length - SproutReviewerView.UNDO_MAX);
+    if (this._undoStack.length > LearnKitReviewerView.UNDO_MAX)
+      this._undoStack.splice(0, this._undoStack.length - LearnKitReviewerView.UNDO_MAX);
 
     try {
       const { nextDue, metrics } = await gradeCard({
@@ -2971,7 +2971,7 @@ export class SproutReviewerView extends ItemView {
     let contentHost: HTMLElement = root;
     if (this.mode === "deck" || this.mode === "session") {
       const contentShell = makeEl("div");
-      contentShell.className = `${SPROUT_HOME_CONTENT_SHELL_CLASS} lk-review-content-shell`;
+      contentShell.className = `${LEARNKIT_HOME_CONTENT_SHELL_CLASS} lk-review-content-shell`;
       root.appendChild(contentShell);
       contentHost = contentShell;
     }
@@ -2988,7 +2988,7 @@ export class SproutReviewerView extends ItemView {
       (sessionColumn ?? contentHost).appendChild(studySessionHeader);
     }
 
-    // --- Use shared SproutHeader ---
+    // --- Use shared LearnKitHeader ---
     if (!this._header) {
       this._header = createViewHeader({
         view: this,

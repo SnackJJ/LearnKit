@@ -8,5 +8,4 @@
 
 export {
 	LearnKitSettingsView,
-	LearnKitSettingsView as SproutSettingsView,
 } from "../settings-view";

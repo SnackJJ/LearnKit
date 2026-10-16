@@ -1,8 +1,8 @@
 /**
  * @file src/anki/anki-export.ts
- * @summary Export engine: builds an .apkg file from Sprout store data.
+ * @summary Export engine: builds an .apkg file from LearnKit store data.
  * Gathers cards by scope, creates an in-memory Anki SQLite database with
- * note-type models, decks mapped from Sprout groups, note/card/revlog rows,
+ * note-type models, decks mapped from LearnKit groups, note/card/revlog rows,
  * and optional media — then packages everything as a .apkg ZIP.
  *
  * @exports

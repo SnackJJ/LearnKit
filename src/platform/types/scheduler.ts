@@ -59,7 +59,7 @@ export type CardState = {
 
 /**
  * Settings that control the FSRS scheduler behaviour.
- * Stored inside `SproutSettings.scheduler`.
+ * Stored inside `LearnKitSettings.scheduler`.
  */
 export type SchedulerSettings = {
   learningStepsMinutes: number[];

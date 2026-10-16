@@ -1,12 +1,12 @@
 /**
  * @file src/sync/backup.ts
- * @summary Backup management for the Sprout data store (data.json). Provides CRUD operations for listing, creating, restoring, and deleting backup snapshots, routine backup scheduling invoked by the sync engine, and low-level adapter/filesystem utilities shared with the sync engine. Backups include scheduling data (states, reviewLog) and analytics data (review events, session events) to preserve heatmaps, streaks, and answer-button history.
+ * @summary Backup management for the LearnKit data store (data.json). Provides CRUD operations for listing, creating, restoring, and deleting backup snapshots, routine backup scheduling invoked by the sync engine, and low-level adapter/filesystem utilities shared with the sync engine. Backups include scheduling data (states, reviewLog) and analytics data (review events, session events) to preserve heatmaps, streaks, and answer-button history.
  *
  * @exports
  *  - isPlainObject                 — type guard that checks if a value is a plain object
  *  - countObjectKeys               — returns the number of own enumerable keys on an object
  *  - joinPath                      — joins path segments with forward slashes
- *  - likelySproutStateKey          — heuristic check for whether a key looks like a Sprout card state key
+ *  - likelyLearnKitStateKey          — heuristic check for whether a key looks like a LearnKit card state key
  *  - extractStatesFromDataJsonObject — extracts card-state entries from a parsed data.json object
  *  - tryReadJson                   — safely reads and parses a JSON file from the vault adapter
  *  - safeListFolders               — lists subfolders with error handling for missing paths
@@ -186,23 +186,23 @@ function parseBackupManifest(raw: unknown): BackupManifest | null {
   };
 }
 
-function validateSproutStatesObject(states: unknown, requireNonEmpty: boolean): Record<string, unknown> | null {
+function validateLearnKitStatesObject(states: unknown, requireNonEmpty: boolean): Record<string, unknown> | null {
   if (!isPlainObject(states)) return null;
   const entries = Object.entries(states);
   if (!entries.length) return requireNonEmpty ? null : states;
 
   const sampleSize = Math.min(20, entries.length);
-  let sproutKeyCount = 0;
+  let learnkitKeyCount = 0;
   let validCount = 0;
   for (let i = 0; i < sampleSize; i++) {
     const [key, value] = entries[i];
-    if (!likelySproutStateKey(key)) continue;
-    sproutKeyCount += 1;
-    if (isValidSproutState(value)) validCount += 1;
+    if (!likelyLearnKitStateKey(key)) continue;
+    learnkitKeyCount += 1;
+    if (isValidLearnKitState(value)) validCount += 1;
   }
 
-  if (sproutKeyCount === 0) return null;
-  if (validCount < sproutKeyCount * 0.6) return null;
+  if (learnkitKeyCount === 0) return null;
+  if (validCount < learnkitKeyCount * 0.6) return null;
   return states;
 }
 
@@ -216,7 +216,7 @@ function extractSchedulingSnapshot(obj: unknown): SchedulingSnapshot | null {
   const root = getStoreLikeRoot(obj);
   if (!root) return null;
 
-  const states = validateSproutStatesObject(root.states, false);
+  const states = validateLearnKitStatesObject(root.states, false);
   if (!states) return null;
 
   const reviewLogRaw = root.reviewLog;
@@ -264,11 +264,11 @@ export function joinPath(...parts: string[]): string {
 }
 
 /**
- * Heuristic: returns `true` if `k` looks like a Sprout-generated
+ * Heuristic: returns `true` if `k` looks like a LearnKit-generated
  * card-state key (9-digit parent or `parent::cloze::cN` child).
  * This is intentionally strict to avoid false positives from other plugins.
  */
-export function likelySproutStateKey(k: string): boolean {
+export function likelyLearnKitStateKey(k: string): boolean {
   // Match 9-digit parent keys: "123456789"
   if (/^\d{9}$/.test(k)) return true;
   // Match cloze child keys: "123456789::cloze::c1"
@@ -279,10 +279,10 @@ export function likelySproutStateKey(k: string): boolean {
 }
 
 /**
- * Validates whether a state object looks like a legitimate Sprout CardState.
+ * Validates whether a state object looks like a legitimate LearnKit CardState.
  * Checks for presence of FSRS scheduling fields to avoid loading unrelated data.
  */
-function isValidSproutState(state: unknown): boolean {
+function isValidLearnKitState(state: unknown): boolean {
   if (!state || typeof state !== "object") return false;
   const s = state as Record<string, unknown>;
   
@@ -296,11 +296,11 @@ function isValidSproutState(state: unknown): boolean {
   const hasLapses = typeof s.lapses === "number";
   const hasReps = typeof s.reps === "number";
   
-  // Accept if it has FSRS fields OR has stage (Sprout-specific) + any other scheduling field
+  // Accept if it has FSRS fields OR has stage (LearnKit-specific) + any other scheduling field
   const hasFSRS = hasStabilityDays || hasDifficulty;
   const hasBasicScheduling = hasStage && (hasDue || hasReps || hasLapses);
   
-  // Also accept if it only has stage (for minimal/edge cases, but stage is Sprout-specific)
+  // Also accept if it only has stage (for minimal/edge cases, but stage is LearnKit-specific)
   return hasFSRS || hasBasicScheduling || hasStage;
 }
 
@@ -313,7 +313,7 @@ export function extractStatesFromDataJsonObject(obj: unknown): Record<string, un
   if (!obj) return null;
   const o = obj as Record<string, unknown>;
   const root = isPlainObject(o.data) ? o.data : o;
-  return validateSproutStatesObject(root?.states, true);
+  return validateLearnKitStatesObject(root?.states, true);
 }
 
 // ────────────────────────────────────────────
@@ -663,7 +663,7 @@ async function pruneDataJsonBackups(plugin: LearnKitPlugin): Promise<void> {
 // Plugin ID helper
 // ────────────────────────────────────────────
 
-/** Reads the plugin manifest ID (e.g. "sprout"). */
+/** Reads the plugin manifest ID (e.g. "learnkit"). */
 export function getPluginId(plugin: LearnKitPlugin): string | null {
   const id = String(plugin.manifest?.id ?? "").trim();
   return id ? id : null;
@@ -781,7 +781,7 @@ export type DataJsonBackupStats = DataJsonBackupEntry & {
   reviewLog: number;
   quarantine: number;
   io: number;
-  sproutishStateKeys: number;
+  learnkitishStateKeys: number;
   analyticsEvents: number;
   analyticsReviewEvents: number;
   analyticsSessionEvents: number;
@@ -988,7 +988,7 @@ export async function getDataJsonBackupStats(plugin: LearnKitPlugin, path: strin
   const reviewableIds = collectReviewableCardIds(cards, quarantine);
   const liveStateKeys = stateKeys.filter((id) => reviewableIds.has(id));
   const stateCount = liveStateKeys.length;
-  const sproutishStateKeys = stateKeys.reduce((acc, k) => acc + (likelySproutStateKey(k) ? 1 : 0), 0);
+  const learnkitishStateKeys = stateKeys.reduce((acc, k) => acc + (likelyLearnKitStateKey(k) ? 1 : 0), 0);
   const liveStates: Record<string, unknown> = {};
   if (isPlainObject(states)) {
     for (const key of liveStateKeys) {
@@ -1035,7 +1035,7 @@ export async function getDataJsonBackupStats(plugin: LearnKitPlugin, path: strin
     reviewLog: reviewCount,
     quarantine: quarantineCount,
     io: ioCount,
-    sproutishStateKeys,
+    learnkitishStateKeys,
     analyticsEvents: analyticsEventCount,
     analyticsReviewEvents: analyticsReviewCount,
     analyticsSessionEvents: analyticsSessionCount,

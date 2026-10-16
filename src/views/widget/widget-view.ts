@@ -1,16 +1,16 @@
 /**
  * @file src/views/widget/widget-view.ts
- * @summary The Sprout sidebar widget — an Obsidian ItemView that displays a lightweight flashcard review session for the currently-open note. Manages summary mode (card counts and "Start Studying" button), session mode (one-at-a-time card review with grading, undo, bury, suspend), keyboard shortcuts, folder-note deck support, and inline card editing. Most logic is delegated to sibling modules (widget-markdown, widget-scope, widget-session-actions, widget-render-summary, widget-render-session).
+ * @summary The LearnKit sidebar widget — an Obsidian ItemView that displays a lightweight flashcard review session for the currently-open note. Manages summary mode (card counts and "Start Studying" button), session mode (one-at-a-time card review with grading, undo, bury, suspend), keyboard shortcuts, folder-note deck support, and inline card editing. Most logic is delegated to sibling modules (widget-markdown, widget-scope, widget-session-actions, widget-render-summary, widget-render-session).
  *
  * @exports
- *  - SproutWidgetView — Obsidian ItemView subclass implementing the sidebar flashcard-review widget
+ *  - LearnKitWidgetView — Obsidian ItemView subclass implementing the sidebar flashcard-review widget
  */
 
 import { ItemView, Notice, type TFile, type WorkspaceLeaf } from "obsidian";
 
 import { VIEW_TYPE_REVIEWER, VIEW_TYPE_WIDGET } from "../../platform/core/constants";
-import { SproutMarkdownHelper } from "../reviewer/markdown-render";
-import { openSproutImageZoom } from "../reviewer/zoom";
+import { LearnKitMarkdownHelper } from "../reviewer/markdown-render";
+import { openLearnKitImageZoom } from "../reviewer/zoom";
 import { buildSession as buildReviewerSession } from "../reviewer/session";
 import { processCircleFlagsInMarkdown, hydrateCircleFlagsInElement } from "../../platform/flags/flag-tokens";
 import type { Scope } from "../reviewer/types";
@@ -50,10 +50,10 @@ type HotspotAttemptState = {
 };
 
 /* ================================================================== */
-/*  SproutWidgetView                                                   */
+/*  LearnKitWidgetView                                                   */
 /* ================================================================== */
 
-export class SproutWidgetView extends ItemView {
+export class LearnKitWidgetView extends ItemView {
   plugin: LearnKitPlugin;
   activeFile: TFile | null = null;
 
@@ -66,7 +66,7 @@ export class SproutWidgetView extends ItemView {
   /** @internal */ _undoStack: UndoFrame[] = [];
   /** @internal */ _sessionStamp = 0;
   /** @internal */ _moreMenuToggle: (() => void) | null = null;
-  private _mdHelper: SproutMarkdownHelper | null = null;
+  private _mdHelper: LearnKitMarkdownHelper | null = null;
   private _pendingManualGrade: { cardId: string; meta: ReviewMeta } | null = null;
   private _pendingHotspotAttempts = new Map<string, HotspotAttemptState[]>();
 
@@ -88,7 +88,7 @@ export class SproutWidgetView extends ItemView {
     super(leaf);
     this.plugin = plugin;
     // Expose instance globally for readingView integration
-    window.SproutWidgetView = this;
+    window.LearnKitWidgetView = this;
   }
 
   private _tx(token: string, fallback: string, vars?: Record<string, string | number>) {
@@ -217,11 +217,11 @@ export class SproutWidgetView extends ItemView {
 
   private ensureMarkdownHelper() {
     if (this._mdHelper) return;
-    this._mdHelper = new SproutMarkdownHelper({
+    this._mdHelper = new LearnKitMarkdownHelper({
       app: this.app,
       owner: this,
       maxHeightPx: 200,
-      onZoom: (src, alt) => openSproutImageZoom(this.app, src, alt),
+      onZoom: (src, alt) => openLearnKitImageZoom(this.app, src, alt),
     });
   }
 
@@ -1097,8 +1097,8 @@ export class SproutWidgetView extends ItemView {
 
     // Remove global reference set in constructor
     const globalWindow = window as unknown as Record<string, unknown>;
-    if (globalWindow.SproutWidgetView === this) {
-      delete globalWindow.SproutWidgetView;
+    if (globalWindow.LearnKitWidgetView === this) {
+      delete globalWindow.LearnKitWidgetView;
     }
   }
 }

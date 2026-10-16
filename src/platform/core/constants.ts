@@ -18,7 +18,7 @@
  *   - AOS_DURATION — default AOS animation duration in ms
  *   - AOS_CASCADE_STEP — cascade step between staggered AOS items in ms
  *   - LearnKitSettings (re-exported type) — full plugin settings shape
- *   - SproutSettings (re-exported alias) — compatibility type alias
+ *   - LearnKitSettings (re-exported alias) — compatibility type alias
  *   - DEFAULT_SETTINGS (re-exported) — factory-default settings object
  *   - deepMerge — recursively merge a partial object into a target
  */
@@ -34,6 +34,8 @@ export const VIEW_TYPE_SETTINGS = "learnkit-settings";
 export const VIEW_TYPE_EXAM_GENERATOR = "learnkit-exam-generator";
 export const VIEW_TYPE_COACH = "learnkit-coach";
 
+// Historical view types. These strings are persisted in the user's workspace.json,
+// so they must keep their original values or saved layouts stop resolving.
 export const LEGACY_VIEW_TYPE_REVIEWER = "sprout-reviewer";
 export const LEGACY_VIEW_TYPE_WIDGET = "sprout-widget";
 export const LEGACY_VIEW_TYPE_STUDY_ASSISTANT = "sprout-study-assistant";
@@ -78,7 +80,7 @@ export const AOS_DURATION = 600;
 export const AOS_CASCADE_STEP = 120;
 
 // Single source of truth for settings + defaults:
-export type { LearnKitSettings, SproutSettings } from "./default-settings";
+export type { LearnKitSettings } from "./default-settings";
 export { DEFAULT_SETTINGS } from "./default-settings";
 
 export function deepMerge<T>(target: T, src: Partial<T>): T {

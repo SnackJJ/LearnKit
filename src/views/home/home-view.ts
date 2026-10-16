@@ -3,13 +3,13 @@
  * @summary The Home tab — an Obsidian ItemView that renders the plugin's dashboard with study-streak tracking, due-card statistics, pinned and recent decks, a review calendar heatmap, and about/changelog information.
  *
  * @exports
- *  - SproutHomeView — Obsidian ItemView subclass implementing the Home dashboard tab
+ *  - LearnKitHomeView — Obsidian ItemView subclass implementing the Home dashboard tab
  */
 
 import { ItemView, Notice, setIcon, TFile, TFolder, type WorkspaceLeaf } from "obsidian";
 import * as React from "react";
 import { createRoot, type Root as ReactRoot } from "react-dom/client";
-import { type SproutHeader, createViewHeader } from "../../platform/core/header";
+import { type LearnKitHeader, createViewHeader } from "../../platform/core/header";
 import { log } from "../../platform/core/logger";
 import { AOS_DURATION, MAX_CONTENT_WIDTH_PX, VIEW_TYPE_BROWSER, VIEW_TYPE_HOME, VIEW_TYPE_REVIEWER } from "../../platform/core/constants";
 import { setCssProps } from "../../platform/core/ui";
@@ -79,7 +79,7 @@ function pickHomeGreeting(): GreetingDef {
 }
 
 /**
- * The main Home / dashboard view for the Sprout plugin.
+ * The main Home / dashboard view for the LearnKit plugin.
  *
  * Displays:
  * - A personalised greeting with editable user name
@@ -87,12 +87,12 @@ function pickHomeGreeting(): GreetingDef {
  * - Pinned decks (drag-to-reorder, search-to-add)
  * - Recent decks (last 5 studied)
  * - Review calendar heatmap (React component)
- * - About Sprout + changelog info cards
+ * - About LearnKit + changelog info cards
  */
-export class SproutHomeView extends ItemView {
+export class LearnKitHomeView extends ItemView {
   plugin: LearnKitPlugin;
 
-  private _header: SproutHeader | null = null;
+  private _header: LearnKitHeader | null = null;
   private _rootEl: HTMLElement | null = null;
   private _titleStripEl: HTMLElement | null = null;
   // Removed: now uses plugin.isWideMode
@@ -207,7 +207,7 @@ export class SproutHomeView extends ItemView {
     const frame = createTitleStripFrame({
       root,
       stripClassName: "lk-home-title-strip",
-      rowClassName: "sprout-inline-sentence w-full flex items-center justify-between gap-[10px]",
+      rowClassName: "learnkit-inline-sentence w-full flex items-center justify-between gap-[10px]",
       leftClassName: "min-w-0 flex-1 flex flex-col gap-[2px]",
       rightClassName: "flex items-center gap-2",
       prepend: true,
@@ -690,11 +690,11 @@ export class SproutHomeView extends ItemView {
     };
 
     const openGithubRepo = () => {
-      window.open("https://github.com/ctrlaltwill/Sprout", "_blank", "noopener,noreferrer");
+      window.open("https://github.com/ctrlaltwill/learnkit", "_blank", "noopener,noreferrer");
     };
 
     const openReleases = () => {
-      window.open("https://github.com/ctrlaltwill/Sprout/releases", "_blank", "noopener,noreferrer");
+      window.open("https://github.com/ctrlaltwill/learnkit/releases", "_blank", "noopener,noreferrer");
     };
 
     const createChevronLinkButton = (
@@ -915,12 +915,12 @@ export class SproutHomeView extends ItemView {
       const previewController = createListReorderPreviewController(pinnedList, {
         rowSelector: ".learnkit-deck-row",
         translateVar: "--learnkit-deck-row-translate",
-        listActiveClass: "sprout-deck-drag-active",
-        rowAnimatingClass: "sprout-deck-row-anim",
-        rowDraggingClass: "sprout-deck-row-dragging",
-        rowDraggingNativeClass: "sprout-deck-row-dragging-native",
-        slotBeforeClass: "sprout-deck-slot-before",
-        slotAfterClass: "sprout-deck-slot-after",
+        listActiveClass: "learnkit-deck-drag-active",
+        rowAnimatingClass: "learnkit-deck-row-anim",
+        rowDraggingClass: "learnkit-deck-row-dragging",
+        rowDraggingNativeClass: "learnkit-deck-row-dragging-native",
+        slotBeforeClass: "learnkit-deck-slot-before",
+        slotAfterClass: "learnkit-deck-slot-after",
       });
 
       const commitPinnedReorder = async (fromIndex: number, toIndex: number) => {

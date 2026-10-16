@@ -4,7 +4,7 @@
  *
  * @exports
  *  - LearnKitPluginBase
- *  - SproutPluginBase
+ *  - LearnKitPluginBase
  */
 
 import { Plugin, type Editor, type MarkdownView, type TFile, type WorkspaceLeaf } from "obsidian";
@@ -17,7 +17,7 @@ import type { FlashcardType } from "../core/utils";
 import type { BasecoatApi } from "../core/basecoat";
 import type { Scope } from "../../views/reviewer/types";
 import type { ReminderEngine } from "../../views/reminders/reminder-engine";
-import type { SproutAssistantPopup } from "../../views/study-assistant/popup/assistant-popup";
+import type { LearnKitAssistantPopup } from "../../views/study-assistant/popup/assistant-popup";
 import type { CoachPlanSqlite } from "../core/coach-plan-sqlite";
 import type { CardState } from "../../engine/scheduler/scheduler";
 
@@ -33,10 +33,10 @@ export class LearnKitPluginBase extends Plugin {
   declare _saving: Promise<void> | null;
   declare _ribbonEls: HTMLElement[];
   declare _hideStatusBarViewTypes: Set<string>;
-  declare _sproutZoomValue: number;
-  declare _sproutZoomSaveTimer: number | null;
+  declare _learnkitZoomValue: number;
+  declare _learnkitZoomSaveTimer: number | null;
   declare _reminderEngine: ReminderEngine | null;
-  declare _assistantPopup: SproutAssistantPopup | null;
+  declare _assistantPopup: LearnKitAssistantPopup | null;
   declare _coachDb: CoachPlanSqlite | null;
   declare _readingViewRefreshTimer: number | null;
   declare _readingModeWatcherInterval: number | null;
@@ -57,11 +57,11 @@ export class LearnKitPluginBase extends Plugin {
   declare _updateStatusBarVisibility: (leaf: WorkspaceLeaf | null) => void;
   declare _migrateSettingsInPlace: () => void;
   declare _normaliseSettingsInPlace: () => void;
-  declare _applySproutThemeAccentOverride: () => void;
-  declare _applySproutThemePreset: () => void;
-  declare _applySproutZoom: (value: number) => void;
-  declare _queueSproutZoomSave: () => void;
-  declare _registerSproutPinchZoom: () => void;
+  declare _applyLearnKitThemeAccentOverride: () => void;
+  declare _applyLearnKitThemePreset: () => void;
+  declare _applyLearnKitZoom: (value: number) => void;
+  declare _queueLearnKitZoomSave: () => void;
+  declare _registerLearnKitPinchZoom: () => void;
   declare _ensureSingleLeafOfType: (viewType: string) => WorkspaceLeaf | null;
   declare _destroyRibbonIcons: () => void;
   declare _getActiveMarkdownFile: () => TFile | null;
@@ -170,4 +170,3 @@ export class LearnKitPluginBase extends Plugin {
 }
 
 // Backwards-compatible alias retained for Phase 1 rename safety.
-export { LearnKitPluginBase as SproutPluginBase };

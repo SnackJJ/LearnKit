@@ -9,7 +9,7 @@
  */
 import {  } from "obsidian";
 
-import { SPROUT_TITLE_STRIP_LABEL_CLASS } from "./ui-classes";
+import { LEARNKIT_TITLE_STRIP_LABEL_CLASS } from "./ui-classes";
 import { makeEl } from "./dom-factory";
 
 export interface TitleStripFrameOptions {
@@ -34,7 +34,7 @@ export function createTitleStripFrame(opts: TitleStripFrameOptions): TitleStripF
   const {
     root,
     stripClassName,
-    rowClassName = "sprout-inline-sentence w-full flex items-center justify-between gap-[10px]",
+    rowClassName = "learnkit-inline-sentence w-full flex items-center justify-between gap-[10px]",
     leftClassName = "min-w-0 flex-1 flex flex-col gap-[2px]",
     rightClassName = "flex items-center gap-2",
     prepend = true,
@@ -50,7 +50,7 @@ export function createTitleStripFrame(opts: TitleStripFrameOptions): TitleStripF
   left.className = leftClassName;
 
   const title = makeEl("div");
-  title.className = SPROUT_TITLE_STRIP_LABEL_CLASS;
+  title.className = LEARNKIT_TITLE_STRIP_LABEL_CLASS;
 
   const subtitle = makeEl("div");
   subtitle.className = "text-[0.95rem] font-normal leading-[1.3] text-muted-foreground";

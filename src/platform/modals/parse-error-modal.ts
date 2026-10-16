@@ -297,7 +297,7 @@ export class ParseErrorModal extends Modal {
 
   // ── Navigate to the anchor in the note ────────────────────────────────────
 
-  /** Open the source note and scroll to the ^sprout-<id> anchor line. */
+  /** Open the source note and scroll to the ^learnkit-<id> anchor line. */
   private async openAtAnchor(id: string) {
     const ref = this.resolveCardRef(id);
     if (!ref?.sourceNotePath) {

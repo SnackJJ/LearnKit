@@ -1,6 +1,6 @@
 /**
  * @file src/widget/widget-scope.ts
- * @summary Folder-note and deck-scope helpers and card-data accessors for the Sprout sidebar widget. All functions are pure with no class dependency — they receive the plugin, store, or file as explicit arguments — and handle scope resolution for folder-note decks and active-note card filtering.
+ * @summary Folder-note and deck-scope helpers and card-data accessors for the LearnKit sidebar widget. All functions are pure with no class dependency — they receive the plugin, store, or file as explicit arguments — and handle scope resolution for folder-note decks and active-note card filtering.
  *
  * @exports
  *  - folderNotesAsDecksEnabled — checks whether the "folder notes as decks" setting is active
@@ -13,7 +13,7 @@
 
 import type { TFile } from "obsidian";
 import type { CardRecord } from "../../../platform/types/card";
-import type { SproutSettings } from "../../../platform/types/settings";
+import type { LearnKitSettings } from "../../../platform/types/settings";
 import type { StoreData } from "../../../platform/types/store";
 import { filterReviewableCards } from "../core/widget-helpers";
 
@@ -22,7 +22,7 @@ import { filterReviewableCards } from "../core/widget-helpers";
 /* ------------------------------------------------------------------ */
 
 /** Whether the "treat folder notes as decks" setting is enabled (defaults ON). */
-export function folderNotesAsDecksEnabled(settings: SproutSettings): boolean {
+export function folderNotesAsDecksEnabled(settings: LearnKitSettings): boolean {
   const v = settings?.study?.treatFolderNotesAsDecks;
   return v !== false; // default ON
 }
@@ -73,7 +73,7 @@ export function getCardsInActiveNoteOnly(store: { getAllCards(): CardRecord[] },
  *  - Folder note (setting enabled) → cards in all descendant notes
  *  - Folder note (setting disabled) → only cards in the folder note file
  */
-export function getCardsInActiveScope(store: { getAllCards(): CardRecord[] }, file: TFile | null, settings: SproutSettings): CardRecord[] {
+export function getCardsInActiveScope(store: { getAllCards(): CardRecord[] }, file: TFile | null, settings: LearnKitSettings): CardRecord[] {
   if (!file) return [];
 
   const folder = getFolderNoteInfo(file);

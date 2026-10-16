@@ -3,7 +3,7 @@
  * @summary Module for note review view.
  *
  * @exports
- *  - SproutNoteReviewView
+ *  - LearnKitNoteReviewView
  */
 
-export { SproutNoteReviewView } from "../note-review-view";
+export { LearnKitNoteReviewView } from "../note-review-view";

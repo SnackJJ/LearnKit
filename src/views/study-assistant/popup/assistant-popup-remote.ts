@@ -10,7 +10,7 @@
  *  - bestEffortDeleteRemoteConversation
  */
 
-import type { SproutSettings } from "../../../platform/types/settings";
+import type { LearnKitSettings } from "../../../platform/types/settings";
 import { deleteStudyAssistantConversation } from "../../../platform/integrations/ai/study-assistant-provider";
 import type { StudyAssistantConversationRef } from "../../../platform/integrations/ai/study-assistant-types";
 import { log } from "../../../platform/core/logger";
@@ -20,7 +20,7 @@ export function setRemoteConversationForMode(
   remoteConversationsByMode: ModeConversationRefs,
   mode: AssistantMode,
   conversationId: string | undefined,
-  settings: SproutSettings["studyAssistant"],
+  settings: LearnKitSettings["studyAssistant"],
 ): void {
   const id = String(conversationId || "").trim();
   if (!id) return;
@@ -49,13 +49,13 @@ export function clearRemoteConversationForMode(
 }
 
 export function shouldSyncDeletesToProvider(
-  studyAssistant: SproutSettings["studyAssistant"] | undefined,
+  studyAssistant: LearnKitSettings["studyAssistant"] | undefined,
 ): boolean {
   return !!studyAssistant?.privacy?.syncDeletesToProvider;
 }
 
 export async function bestEffortDeleteRemoteConversation(
-  settings: SproutSettings["studyAssistant"],
+  settings: LearnKitSettings["studyAssistant"],
   ref: StudyAssistantConversationRef,
 ): Promise<void> {
   const result = await deleteStudyAssistantConversation({

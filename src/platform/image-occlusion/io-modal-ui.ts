@@ -68,7 +68,7 @@ export function buildToolbar(parent: HTMLElement, cb: ToolbarCallbacks): Toolbar
   toolbar.removeAttribute("class");
   toolbar.setAttr("role", "toolbar");
   toolbar.classList.add("learnkit-io-toolbar", "learnkit-io-toolbar");
-  toolbar.dataset.sproutToolbar = "1";
+  toolbar.dataset.learnkitToolbar = "1";
 
   const toolbarGroup = toolbar.createDiv({ cls: "learnkit-io-toolbar-group learnkit-io-toolbar-group" });
 
@@ -304,12 +304,12 @@ export function buildFooter(parent: HTMLElement, cb: FooterCallbacks, defaultMod
   setIcon(chevronWrap, "chevron-down");
 
   const popover = makeEl("div");
-  const sproutWrapper = makeEl("div");
-  sproutWrapper.className = "learnkit";
+  const learnkitWrapper = makeEl("div");
+  learnkitWrapper.className = "learnkit";
   popover.className = "";
   popover.setAttribute("aria-hidden", "true");
   popover.classList.add("learnkit-popover-overlay", "learnkit-popover-overlay", "learnkit-card-creator-type-popover", "learnkit-card-creator-type-popover");
-  sproutWrapper.appendChild(popover);
+  learnkitWrapper.appendChild(popover);
 
   const panel = makeEl("div");
   panel.className = "rounded-md border border-border bg-popover text-popover-foreground shadow-lg p-1 learnkit-pointer-auto learnkit-card-creator-type-panel";
@@ -332,7 +332,7 @@ export function buildFooter(parent: HTMLElement, cb: FooterCallbacks, defaultMod
       onDocPointerDown = null;
     }
     try {
-      sproutWrapper.remove();
+      learnkitWrapper.remove();
     } catch {
       // no-op
     }
@@ -352,7 +352,7 @@ export function buildFooter(parent: HTMLElement, cb: FooterCallbacks, defaultMod
     trigger.setAttribute("aria-expanded", "true");
     popover.setAttribute("aria-hidden", "false");
     popover.classList.add("is-open");
-    if (!sproutWrapper.parentElement) activeDocument.body.appendChild(sproutWrapper);
+    if (!learnkitWrapper.parentElement) activeDocument.body.appendChild(learnkitWrapper);
     window.requestAnimationFrame(() => placeModeMenu());
 
     onDocPointerDown = (ev: PointerEvent) => {
@@ -416,7 +416,7 @@ export function buildFooter(parent: HTMLElement, cb: FooterCallbacks, defaultMod
     window.removeEventListener("resize", onWindowResize);
     observer.disconnect();
     try {
-      sproutWrapper.remove();
+      learnkitWrapper.remove();
     } catch {
       // no-op
     }

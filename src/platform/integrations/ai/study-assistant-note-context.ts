@@ -14,7 +14,7 @@
 
 import { type App, TFile } from "obsidian";
 import { resolveImageFile } from "../../image-occlusion/io-helpers";
-import type { SproutSettings } from "../../types/settings";
+import type { LearnKitSettings } from "../../types/settings";
 import { type AttachedFile, isImageExt, isSupportedAttachmentExt, readVaultFileAsAttachment } from "./attachment-helpers";
 import { getLinkedContextLimits, type StudyAssistantImageDescriptor } from "./study-assistant-types";
 
@@ -242,7 +242,7 @@ function readLinkedNoteContent(app: App, file: TFile): Promise<string> {
 }
 
 function studyAssistantIncludesImages(
-  settings: SproutSettings["studyAssistant"],
+  settings: LearnKitSettings["studyAssistant"],
   mode: StudyAssistantContextMode,
 ): boolean {
   if (mode === "review") return !!settings.privacy.includeImagesInReview;
@@ -305,7 +305,7 @@ async function buildLinkedNotesTextContext(
   app: App,
   file: TFile,
   markdown: string,
-  preset: SproutSettings["studyAssistant"]["privacy"]["linkedContextLimit"],
+  preset: LearnKitSettings["studyAssistant"]["privacy"]["linkedContextLimit"],
 ): Promise<{ text: string; stats: StudyAssistantLinkedContextStats }> {
   const stats: StudyAssistantLinkedContextStats = { included: 0, skipped: 0, truncatedNotes: 0 };
   const linkedRefs = extractStudyAssistantLinkedRefs(markdown);
@@ -385,7 +385,7 @@ export async function resolveStudyAssistantAttachmentRefs(params: {
 export async function buildStudyAssistantNoteContext(params: {
   app: App;
   file: TFile;
-  settings: SproutSettings["studyAssistant"];
+  settings: LearnKitSettings["studyAssistant"];
   mode: StudyAssistantContextMode;
   explicitAttachedFileDataUrls?: string[];
   noteContentOverride?: string;

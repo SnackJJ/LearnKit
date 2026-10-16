@@ -5,7 +5,7 @@ import { escapeHtml, processMarkdownFeatures } from "./reading-helpers";
  *  (which HTML-escapes its input) doesn't destroy already-generated HTML. */
 function protectHtmlTags(html: string): { text: string; restore: (s: string) => string } {
   const tags: string[] = [];
-  const PH = "@@SPROUTHTML";
+  const PH = "@@LEARNKITHTML";
   const protected_ = html.replace(/<[^>]+>/g, (match) => {
     const idx = tags.length;
     tags.push(match);
@@ -20,7 +20,7 @@ function protectHtmlTags(html: string): { text: string; restore: (s: string) => 
 
 // ── Code fence pre-processing ───────────────────────────────────────
 
-export const FENCE_PH = "@@SPROUTFENCE";
+export const FENCE_PH = "@@LEARNKITFENCE";
 
 /** Opening fence: 3+ backticks, optional language specifier, whitespace only. */
 const FENCE_OPEN_RE = /^\s*`{3,}\s*(\w*)\s*$/;

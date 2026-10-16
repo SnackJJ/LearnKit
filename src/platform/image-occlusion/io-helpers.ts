@@ -12,8 +12,8 @@
  *   - isEditableTarget — checks if a DOM element is an editable form control
  *   - emptyEl — empties an HTML element using Obsidian's .empty() or innerHTML
  *   - uid — generates a unique ID with an optional prefix
- *   - collectAnchorIdsFromText — collects all ^sprout-NNNNNNNNN anchor IDs from text
- *   - reserveNewBcId — generates a new unique Sprout card ID avoiding collisions
+ *   - collectAnchorIdsFromText — collects all ^learnkit-NNNNNNNNN anchor IDs from text
+ *   - reserveNewBcId — generates a new unique LearnKit card ID avoiding collisions
  *   - buildIoMarkdownWithAnchor — builds the markdown block lines for an IO card
  *   - IoEditorOpenOpts — type for options accepted by the IO editor modal
  */
@@ -164,11 +164,11 @@ export function emptyEl(el: HTMLElement) {
 // ── ID / anchor helpers ─────────────────────────────────────────────────────
 
 /** Generate a unique ID with an optional prefix. */
-export function uid(prefix = "sprout-io") {
+export function uid(prefix = "learnkit-io") {
   return `${prefix}-${Math.random().toString(16).slice(2)}-${Date.now().toString(16)}`;
 }
 
-/** Collect all `^sprout-NNNNNNNNN` anchor IDs from a text string. */
+/** Collect every `^learnkit-NNNNNNNNN` / legacy `^sprout-NNNNNNNNN` anchor ID from a text string. */
 export function collectAnchorIdsFromText(text: string): Set<string> {
   const out = new Set<string>();
   const re = createCardAnchorGlobalRe();
@@ -180,7 +180,7 @@ export function collectAnchorIdsFromText(text: string): Set<string> {
 }
 
 /**
- * Generate a new unique Sprout card ID that doesn't collide with any
+ * Generate a new unique LearnKit card ID that doesn't collide with any
  * existing IDs in the store or in the note's anchor references.
  */
 export async function reserveNewBcId(plugin: LearnKitPlugin, file: TFile): Promise<string> {

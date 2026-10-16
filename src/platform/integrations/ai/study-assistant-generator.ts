@@ -11,7 +11,7 @@
  *  - parseEditProposal
  */
 
-import type { SproutSettings } from "../../types/settings";
+import type { LearnKitSettings } from "../../types/settings";
 import { extractIoImageRefs } from "../../image-occlusion/io-helpers";
 import { escapeDelimiterRe, getDelimiter } from "../../core/delimiter";
 import { requestStudyAssistantCompletionDetailed, requestStudyAssistantStreamingCompletion } from "./study-assistant-provider";
@@ -1686,7 +1686,7 @@ function parseStreamingSuggestions(rawText: string): StudyAssistantSuggestion[] 
   return suggestions;
 }
 
-function modelLikelySupportsVision(settings: SproutSettings["studyAssistant"]): boolean {
+function modelLikelySupportsVision(settings: LearnKitSettings["studyAssistant"]): boolean {
   const model = String(settings.model || "").toLowerCase();
   if (!model) return false;
 
@@ -1722,7 +1722,7 @@ function buildSystemPrompt(customInstructions: string, canUseVisionForIo: boolea
     "Return valid JSON matching this schema:",
     '{"suggestions":[{"type":"basic|reversed|cloze|mcq|oq|io","difficulty":1-3,"sourceOrigin":"note|external","title":"optional","question":"optional","answer":"optional","clozeText":"optional","options":["..."],"correctOptionIndexes":[0],"steps":["..."],"ioSrc":"optional","ioOcclusions":[{"rectId":"r1","x":0.1,"y":0.2,"w":0.2,"h":0.08,"groupKey":"1","shape":"rect"}],"ioMaskMode":"solo|all","ioAssessment":{"imageRef":"optional","imageKind":"diagram|annotated-photo|chart|table|map|flowchart|photo|clinical-photo|screenshot|other","studyValue":"high|medium|low|none","placementConfidence":0.0,"targetLabels":["..."],"usefulnessReason":"optional"},"info":"optional","groups":["optional/group"],"noteRows":["KIND | value |"],"rationale":"optional"}]}',
     "Prefer semantic fields (question/answer/clozeText/options/correctOptionIndexes/steps/ioSrc/ioOcclusions/ioMaskMode).",
-    "Include noteRows only when you can guarantee exact parser-safe Sprout row syntax.",
+    "Include noteRows only when you can guarantee exact parser-safe LearnKit row syntax.",
     'Set sourceOrigin to "note" when the card tests content present in the note.',
     'Only use sourceOrigin "external" if the user explicitly asks for external/background knowledge.',
     "MCQ noteRows format (exactly ONE A row for the correct answer, 3-4 O rows for wrong options, NEVER more than one A row): [\"MCQ | question stem |\", \"A | the single correct option |\", \"O | plausible wrong option |\", \"O | plausible wrong option |\", \"O | plausible wrong option |\"]",
@@ -2003,7 +2003,7 @@ function buildUserPrompt(input: StudyAssistantGeneratorInput, canUseVisionForIo:
 }
 
 export async function generateStudyAssistantSuggestions(params: {
-  settings: SproutSettings["studyAssistant"];
+  settings: LearnKitSettings["studyAssistant"];
   input: StudyAssistantGeneratorInput;
 }): Promise<StudyAssistantGeneratorResult> {
   const { settings, input } = params;
@@ -2117,7 +2117,7 @@ export async function generateStudyAssistantSuggestions(params: {
 }
 
 export async function generateStudyAssistantSuggestionsStreaming(params: {
-  settings: SproutSettings["studyAssistant"];
+  settings: LearnKitSettings["studyAssistant"];
   input: StudyAssistantGeneratorInput;
   onSuggestion: (suggestion: StudyAssistantSuggestion) => void;
   signal?: AbortSignal;
@@ -2305,7 +2305,7 @@ export function parseIntentResponse(raw: string): UserIntentClassification {
 }
 
 export async function classifyUserIntent(params: {
-  settings: SproutSettings["studyAssistant"];
+  settings: LearnKitSettings["studyAssistant"];
   userMessage: string;
   recentMessages?: { role: "user" | "assistant"; text: string }[];
 }): Promise<UserIntentClassification> {
@@ -2333,7 +2333,7 @@ export async function classifyUserIntent(params: {
 }
 
 export async function generateStudyAssistantChatReply(params: {
-  settings: SproutSettings["studyAssistant"];
+  settings: LearnKitSettings["studyAssistant"];
   input: StudyAssistantChatInput;
 }): Promise<StudyAssistantChatResult> {
   const { settings, input } = params;
@@ -2367,7 +2367,7 @@ export async function generateStudyAssistantChatReply(params: {
 }
 
 export async function generateStudyAssistantChatReplyStreaming(params: {
-  settings: SproutSettings["studyAssistant"];
+  settings: LearnKitSettings["studyAssistant"];
   input: StudyAssistantChatInput;
   onChunk: (token: string) => void;
   signal?: AbortSignal;

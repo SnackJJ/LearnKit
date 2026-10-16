@@ -115,7 +115,7 @@ export function createBodyPortalPopover(
     ariaHidden = true,
   } = opts;
 
-  let sproutWrapper: HTMLDivElement | null = null;
+  let learnkitWrapper: HTMLDivElement | null = null;
   let cleanup: (() => void) | null = null;
 
   // ── Close ──
@@ -123,8 +123,8 @@ export function createBodyPortalPopover(
   const close = () => {
     trigger.setAttribute("aria-expanded", "false");
 
-    if (sproutWrapper) {
-      const overlay = sproutWrapper.querySelector<HTMLElement>(".learnkit-popover-overlay");
+    if (learnkitWrapper) {
+      const overlay = learnkitWrapper.querySelector<HTMLElement>(".learnkit-popover-overlay");
       if (overlay) {
         overlay.classList.remove("is-open");
         if (ariaHidden) overlay.setAttribute("aria-hidden", "true");
@@ -134,10 +134,10 @@ export function createBodyPortalPopover(
     cleanup?.();
     cleanup = null;
 
-    if (sproutWrapper?.parentNode === activeDocument.body) {
-      activeDocument.body.removeChild(sproutWrapper);
+    if (learnkitWrapper?.parentNode === activeDocument.body) {
+      activeDocument.body.removeChild(learnkitWrapper);
     }
-    sproutWrapper = null;
+    learnkitWrapper = null;
 
     opts.onClosed?.();
   };
@@ -149,13 +149,13 @@ export function createBodyPortalPopover(
     close();
 
     // Step 2: create DOM
-    sproutWrapper = makeEl("div");
-    sproutWrapper.className = "learnkit";
+    learnkitWrapper = makeEl("div");
+    learnkitWrapper.className = "learnkit";
 
     const overlay = makeEl("div");
     overlay.classList.add("learnkit-popover-overlay", "learnkit-popover-overlay", ...overlayClasses);
     if (ariaHidden) overlay.setAttribute("aria-hidden", "true");
-    sproutWrapper.appendChild(overlay);
+    learnkitWrapper.appendChild(overlay);
 
     const panel = makeEl("div");
     if (panelClasses.length) panel.classList.add(...panelClasses);
@@ -165,7 +165,7 @@ export function createBodyPortalPopover(
     buildContent(panel, close);
 
     // Step 4: body-portal
-    activeDocument.body.appendChild(sproutWrapper);
+    activeDocument.body.appendChild(learnkitWrapper);
 
     // Step 5: mark open
     overlay.classList.add("is-open");
@@ -260,11 +260,11 @@ export function createBodyPortalPopover(
     open,
     close,
     toggle() {
-      if (sproutWrapper) close();
+      if (learnkitWrapper) close();
       else open();
     },
     isOpen() {
-      return sproutWrapper !== null;
+      return learnkitWrapper !== null;
     },
   };
 }

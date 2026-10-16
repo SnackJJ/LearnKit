@@ -11,11 +11,11 @@ import {  } from "obsidian";
 
 import { log } from "../../platform/core/logger";
 import { placePopover, queryFirst } from "../../platform/core/ui";
-import type { SproutReviewerView } from "./review-view";
+import type { LearnKitReviewerView } from "./review-view";
 import { t } from "../../platform/translations/translator";
 import { makeEl } from "../../platform/core/dom-factory";
 
-export function closeMoreMenu(view: SproutReviewerView) {
+export function closeMoreMenu(view: LearnKitReviewerView) {
   view._moreOpen = false;
   if (view._moreBtnEl) {
     view._moreBtnEl.setAttribute("aria-expanded", "false");
@@ -39,7 +39,7 @@ export function closeMoreMenu(view: SproutReviewerView) {
   }
 }
 
-export function toggleMoreMenu(view: SproutReviewerView, force?: boolean) {
+export function toggleMoreMenu(view: LearnKitReviewerView, force?: boolean) {
   const next = typeof force === "boolean" ? force : !view._moreOpen;
   view._moreOpen = next;
 
@@ -104,7 +104,7 @@ export function toggleMoreMenu(view: SproutReviewerView, force?: boolean) {
   firstItem?.focus();
 }
 
-export function injectMoreMenu(view: SproutReviewerView) {
+export function injectMoreMenu(view: LearnKitReviewerView) {
   if (view.mode !== "session" || !view.session) return;
 
   const tx = (token: string, fallback: string, vars?: Record<string, string | number>) =>
@@ -161,20 +161,20 @@ export function injectMoreMenu(view: SproutReviewerView) {
   view._moreBtnEl = null;
   view._moreOpen = false;
 
-  const popoverId = `sprout-menu-${Math.random().toString(36).slice(2, 8)}`;
+  const popoverId = `learnkit-menu-${Math.random().toString(36).slice(2, 8)}`;
   const triggerId = `${popoverId}-trigger`;
   const menuId = `${popoverId}-menu`;
 
   // Instead of rendering the menu inside the card row, render the popover at the document body root for correct positioning
   const wrap = makeEl("div");
   wrap.className = "learnkit relative inline-flex overflow-visible";
-  wrap.dataset.sproutAction = "more-wrap";
+  wrap.dataset.learnkitAction = "more-wrap";
 
   const moreBtn = makeEl("button");
   moreBtn.type = "button";
   moreBtn.id = triggerId;
   moreBtn.className = "learnkit-btn-toolbar learnkit-btn-filter";
-  moreBtn.dataset.sproutAction = "reviewer-more-trigger";
+  moreBtn.dataset.learnkitAction = "reviewer-more-trigger";
   moreBtn.setAttribute("aria-haspopup", "menu");
   moreBtn.setAttribute("aria-controls", menuId);
   moreBtn.setAttribute("aria-expanded", "false");
@@ -277,11 +277,11 @@ export function injectMoreMenu(view: SproutReviewerView) {
   const showUndoHere = !!canUndoNow && !!undoFrame && String(undoFrame.id ?? "") !== String(id);
 
   const buryItem = createMenuItem(tx("ui.reviewer.more.bury", "Bury"), "B", () => void view.buryCurrentCard(), graded, "Bury flashcard");
-  buryItem.dataset.sproutAction = "bury-card";
+  buryItem.dataset.learnkitAction = "bury-card";
   menu.appendChild(buryItem);
 
   const suspendItem = createMenuItem(tx("ui.reviewer.more.suspend", "Suspend"), "S", () => void view.suspendCurrentCard(), graded, "Suspend flashcard");
-  suspendItem.dataset.sproutAction = "suspend-card";
+  suspendItem.dataset.learnkitAction = "suspend-card";
   menu.appendChild(suspendItem);
 
   if (showUndoHere) {
@@ -293,16 +293,16 @@ export function injectMoreMenu(view: SproutReviewerView) {
     const undoItem = createMenuItem(tx("ui.reviewer.more.undo", "Undo"), "U", () => {
       void view.undoLastGrade?.();
     }, false, "Undo previous review and grading");
-    undoItem.dataset.sproutAction = "undo-grade";
+    undoItem.dataset.learnkitAction = "undo-grade";
     menu.appendChild(undoItem);
   }
 
   const openItem = createMenuItem(tx("ui.reviewer.more.openInNote", "Open in Note"), "O", () => void view.openCurrentCardInNote(), false, "Open flashcard in parent note");
-  openItem.dataset.sproutAction = "open-note";
+  openItem.dataset.learnkitAction = "open-note";
   menu.appendChild(openItem);
 
   const editItem = createMenuItem(tx("ui.reviewer.more.edit", "Edit"), "E", () => view.openEditModalForCurrentCard(), false, "Edit flashcard");
-  editItem.dataset.sproutAction = "edit-card";
+  editItem.dataset.learnkitAction = "edit-card";
   menu.appendChild(editItem);
 
   menu.addEventListener("pointerdown", (ev) => ev.stopPropagation());

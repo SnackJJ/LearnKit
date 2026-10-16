@@ -114,7 +114,7 @@ export async function refreshReadingViewMarkdownLeaves(
     const sourcePayload = await getMarkdownLeafSource(app, leaf);
 
     try {
-      content.dispatchEvent(new CustomEvent("sprout:prettify-cards-refresh", {
+      content.dispatchEvent(new CustomEvent("learnkit:prettify-cards-refresh", {
         bubbles: true,
         detail: sourcePayload,
       }));
@@ -140,7 +140,7 @@ export async function refreshReadingViewMarkdownLeaves(
       }
 
       try {
-        content.dispatchEvent(new CustomEvent("sprout:prettify-cards-refresh", {
+        content.dispatchEvent(new CustomEvent("learnkit:prettify-cards-refresh", {
           bubbles: true,
           detail: sourcePayload,
         }));

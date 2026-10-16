@@ -254,7 +254,7 @@ export class AnkiImportModal extends Modal {
     schedField.appendChild(schedDropdown.element);
 
     // Group mapping
-    const groupField = this.mkField(body, "Groups", "How to map Anki structure to Sprout groups");
+    const groupField = this.mkField(body, "Groups", "How to map Anki structure to LearnKit groups");
     const groupDropdown = createThemedDropdown([
       { value: "tags-only", label: "Anki tags" },
       { value: "deck-as-group", label: "Deck hierarchy" },
@@ -307,7 +307,7 @@ export class AnkiImportModal extends Modal {
     const body = root.createDiv({ cls: "flex flex-col gap-4" });
 
     body.createDiv({
-      text: "These note types don't match standard Basic or Cloze. Map their fields to Sprout fields, or skip them.",
+      text: "These note types don't match standard Basic or Cloze. Map their fields to LearnKit fields, or skip them.",
       cls: "text-sm text-muted-foreground",
     });
 

@@ -1,9 +1,9 @@
 /**
  * @file src/reviewer/markdown-block.ts
- * @summary Provides functions for locating and rewriting card blocks within Markdown note files. Identifies card boundaries by anchor markers (^sprout-ID), and can rebuild a card's Markdown representation from a CardRecord in pipe-delimited format.
+ * @summary Provides functions for locating and rewriting card blocks within Markdown note files. Identifies card boundaries by anchor markers (^learnkit-ID), and can rebuild a card's Markdown representation from a CardRecord in pipe-delimited format.
  *
  * @exports
- *   - isMarkerLine — Tests whether a line is a card anchor (^sprout-...) or ID comment marker
+ *   - isMarkerLine — Tests whether a line is a card anchor (^learnkit-...) or ID comment marker
  *   - findCardBlockRangeById — Locates the start and end line indices of a card block in a lines array by card ID; detects pipe-delimited field boundaries to avoid truncating non-card content after the last card
  *   - buildCardBlockMarkdown — Generates an array of Markdown lines representing a card in canonical pipe-delimited format
  */
@@ -18,7 +18,7 @@ import {
 import { COMBO_VARIANT_SEPARATOR, escapeDelimiterText } from "../../platform/core/delimiter";
 
 /**
- * Canonical marker is ONLY ^sprout-#########.
+ * Canonical marker is ONLY ^learnkit-#########.
  * Do NOT write <!--ID:...--> comments (they create duplication and mismatch with sync logic).
  */
 const ID_COMMENT_RE = /^<!--ID:(\d{9})-->$/;
@@ -42,7 +42,7 @@ function endsWithPipe(line: string): boolean {
 /**
  * Find the full block for a card by id, robust to blank lines inside the block.
  * Strategy:
- * - Locate by ^sprout-id first; fall back to <!--ID:id--> if needed.
+ * - Locate by ^learnkit-id first; fall back to <!--ID:id--> if needed.
  * - Expand start upward to include adjacent marker duplicates (and blanks between marker lines).
  * - Scan downward; once we've seen any non-marker content, the next marker line starts the
  *   next card. If no marker follows, stop when pipe-delimited fields end and non-card prose

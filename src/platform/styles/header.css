@@ -122,7 +122,7 @@ body:not(.is-phone) .workspace-leaf-content.mod-fade .learnkit .view-header.lear
   display: none;
 }
 
-/* Center slot for horizontal brand logo in Sprout headers. */
+/* Center slot for horizontal brand logo in LearnKit headers. */
 .learnkit .view-header.learnkit-header .learnkit-header-center-brand {
   display: flex;
   align-items: center;

@@ -36,7 +36,7 @@ describe("processClozeForMath", () => {
     const front = processClozeForMath(input, false, null);
     const back = processClozeForMath(input, true, null);
 
-    expect(front).toBe("The identity is <span class=\"sprout-cloze-blank hidden-cloze\" style=\"--learnkit-cloze-width:30px\"></span>.");
+    expect(front).toBe("The identity is <span class=\"learnkit-cloze-blank hidden-cloze\" style=\"--learnkit-cloze-width:30px\"></span>.");
     expect(back).toBe("The identity is <span class=\"learnkit-cloze-revealed\">true</span>.");
   });
 

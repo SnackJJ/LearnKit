@@ -79,7 +79,7 @@ export function getBundledReleasePages(): ReleaseNotesPage[] {
 export async function fetchGithubReleasePages(): Promise<ReleaseNotesPage[]> {
   try {
     const res = await requestUrl({
-      url: "https://api.github.com/repos/ctrlaltwill/Sprout/releases?per_page=100",
+      url: "https://api.github.com/repos/ctrlaltwill/learnkit/releases?per_page=100",
       method: "GET",
       headers: { Accept: "application/vnd.github+json" },
     });
@@ -142,12 +142,12 @@ export async function readSupportMarkdown(app: App, pluginDir?: string): Promise
 
 Found a bug? Have an idea for a feature? We'd love to hear from you. LearnKit uses GitHub issue templates to keep things organised - just pick the right one and fill it in.
 
-- [Request a feature](https://github.com/ctrlaltwill/Sprout/issues/new?template=feature_request.yml)
-- [Browse open issues](https://github.com/ctrlaltwill/Sprout/issues)
+- [Request a feature](https://github.com/ctrlaltwill/learnkit/issues/new?template=feature_request.yml)
+- [Browse open issues](https://github.com/ctrlaltwill/learnkit/issues)
 
 ## Support the Project
 
-- [📋 Share LearnKit](https://github.com/ctrlaltwill/Sprout)
+- [📋 Share LearnKit](https://github.com/ctrlaltwill/learnkit)
 - [❤️ Sponsor development](https://buymeacoffee.com/williamguy)
 `;
   }

@@ -82,7 +82,7 @@ export class LaunchNoticeModal extends Modal {
     freeSetupList.createEl("li", { text: tx("ui.launchNotice.freeSetup.step6", "You are ready to start using companion!") });
 
     const securityHeading = body.createEl("h2", { text: tx("ui.launchNotice.heading.apiSecurity", "API key security") });
-    const configPath = `${this.app.vault.configDir}/plugins/sprout/data.json`;
+    const configPath = `${this.app.vault.configDir}/plugins/learnkit/data.json`;
     securityHeading.addClass("learnkit-guide-snap-heading");
     body.createEl("p", {
       text: tx(
@@ -146,7 +146,7 @@ export class LaunchNoticeModal extends Modal {
     setIcon(releaseIcon, "file-text");
     releaseNotesBtn.createSpan({ text: tx("ui.launchNotice.releaseNotes.label", "Release notes") });
     releaseNotesBtn.addEventListener("click", () => {
-      window.open("https://github.com/ctrlaltwill/Sprout/releases", "_blank", "noopener,noreferrer");
+      window.open("https://github.com/ctrlaltwill/learnkit/releases", "_blank", "noopener,noreferrer");
     });
 
     const settingsBtn = footer.createEl("button", {

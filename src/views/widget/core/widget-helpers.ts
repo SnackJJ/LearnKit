@@ -1,6 +1,6 @@
 /**
  * @file src/widget/widget-helpers.ts
- * @summary Shared types and pure helper functions for the Sprout sidebar widget. Defines the session and undo-frame data shapes, provides IO and cloze card-type detection utilities, filters out non-reviewable parent cards, and includes general string helpers.
+ * @summary Shared types and pure helper functions for the LearnKit sidebar widget. Defines the session and undo-frame data shapes, provides IO and cloze card-type detection utilities, filters out non-reviewable parent cards, and includes general string helpers.
  *
  * @exports
  *  - ReviewMeta           — type for freeform metadata attached to a grade or undo frame
@@ -285,16 +285,16 @@ export function getWidgetMcqDisplayOrder(
 
 import type { App, TFile } from "obsidian";
 import type { IStore } from "../../../platform/core/store-interface";
-import type { SproutSettings } from "../../../platform/types/settings";
+import type { LearnKitSettings } from "../../../platform/types/settings";
 
 /**
  * Minimal structural interface describing what widget action helpers
- * need from the actual `SproutWidgetView`.  Avoids circular imports
+ * need from the actual `LearnKitWidgetView`.  Avoids circular imports
  * while eliminating `view: any`.
  */
 export interface WidgetViewLike {
   app: App;
-  plugin: { store: IStore; settings: SproutSettings };
+  plugin: { store: IStore; settings: LearnKitSettings };
   containerEl: HTMLElement;
   activeFile: TFile | null;
 

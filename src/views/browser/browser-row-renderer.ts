@@ -4,7 +4,7 @@
  * <tr> per card with read-only cells (type, stage, due, ID badge), editable
  * textarea cells (title, question, answer, info), a groups tag-editor popover,
  * checkbox/shift-select logic per row, and an empty-state overlay. Extracted
- * from SproutCardBrowserView to keep the view class focused on orchestration.
+ * from LearnKitCardBrowserView to keep the view class focused on orchestration.
  *
  * @exports
  *   - RowRendererContext — interface describing the callbacks and state the row renderer needs from its host view

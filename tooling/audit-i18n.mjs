@@ -113,7 +113,7 @@ function looksLikeUiLiteral(text) {
   if (t.length < 2 || t.length > 300) return false;
   if (!hasHumanLetters(t)) return false;
   if (/^(?:[A-Za-z0-9_-]+\s+){1,}[A-Za-z0-9_-]+$/.test(t) && /(learnkit-|HyperMD-|cm-|mod-|is-)/.test(t)) return false;
-  if (/^(?:https?:|learnkit:|sprout:)/i.test(t)) return false;
+  if (/^(?:https?:|learnkit:)/i.test(t)) return false;
   if (/^[a-z_][a-z0-9_.:-]*$/i.test(t) && !/\s/.test(t) && !/[A-Z]/.test(t)) return false;
   if (/^(?:[a-z0-9-]+\s+){1,}[a-z0-9-]+$/.test(t)) return false;
   if (/\.(?:ts|tsx|js|json|md|png|jpg|jpeg|svg)$/i.test(t) && !/\s/.test(t)) return false;

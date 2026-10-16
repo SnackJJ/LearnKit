@@ -3,7 +3,7 @@
  * @summary Module for assistant popup.
  *
  * @exports
- *  - SproutAssistantPopup
+ *  - LearnKitAssistantPopup
  */
 
-export { SproutAssistantPopup } from "./popup/assistant-popup";
+export { LearnKitAssistantPopup } from "./popup/assistant-popup";

@@ -5,11 +5,11 @@ import {
   requestStudyAssistantCompletionDetailed,
   requestStudyAssistantStreamingCompletion,
 } from "../src/platform/integrations/ai/study-assistant-provider";
-import type { SproutSettings } from "../src/platform/types/settings";
+import type { LearnKitSettings } from "../src/platform/types/settings";
 
 vi.mock("obsidian");
 
-function makeApiKeys(overrides: Partial<SproutSettings["studyAssistant"]["apiKeys"]> = {}) {
+function makeApiKeys(overrides: Partial<LearnKitSettings["studyAssistant"]["apiKeys"]> = {}) {
   return {
     openai: "",
     anthropic: "",
@@ -20,12 +20,12 @@ function makeApiKeys(overrides: Partial<SproutSettings["studyAssistant"]["apiKey
     openrouter: "",
     custom: "",
     ...overrides,
-  } as SproutSettings["studyAssistant"]["apiKeys"];
+  } as LearnKitSettings["studyAssistant"]["apiKeys"];
 }
 
 function makeStudyAssistant(
-  overrides: Partial<SproutSettings["studyAssistant"]> = {},
-): SproutSettings["studyAssistant"] {
+  overrides: Partial<LearnKitSettings["studyAssistant"]> = {},
+): LearnKitSettings["studyAssistant"] {
   return {
     enabled: true,
     location: "modal",
@@ -74,7 +74,7 @@ function makeStudyAssistant(
       syncDeletesToProvider: false,
     },
     ...overrides,
-  } as SproutSettings["studyAssistant"];
+  } as LearnKitSettings["studyAssistant"];
 }
 
 function makeResponsesSuccessResponse(text = "ok") {

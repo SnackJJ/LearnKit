@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-06-24T03:54:16.850Z",
+  "generatedAt": "2026-10-15T23:59:32.705Z",
   "entries": [
     "src/platform/card-editor/card-editor.ts::notice::Maximum 20 steps.",
     "src/platform/card-editor/card-editor.ts::notice::Multiple-choice cards require at least one correct option (checked).",
@@ -64,7 +64,6 @@
     "src/views/reading/reading-view.ts::notice::Cannot edit cloze child: parent card not found.",
     "src/views/reading/reading-view.ts::notice::Card not found.",
     "src/views/reading/reading-view.ts::notice::Failed to update card: ${err instanceof Error ? err.message : String(err)}",
-    "src/views/reading/reading-view.ts::notice::Sprout plugin not found.",
     "src/views/reading/reading-view.ts::text-content::‹",
     "src/views/reading/reading-view.ts::text-content::›",
     "src/views/reading/reading-view.ts::text-content::⚠️ Image not found: ${embedSrc}",

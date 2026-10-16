@@ -14,7 +14,7 @@ import { formatInsertBlock } from "../../../views/study-assistant/popup/assistan
 import { buildSuggestionMarkdownLines } from "../../../views/study-assistant/popup/assistant-popup-suggestion-rows";
 import { validateGeneratedCardBlock } from "../../../views/study-assistant/popup/assistant-popup-validation";
 import { mentionsFrontmatter, validateEditProposal } from "../../../views/study-assistant/chat/edit-helpers";
-import type { SproutSettings } from "../../types/settings";
+import type { LearnKitSettings } from "../../types/settings";
 import {
   buildStudyAssistantNoteContext,
   resolveStudyAssistantAttachmentRefs,
@@ -259,10 +259,10 @@ const IMAGE_EVIDENCE: EvidenceRule[] = [
 ];
 
 function cloneStudyAssistantSettings(
-  settings: SproutSettings["studyAssistant"],
-): SproutSettings["studyAssistant"] {
+  settings: LearnKitSettings["studyAssistant"],
+): LearnKitSettings["studyAssistant"] {
   if (typeof structuredClone === "function") return structuredClone(settings);
-  return JSON.parse(JSON.stringify(settings)) as SproutSettings["studyAssistant"];
+  return JSON.parse(JSON.stringify(settings)) as LearnKitSettings["studyAssistant"];
 }
 
 function formatFallbackText(template: string, vars?: Record<string, string | number>): string {
@@ -278,7 +278,7 @@ function txFallback(_token: string, fallback: string, vars?: Record<string, stri
 }
 
 function normalizeScenarioSettings(
-  settings: SproutSettings["studyAssistant"],
+  settings: LearnKitSettings["studyAssistant"],
   scenario: StudyAssistantMatrixScenario,
 ): void {
   settings.generatorTypes.basic = true;
@@ -1016,7 +1016,7 @@ async function runScenarioPlan(params: {
   noteFile: TFile;
   plan: ScenarioPlan;
   modelSpec: StudyAssistantMatrixModelSpec;
-  settings: SproutSettings["studyAssistant"];
+  settings: LearnKitSettings["studyAssistant"];
   explicitAttachmentRefs: Partial<Record<StudyAssistantMatrixAttachmentKind, string>>;
 }): Promise<StudyAssistantMatrixRowResult> {
   const { host, noteFile, plan, modelSpec, settings, explicitAttachmentRefs } = params;

@@ -1,6 +1,6 @@
 /**
  * @file src/core/logger.ts
- * @summary Centralised logging abstraction for Sprout. Every message is prefixed with
+ * @summary Centralised logging abstraction for LearnKit. Every message is prefixed with
  * "[LearnKit]" for easy DevTools filtering. Supports four severity levels (debug, info,
  * warn, error) plus a "silent" mode, and a `swallow` helper for previously-empty catch
  * blocks that logs at debug level. The log level can be changed at runtime via
@@ -91,11 +91,8 @@ try {
   if (typeof window !== "undefined") {
     const loggerWindow = window as Window & {
       __learnkitLog?: typeof log;
-      __sproutLog?: typeof log;
     };
     loggerWindow.__learnkitLog = log;
-    // Backward compatibility for older snippets/docs.
-    loggerWindow.__sproutLog = log;
   }
 } catch {
   // non-browser environment — harmless

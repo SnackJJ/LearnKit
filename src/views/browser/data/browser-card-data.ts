@@ -59,7 +59,7 @@ export interface BrowserRow {
 /**
  * Build the full, filtered, and sorted list of rows for the browser table.
  *
- * This replaces the old `SproutCardBrowserView.computeRows()` instance
+ * This replaces the old `LearnKitCardBrowserView.computeRows()` instance
  * method — all view state that used to come from `this` is now passed in
  * as explicit parameters.
  */

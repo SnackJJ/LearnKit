@@ -4,7 +4,7 @@
  * input, filter dropdowns, action buttons), the table structure (colgroup,
  * thead with sortable/resizable headers, empty tbody), and the bottom controls
  * (summary text, selection indicator, page-size picker, pagination host).
- * Extracted from SproutCardBrowserView.render() to keep the view class focused
+ * Extracted from LearnKitCardBrowserView.render() to keep the view class focused
  * on lifecycle and orchestration.
  *
  * @exports

@@ -24,4 +24,4 @@ export function isAssistantReviewDepth(value: unknown): value is StudyAssistantR
 	return typeof value === "string" && ASSISTANT_REVIEW_DEPTHS.includes(value as StudyAssistantReviewDepth);
 }
 
-export const CHAT_LOG_SYNC_EVENT_NAME = "sprout-study-assistant-chatlog-synced";
+export const CHAT_LOG_SYNC_EVENT_NAME = "learnkit-study-assistant-chatlog-synced";

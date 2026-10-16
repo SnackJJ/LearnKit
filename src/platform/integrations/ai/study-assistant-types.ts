@@ -13,9 +13,9 @@
  *  - StudyAssistantEditProposal
  */
 
-import type { SproutSettings } from "../../types/settings";
+import type { LearnKitSettings } from "../../types/settings";
 
-export type StudyAssistantProvider = SproutSettings["studyAssistant"]["provider"];
+export type StudyAssistantProvider = LearnKitSettings["studyAssistant"]["provider"];
 
 export type StudyAssistantAttachmentRoute = "none" | "native" | "retry-fallback" | "forced-fallback";
 
@@ -27,7 +27,7 @@ export type StudyAssistantConversationRef = {
   backend?: string;
 };
 
-export type StudyAssistantCardType = keyof SproutSettings["studyAssistant"]["generatorTypes"];
+export type StudyAssistantCardType = keyof LearnKitSettings["studyAssistant"]["generatorTypes"];
 
 export type StudyAssistantImageDescriptor = {
   ref: string;

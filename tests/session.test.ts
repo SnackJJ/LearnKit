@@ -30,7 +30,7 @@ function makePlugin(
 ) {
   const plugin: any = {
     app: { vault: { getFiles: () => [], getMarkdownFiles: () => [] } },
-    manifest: { id: "sprout" },
+    manifest: { id: "learnkit" },
     settings: {
       study: {
         dailyNewLimit: Infinity,

@@ -7,12 +7,12 @@
  *
  * @exports
  *   - LearnKitSettings (re-exported type) — full plugin settings shape
- *   - SproutSettings (re-exported alias) — compatibility type alias
+ *   - LearnKitSettings (re-exported alias) — compatibility type alias
  *   - DEFAULT_SETTINGS — constant object with factory-default values for all settings
  */
 
-// Re-export both names so existing Sprout imports keep working during Phase 1.
-export type { LearnKitSettings, SproutSettings } from "../types/settings";
+// Re-export the settings type so downstream code has a single import site.
+export type { LearnKitSettings } from "../types/settings";
 import type { LearnKitSettings } from "../types/settings";
 import { DEFAULT_INTERFACE_LOCALE_PREFERENCE } from "../translations/locale-registry";
 

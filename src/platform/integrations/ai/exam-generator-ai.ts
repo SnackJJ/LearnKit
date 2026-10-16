@@ -10,7 +10,7 @@
  */
 
 import { requestStudyAssistantCompletion } from "./study-assistant-provider";
-import type { SproutSettings } from "../../types/settings";
+import type { LearnKitSettings } from "../../types/settings";
 import type {
   ExamGeneratorConfig,
   ExamSourceNote,
@@ -383,7 +383,7 @@ function dedupeQuestions(
 }
 
 async function requestExamChunk(params: {
-  settings: SproutSettings["studyAssistant"];
+  settings: LearnKitSettings["studyAssistant"];
   systemPrompt: string;
   notes: Array<{ path: string; title: string; content: string }>;
   difficulty: ExamGeneratorConfig["difficulty"];
@@ -489,7 +489,7 @@ async function requestExamChunk(params: {
 }
 
 export async function generateExamQuestions(params: {
-  settings: SproutSettings["studyAssistant"];
+  settings: LearnKitSettings["studyAssistant"];
   notes: ExamSourceNote[];
   config: ExamGeneratorConfig;
   attachedFileDataUrls?: string[];
@@ -651,7 +651,7 @@ export async function generateExamQuestions(params: {
 }
 
 export async function gradeSaqAnswer(params: {
-  settings: SproutSettings["studyAssistant"];
+  settings: LearnKitSettings["studyAssistant"];
   questionPrompt: string;
   markingGuide: string[];
   userAnswer: string;
@@ -744,7 +744,7 @@ export async function gradeSaqAnswer(params: {
 }
 
 export async function gradeFullTest(params: {
-  settings: SproutSettings["studyAssistant"];
+  settings: LearnKitSettings["studyAssistant"];
   questions: GeneratedExamQuestion[];
   userAnswerText: string;
   difficulty: ExamGeneratorConfig["difficulty"];
@@ -835,7 +835,7 @@ export async function gradeFullTest(params: {
 }
 
 export async function suggestTestName(params: {
-  settings: SproutSettings["studyAssistant"];
+  settings: LearnKitSettings["studyAssistant"];
   questionPrompts: string[];
   difficulty: ExamGeneratorConfig["difficulty"];
   questionMode: ExamGeneratorConfig["questionMode"];

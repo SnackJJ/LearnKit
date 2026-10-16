@@ -3,7 +3,7 @@
  * @summary Wraps Obsidian's MarkdownRenderer to handle image resolution (both Obsidian embeds and shorthand links), stale-render prevention, and clickable image zoom decoration for card content displayed in the reviewer.
  *
  * @exports
- *   - SproutMarkdownHelper — Class that renders Markdown into DOM containers with image expansion, zoom affordance, and stale-render guards
+ *   - LearnKitMarkdownHelper — Class that renders Markdown into DOM containers with image expansion, zoom affordance, and stale-render guards
  */
 
 import { MarkdownRenderer, TFile, type App, type Component } from "obsidian";
@@ -92,7 +92,7 @@ export function preserveMathLineBreakBackslashes(md: string): string {
   return out;
 }
 
-export class SproutMarkdownHelper {
+export class LearnKitMarkdownHelper {
   private app: App;
   private owner: Component;
   private onZoom: (src: string, alt: string) => void;

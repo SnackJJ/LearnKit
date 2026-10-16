@@ -1,6 +1,6 @@
 /**
  * @file src/widget/widget-markdown.ts
- * @summary Pure utility functions for markdown and HTML processing used by the Sprout sidebar widget. Handles HTML escaping, wiki-link and LaTeX conversion, MathJax typesetting, and internal link click-handler wiring.
+ * @summary Pure utility functions for markdown and HTML processing used by the LearnKit sidebar widget. Handles HTML escaping, wiki-link and LaTeX conversion, MathJax typesetting, and internal link click-handler wiring.
  *
  * @exports
  *  - escapeHtml                — escapes HTML special characters in a string

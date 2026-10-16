@@ -182,7 +182,7 @@ async function build() {
     banner: {
       js:
         "/*\n" +
-        "  Sprout — Obsidian Plugin (bundled with esbuild)\n" +
+        "  LearnKit — Obsidian Plugin (bundled with esbuild)\n" +
         "  Output: dist/main.js\n" +
         "*/",
     },

@@ -3,15 +3,15 @@
  * @summary Provides a full-screen image zoom modal for the reviewer. When a user clicks a zoomable image during review, this modal displays it at near-viewport size with proper aspect ratio.
  *
  * @exports
- *   - SproutImageZoomModal — Modal class that displays a single image at full viewport size
- *   - openSproutImageZoom — Convenience function that opens the zoom modal for a given image source URL
+ *   - LearnKitImageZoomModal — Modal class that displays a single image at full viewport size
+ *   - openLearnKitImageZoom — Convenience function that opens the zoom modal for a given image source URL
  */
 
 import { Modal, type App } from "obsidian";
 import { scopeModalToWorkspace } from "../../platform/modals/modal-utils";
 import { makeEl } from "../../platform/core/dom-factory";
 
-export class SproutImageZoomModal extends Modal {
+export class LearnKitImageZoomModal extends Modal {
   private src: string;
   private alt: string;
 
@@ -47,7 +47,7 @@ export class SproutImageZoomModal extends Modal {
   }
 }
 
-export function openSproutImageZoom(app: App, src: string, alt: string) {
+export function openLearnKitImageZoom(app: App, src: string, alt: string) {
   if (!src) return;
-  new SproutImageZoomModal(app, src, alt || "Image").open();
+  new LearnKitImageZoomModal(app, src, alt || "Image").open();
 }

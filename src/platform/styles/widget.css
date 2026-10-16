@@ -18,7 +18,7 @@
   --learnkit-widget-font-kbd:           0.85rem; /* keyboard shortcut labels              */
   background: none;
   background-color: transparent;
-  /* No zoom context unless the athlete actually zoomed (see _applySproutZoom):
+  /* No zoom context unless the athlete actually zoomed (see _applyLearnKitZoom):
      `zoom: 1` still spins up a scaling layer, and a zoomed subtree beside the
      translucent sidebar is a known source of ghost/repaint artefacts. */
   zoom: var(--learnkit-leaf-zoom, normal);
@@ -233,7 +233,7 @@
   box-shadow: none;
 }
 
-/* Force Sprout custom buttons to override global button rules */
+/* Force LearnKit custom buttons to override global button rules */
 .learnkit :is(button.learnkit-card-edit-btn, .learnkit-widget button, .learnkit-widget .btn, .learnkit-widget .learnkit-btn-toolbar) {
   box-shadow: none;
   outline: none;
@@ -589,7 +589,7 @@
   -ms-overflow-style: auto;
 }
 
-.learnkit .sprout-widget-card-body {
+.learnkit .learnkit-widget-card-body {
   border: none;
   background-color: var(--color-base-00);
   margin: 0 14px;
@@ -601,17 +601,17 @@
   overflow-y: auto;
 }
 
-.learnkit .sprout-widget-card-body::-webkit-scrollbar {
+.learnkit .learnkit-widget-card-body::-webkit-scrollbar {
   width: 10px;
   height: 10px;
 }
 
-.learnkit .sprout-widget-card-body::-webkit-scrollbar-thumb {
+.learnkit .learnkit-widget-card-body::-webkit-scrollbar-thumb {
   background: color-mix(in srgb, var(--foreground) 40%, transparent);
   border-radius: var(--radius-md);
 }
 
-.learnkit .sprout-widget-card-body::-webkit-scrollbar-track {
+.learnkit .learnkit-widget-card-body::-webkit-scrollbar-track {
   background: transparent;
 }
 
@@ -623,7 +623,7 @@
   padding: 15px 0 10px 0;
 }
 
-.learnkit .sprout-widget-header {
+.learnkit .learnkit-widget-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -635,21 +635,21 @@
   flex-shrink: 0;
 }
 
-.learnkit .sprout-widget-header-labels,
-.learnkit .sprout-widget-summary-labels {
+.learnkit .learnkit-widget-header-labels,
+.learnkit .learnkit-widget-summary-labels {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 0.3rem;
 }
 
-.learnkit .sprout-widget-header-labels {
+.learnkit .learnkit-widget-header-labels {
   margin-right: auto;
 }
 
-.learnkit .sprout-widget-study-label,
-.learnkit .sprout-widget-summary-title,
-.learnkit .sprout-widget-teaser-title {
+.learnkit .learnkit-widget-study-label,
+.learnkit .learnkit-widget-summary-title,
+.learnkit .learnkit-widget-teaser-title {
   margin: 0;
   font-size: 1rem;
   font-weight: 600;
@@ -657,7 +657,7 @@
   color: var(--text-normal);
 }
 
-.learnkit .sprout-widget-note-title {
+.learnkit .learnkit-widget-note-title {
   margin: 0 14px;
   font-size: 0.95rem;
   font-weight: 600;
@@ -670,10 +670,10 @@
   flex-shrink: 0;
 }
 
-.learnkit .sprout-widget-remaining-label,
-.learnkit .sprout-widget-remaining-line,
-.learnkit .sprout-widget-counts-line,
-.learnkit .sprout-widget-info-line {
+.learnkit .learnkit-widget-remaining-label,
+.learnkit .learnkit-widget-remaining-line,
+.learnkit .learnkit-widget-counts-line,
+.learnkit .learnkit-widget-info-line {
   margin: 0;
   font-size: 0.95rem;
   font-weight: 400;
@@ -681,17 +681,17 @@
   color: var(--text-muted);
 }
 
-.learnkit .sprout-widget-info-line {
+.learnkit .learnkit-widget-info-line {
   line-height: 1.5;
 }
 
-.learnkit .sprout-widget-empty-message {
+.learnkit .learnkit-widget-empty-message {
   color: var(--text-muted);
   margin: 0 4px;
   font-size: 0.95rem;
 }
 
-.learnkit .sprout-widget-summary-header {
+.learnkit .learnkit-widget-summary-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -703,13 +703,13 @@
   flex-shrink: 0;
 }
 
-.learnkit .sprout-widget-summary-labels {
+.learnkit .learnkit-widget-summary-labels {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
 }
 
-.learnkit .sprout-widget-teaser {
+.learnkit .learnkit-widget-teaser {
   margin: 0 14px;
   align-self: stretch;
   width: auto;
@@ -728,12 +728,12 @@
   box-shadow: none;
 }
 
-.learnkit .sprout-widget-teaser .sprout-widget-counts-line,
-.learnkit .sprout-widget-teaser .sprout-widget-info-line {
+.learnkit .learnkit-widget-teaser .learnkit-widget-counts-line,
+.learnkit .learnkit-widget-teaser .learnkit-widget-info-line {
   font-size: 0.95rem;
 }
 
-.learnkit .sprout-widget-summary-footer {
+.learnkit .learnkit-widget-summary-footer {
   border: none;
   border-radius: 0;
   width: auto;
@@ -745,7 +745,7 @@
   flex-shrink: 0;
 }
 
-.learnkit .sprout-widget-footer {
+.learnkit .learnkit-widget-footer {
   border: none;
   margin: 0 14px;
   display: flex;
@@ -755,42 +755,42 @@
   flex-shrink: 0;
 }
 
-.learnkit .sprout-widget-action-row,
-.learnkit .sprout-widget-grading-row {
+.learnkit .learnkit-widget-action-row,
+.learnkit .learnkit-widget-grading-row {
   display: flex;
   gap: 10px;
 }
 
-.learnkit .sprout-widget-grading-grid {
+.learnkit .learnkit-widget-grading-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 6px;
 }
 
-.learnkit .sprout-widget-btn {
+.learnkit .learnkit-widget-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
 }
 
-.learnkit .sprout-widget-btn-full {
+.learnkit .learnkit-widget-btn-full {
   width: 100%;
 }
 
-.learnkit .sprout-widget-btn-half {
+.learnkit .learnkit-widget-btn-half {
   flex: 1 1 0;
 }
 
-.learnkit .sprout-widget-kbd {
+.learnkit .learnkit-widget-kbd {
   margin-left: 8px;
 }
 
-.learnkit .sprout-widget-btn-with-subtitle {
+.learnkit .learnkit-widget-btn-with-subtitle {
   text-align: center;
 }
 
-.learnkit .sprout-widget-btn-label-wrap {
+.learnkit .learnkit-widget-btn-label-wrap {
   display: inline-flex;
   flex-direction: column;
   align-items: center;
@@ -799,13 +799,13 @@
   line-height: 1.05;
 }
 
-.learnkit .sprout-widget-btn-subtitle {
+.learnkit .learnkit-widget-btn-subtitle {
   font-size: 0.78em;
   opacity: 0.9;
   font-weight: 500;
 }
 
-.learnkit .sprout-widget-progress {
+.learnkit .learnkit-widget-progress {
   border: none;
   border-radius: 0;
   margin: 0 auto;
@@ -815,7 +815,7 @@
   flex-shrink: 0;
 }
 
-.learnkit .sprout-widget-progress-track {
+.learnkit .learnkit-widget-progress-track {
   width: 100%;
   height: 1.5px;
   border-radius: 9999px;
@@ -823,7 +823,7 @@
   background-color: color-mix(in srgb, var(--foreground) 10%, transparent);
 }
 
-.learnkit .sprout-widget-progress-fill {
+.learnkit .learnkit-widget-progress-fill {
   width: var(--learnkit-progress, 0%);
   height: 100%;
   transition: width 180ms ease;
@@ -880,13 +880,13 @@
   font-size: 0.85em;
 }
 
-.learnkit .sprout-widget-extra-info {
+.learnkit .learnkit-widget-extra-info {
   font-weight: 400;
 }
 
-.learnkit .sprout-widget-extra-info-label,
-.learnkit .sprout-widget-answer-label,
-.learnkit .sprout-widget-question-label {
+.learnkit .learnkit-widget-extra-info-label,
+.learnkit .learnkit-widget-answer-label,
+.learnkit .learnkit-widget-question-label {
   font-size: 0.95rem;
   font-weight: 500;
   line-height: 1.15;
@@ -894,7 +894,7 @@
 }
 
 /* Question label for plain-text cards (basic, reversed, cloze) — tighter than structured content */
-.learnkit .widget-question > .sprout-widget-question-label {
+.learnkit .widget-question > .learnkit-widget-question-label {
   margin-bottom: 0.5rem;
 }
 
@@ -1067,18 +1067,18 @@
 }
 
 /* MCQ option spacing */
-.learnkit .sprout-widget-mcq-options {
+.learnkit .learnkit-widget-mcq-options {
   display: flex;
   flex-direction: column;
 }
 
-.learnkit .sprout-widget-mcq-options-list {
+.learnkit .learnkit-widget-mcq-options-list {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
 
-.learnkit .sprout-widget-mcq-option {
+.learnkit .learnkit-widget-mcq-option {
   display: flex;
   align-items: center;
   border-radius: var(--radius-md);
@@ -1089,18 +1089,18 @@
   transition: background-color .15s, border-color .15s;
 }
 
-.learnkit .sprout-widget-mcq-option:hover,
-.learnkit .sprout-widget-mcq-option:focus-visible {
+.learnkit .learnkit-widget-mcq-option:hover,
+.learnkit .learnkit-widget-mcq-option:focus-visible {
   background-color: var(--color-base-35) ;
   border-color: var(--color-base-40) ;
 }
 
-.learnkit .sprout-widget-mcq-option:active {
+.learnkit .learnkit-widget-mcq-option:active {
   background-color: var(--color-base-35) ;
   border-color: var(--color-base-40) ;
 }
 
-.learnkit .sprout-widget-mcq-option-content {
+.learnkit .learnkit-widget-mcq-option-content {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -1115,26 +1115,26 @@
   display: block;
 }
 
-.learnkit .sprout-widget-mcq-text {
+.learnkit .learnkit-widget-mcq-text {
   min-width: 0;
   white-space: pre-wrap;
   overflow-wrap: break-word;
 }
 
-.learnkit .sprout-widget-mcq-hint {
+.learnkit .learnkit-widget-mcq-hint {
   text-align: center;
   margin-bottom: 4px;
 }
 
 /* Keep MCQ/OQ choice text consistent on widget front/back faces. */
 .learnkit.learnkit-widget :is(
-  .sprout-widget-mcq-text,
+  .learnkit-widget-mcq-text,
   .learnkit-widget-mcq-text,
   .learnkit-widget-mcq-line,
   .learnkit-mcq-option-text,
   .learnkit-mcq-option-line,
-  .sprout-oq-step-list .learnkit-oq-step-text,
-  .sprout-oq-answer-list .learnkit-oq-step-text
+  .learnkit-oq-step-list .learnkit-oq-step-text,
+  .learnkit-oq-answer-list .learnkit-oq-step-text
 ) {
   font-size: 0.9rem;
 }
@@ -1250,7 +1250,7 @@
 }
 
 /* OQ step rows + MCQ options: compact 32px in widget view (front + back) */
-.learnkit.learnkit-widget :is(.learnkit-oq-step-row, .learnkit-oq-answer-row, .sprout-widget-mcq-option) {
+.learnkit.learnkit-widget :is(.learnkit-oq-step-row, .learnkit-oq-answer-row, .learnkit-widget-mcq-option) {
   height: 32px;
   min-height: 32px;
   max-height: 32px;
@@ -1337,8 +1337,8 @@ border: 0.5px solid var(--theme-base-35);
 }
 
 /* ---- Widget IO mask strokes: zero-width (no visible outlines) ---- */
-.learnkit [data-sprout-io-widget="1"] .learnkit-io-mask-polygon-stroke polygon,
-.learnkit [data-sprout-io-widget="1"] .learnkit-io-mask-circle-stroke ellipse,
-.learnkit [data-sprout-io-widget="1"] .learnkit-io-mask-rect-stroke rect {
+.learnkit [data-learnkit-io-widget="1"] .learnkit-io-mask-polygon-stroke polygon,
+.learnkit [data-learnkit-io-widget="1"] .learnkit-io-mask-circle-stroke ellipse,
+.learnkit [data-learnkit-io-widget="1"] .learnkit-io-mask-rect-stroke rect {
   stroke-width: 0;
 }

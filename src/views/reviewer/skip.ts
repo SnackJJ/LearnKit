@@ -11,7 +11,7 @@
 import { Modal, setIcon, type App } from "obsidian";
 import type LearnKitPlugin from "../../main";
 import type { Session } from "./types";
-import type { SproutReviewerView } from "./review-view";
+import type { LearnKitReviewerView } from "./review-view";
 import { scopeModalToWorkspace } from "../../platform/modals/modal-utils";
 import { t } from "../../platform/translations/translator";
 import { makeEl } from "../../platform/core/dom-factory";
@@ -129,7 +129,7 @@ class ConfirmBuryForTodayModal extends Modal {
   }
 }
 
-export function skipCurrentCard(view: SproutReviewerView) {
+export function skipCurrentCard(view: LearnKitReviewerView) {
   if (view.mode !== "session" || !view.session) return;
 
   const card = view.currentCard();

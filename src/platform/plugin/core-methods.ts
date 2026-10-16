@@ -147,7 +147,7 @@ export function WithCoreMethods<T extends Constructor<LearnKitPluginBase>>(Base:
       normaliseSettingsInPlace(this.settings);
     }
 
-    _applySproutThemeAccentOverride(): void {
+    _applyLearnKitThemeAccentOverride(): void {
       const raw = String(this.settings?.general?.themeAccentOverride ?? "").trim();
       const isHex = /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(raw);
       if (isHex) {
@@ -157,14 +157,14 @@ export function WithCoreMethods<T extends Constructor<LearnKitPluginBase>>(Base:
       activeDocument.body.style.removeProperty("--learnkit-theme-accent-override");
     }
 
-    _applySproutThemePreset(): void {
+    _applyLearnKitThemePreset(): void {
       const preset = String(this.settings?.general?.themePreset ?? "glass").trim() || "glass";
       activeDocument.body.setAttribute("data-learnkit-theme-preset", preset);
     }
 
-    _applySproutZoom(value: number): void {
+    _applyLearnKitZoom(value: number): void {
       const next = clamp(Number(value || 1), 0.8, 1.8);
-      this._sproutZoomValue = next;
+      this._learnkitZoomValue = next;
       // Only declare a zoom when there is one. `zoom: 1` still instantiates a scaling layer
       // in Chromium, and a zoomed subtree sitting beside the (translucent) sidebar is a known
       // source of repaint/ghosting artefacts, so at 1x the CSS falls back to `zoom: normal`.
@@ -175,16 +175,16 @@ export function WithCoreMethods<T extends Constructor<LearnKitPluginBase>>(Base:
       }
     }
 
-    _queueSproutZoomSave(): void {
-      if (this._sproutZoomSaveTimer != null) window.clearTimeout(this._sproutZoomSaveTimer);
-      this._sproutZoomSaveTimer = window.setTimeout(() => {
-        this._sproutZoomSaveTimer = null;
+    _queueLearnKitZoomSave(): void {
+      if (this._learnkitZoomSaveTimer != null) window.clearTimeout(this._learnkitZoomSaveTimer);
+      this._learnkitZoomSaveTimer = window.setTimeout(() => {
+        this._learnkitZoomSaveTimer = null;
         void this.saveAll();
       }, 250);
     }
 
-    _registerSproutPinchZoom(): void {
-      this._applySproutZoom(this.settings.general.workspaceContentZoom ?? 1);
+    _registerLearnKitPinchZoom(): void {
+      this._applyLearnKitZoom(this.settings.general.workspaceContentZoom ?? 1);
 
       this.registerDomEvent(
         activeDocument,
@@ -197,21 +197,21 @@ export function WithCoreMethods<T extends Constructor<LearnKitPluginBase>>(Base:
 
           if (target.closest(".modal-container, .menu, .popover, .suggestion-container")) return;
 
-          const sproutEl = target.closest<HTMLElement>(
+          const learnkitEl = target.closest<HTMLElement>(
             ".workspace-leaf-content.learnkit, .learnkit-widget.learnkit",
           );
-          if (!sproutEl) return;
+          if (!learnkitEl) return;
 
           ev.preventDefault();
           ev.stopPropagation();
 
           const factor = Math.exp(-ev.deltaY * 0.006);
-          const next = clamp(this._sproutZoomValue * factor, 0.8, 1.8);
-          if (Math.abs(next - this._sproutZoomValue) < 0.001) return;
+          const next = clamp(this._learnkitZoomValue * factor, 0.8, 1.8);
+          if (Math.abs(next - this._learnkitZoomValue) < 0.001) return;
 
-          this._applySproutZoom(next);
+          this._applyLearnKitZoom(next);
           this.settings.general.workspaceContentZoom = Number(next.toFixed(3));
-          this._queueSproutZoomSave();
+          this._queueLearnKitZoomSave();
         },
         { capture: true, passive: false },
       );

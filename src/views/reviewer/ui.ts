@@ -19,15 +19,15 @@ export function keySymbol(label: string): string {
 }
 
 export function keybox(label: string, extraClass = ""): HTMLElement {
-  const outer = el("span", `sprout-keywrap${extraClass ? " " + extraClass : ""}`);
-  const k = el("span", "sprout-keybox");
+  const outer = el("span", `learnkit-keywrap${extraClass ? " " + extraClass : ""}`);
+  const k = el("span", "learnkit-keybox");
   k.textContent = keySymbol(label);
   outer.appendChild(k);
   return outer;
 }
 
 export function appendKeyboxRight(btn: HTMLElement, label: string) {
-  const wrap = el("span", "sprout-btn-right");
+  const wrap = el("span", "learnkit-btn-right");
   wrap.appendChild(keybox(label));
   btn.appendChild(wrap);
 }
@@ -44,7 +44,7 @@ export function makePlainButton(
   b.setAttribute("data-tooltip-position", "top");
   b.addEventListener("click", onClick);
 
-  const left = el("span", "sprout-btn-left");
+  const left = el("span", "learnkit-btn-left");
   left.textContent = label;
   b.appendChild(left);
 

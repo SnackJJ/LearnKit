@@ -2,7 +2,7 @@
  * @file src/anki/anki-import.ts
  * @summary Import engine: unpacks a .apkg file, reads the Anki SQLite database,
  * creates a vault folder hierarchy mirroring the Anki deck tree, writes card blocks
- * as pipe-delimited markdown, syncs each file with the Sprout store, and optionally
+ * as pipe-delimited markdown, syncs each file with the LearnKit store, and optionally
  * patches scheduling state from the Anki data.
  *
  * @exports
@@ -31,7 +31,7 @@ import {
 } from "./anki-sql";
 import { ankiNoteToCardRecord, ankiCardToCardState } from "./anki-mapper";
 import { deckToFolderAndFile } from "./anki-utils";
-import { rewriteFieldForSprout, saveMediaToVault } from "./anki-media";
+import { rewriteFieldForLearnKit, saveMediaToVault } from "./anki-media";
 import { unpackApkg } from "./anki-zip";
 import { normalizeGroups } from "../../../engine/indexing/group-format";
 import { syncOneFile } from "../sync/sync-engine";
@@ -65,7 +65,7 @@ export type ImportOptions = {
   targetFolder: string;
   /** Whether to preserve Anki scheduling data or import as New. */
   preserveScheduling: boolean;
-  /** How to map Anki structure to Sprout groups. */
+  /** How to map Anki structure to LearnKit groups. */
   groupMapping: "tags-only" | "deck-as-group";
   /** What to do with potential duplicates. */
   duplicateStrategy: "skip" | "import-anyway";
@@ -313,7 +313,7 @@ export async function importFromApkg(
         let flds = note.flds;
         if (mediaNameMap.size > 0) {
           const fieldParts = flds.split(ANKI_FIELD_SEPARATOR);
-          const rewritten = fieldParts.map((f) => rewriteFieldForSprout(f, mediaNameMap));
+          const rewritten = fieldParts.map((f) => rewriteFieldForLearnKit(f, mediaNameMap));
           flds = rewritten.join(ANKI_FIELD_SEPARATOR);
         }
         const rewrittenNote: AnkiNoteRow = { ...note, flds };
@@ -321,7 +321,7 @@ export async function importFromApkg(
         // Determine deck name for group mapping
         const groupDeckName = options.groupMapping === "tags-only" ? "" : bucket.deckName;
 
-        // Convert to Sprout card record
+        // Convert to LearnKit card record
         const mapping = fieldMappingByModel.get(model.id);
         const cardRecord = ankiNoteToCardRecord(
           rewrittenNote,

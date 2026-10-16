@@ -53,13 +53,3 @@ export const LEARNKIT_RIBBON_BRAND_ICON = normalizeBrandIconSvg(learnkitBrandIco
 export const LEARNKIT_HORIZONTAL_BRAND_ICON = normalizeBrandIconSvg(learnkitHorizontalIconRaw);
 export const LEARNKIT_STUDY_WIDGET_ICON = normalizeBrandIconSvg(learnkitStudyWidgetIconRaw);
 export const LEARNKIT_ASSISTANT_WIDGET_ICON = normalizeBrandIconSvg(learnkitAssistantWidgetIconRaw);
-
-// Backwards-compatible aliases for any older imports that still use SPROUT_* names.
-export const SPROUT_BRAND_ICON_KEY = LEARNKIT_BRAND_ICON_KEY;
-export const SPROUT_BRAND_HORIZONTAL_ICON_KEY = LEARNKIT_BRAND_HORIZONTAL_ICON_KEY;
-export const SPROUT_WIDGET_STUDY_ICON_KEY = LEARNKIT_WIDGET_STUDY_ICON_KEY;
-export const SPROUT_WIDGET_ASSISTANT_ICON_KEY = LEARNKIT_WIDGET_ASSISTANT_ICON_KEY;
-export const SPROUT_RIBBON_BRAND_ICON = LEARNKIT_RIBBON_BRAND_ICON;
-export const SPROUT_HORIZONTAL_BRAND_ICON = LEARNKIT_HORIZONTAL_BRAND_ICON;
-export const SPROUT_STUDY_WIDGET_ICON = LEARNKIT_STUDY_WIDGET_ICON;
-export const SPROUT_ASSISTANT_WIDGET_ICON = LEARNKIT_ASSISTANT_WIDGET_ICON;

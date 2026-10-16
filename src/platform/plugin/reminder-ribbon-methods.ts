@@ -36,19 +36,19 @@ export function WithReminderAndRibbonMethods<T extends Constructor<LearnKitPlugi
         const ok = this._reminderEngine?.triggerStartupReminder(!!force) ?? false;
         return ok ? "startup reminder triggered" : "startup reminder not shown";
       };
-      target.sproutReminderLaunch = target.learnKitReminderLaunch;
+      target.learnkitReminderLaunch = target.learnKitReminderLaunch;
 
       target.learnKitReminderRoutine = (force = false) => {
         const ok = this._reminderEngine?.triggerRoutineReminder(!!force) ?? false;
         return ok ? "routine reminder triggered" : "routine reminder not shown";
       };
-      target.sproutReminderRoutine = target.learnKitReminderRoutine;
+      target.learnkitReminderRoutine = target.learnKitReminderRoutine;
 
       target.learnKitReminderGatekeeper = (force = false) => {
         const ok = this._reminderEngine?.triggerGatekeeper(!!force) ?? false;
         return ok ? "gatekeeper popup opened" : "gatekeeper popup not opened";
       };
-      target.sproutReminderGatekeeper = target.learnKitReminderGatekeeper;
+      target.learnkitReminderGatekeeper = target.learnKitReminderGatekeeper;
     };
 
     _unregisterReminderDevConsoleCommands = (): void => {
@@ -69,18 +69,18 @@ export function WithReminderAndRibbonMethods<T extends Constructor<LearnKitPlugi
       const api = createStudyAssistantMatrixConsoleApi(this);
 
       target.learnKitAi = api;
-      target.sproutAi = api;
+      target.learnkitAi = api;
       target.learnKitAiMatrixRun = api.runMatrix;
-      target.sproutAiMatrixRun = api.runMatrix;
+      target.learnkitAiMatrixRun = api.runMatrix;
     };
 
     _unregisterStudyAssistantDevConsoleCommands = (): void => {
       if (typeof window === "undefined") return;
       const target = window as unknown as Record<string, unknown>;
       delete target.learnKitAi;
-      delete target.sproutAi;
+      delete target.learnkitAi;
       delete target.learnKitAiMatrixRun;
-      delete target.sproutAiMatrixRun;
+      delete target.learnkitAiMatrixRun;
     };
 
     _registerRibbonIcons = (): void => {

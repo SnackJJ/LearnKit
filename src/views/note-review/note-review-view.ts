@@ -3,15 +3,15 @@
  * @summary Module for note review view.
  *
  * @exports
- *  - SproutNoteReviewView
+ *  - LearnKitNoteReviewView
  */
 
 import { Component, ItemView, MarkdownRenderer, Notice, TFile, setIcon, type WorkspaceLeaf } from "obsidian";
-import { createViewHeader, type SproutHeader } from "../../platform/core/header";
+import { createViewHeader, type LearnKitHeader } from "../../platform/core/header";
 import { AOS_DURATION, MAX_CONTENT_WIDTH_PX, VIEW_TYPE_NOTE_REVIEW } from "../../platform/core/constants";
 import { setCssProps } from "../../platform/core/ui";
-import { SPROUT_HOME_CONTENT_SHELL_CLASS, SPROUT_TITLE_STRIP_LABEL_CLASS } from "../../platform/core/ui-classes";
-import type SproutPlugin from "../../main";
+import { LEARNKIT_HOME_CONTENT_SHELL_CLASS, LEARNKIT_TITLE_STRIP_LABEL_CLASS } from "../../platform/core/ui-classes";
+import type LearnKitPlugin from "../../main";
 import { t } from "../../platform/translations/translator";
 import { initAOS, resetAOS } from "../../platform/core/aos-loader";
 import { NoteReviewSqlite, type NoteReviewRow } from "../../platform/core/note-review-sqlite";
@@ -24,10 +24,10 @@ import { makeEl } from "../../platform/core/dom-factory";
 
 const SUSPEND_FAR_DAYS = 36500;
 
-export class SproutNoteReviewView extends ItemView {
-  plugin: SproutPlugin;
+export class LearnKitNoteReviewView extends ItemView {
+  plugin: LearnKitPlugin;
 
-  private _header: SproutHeader | null = null;
+  private _header: LearnKitHeader | null = null;
   private _rootEl: HTMLElement | null = null;
   private _titleStripEl: HTMLElement | null = null;
   private _titleTimerHostEl: HTMLElement | null = null;
@@ -57,7 +57,7 @@ export class SproutNoteReviewView extends ItemView {
   private _morePopoverEl: HTMLElement | null = null;
   private _moreCleanup: (() => void) | null = null;
 
-  constructor(leaf: WorkspaceLeaf, plugin: SproutPlugin) {
+  constructor(leaf: WorkspaceLeaf, plugin: LearnKitPlugin) {
     super(leaf);
     this.plugin = plugin;
   }
@@ -975,7 +975,7 @@ export class SproutNoteReviewView extends ItemView {
 
     const strip = makeEl("div");
     strip.className = coachShellMode
-      ? "lk-home-title-strip sprout-coach-title-strip"
+      ? "lk-home-title-strip learnkit-coach-title-strip"
       : "lk-home-title-strip learnkit-note-review-title-strip";
 
     const row = makeEl("div");
@@ -985,7 +985,7 @@ export class SproutNoteReviewView extends ItemView {
     left.className = "min-w-0 flex-1 flex flex-col gap-[2px]";
 
     const title = makeEl("div");
-    title.className = SPROUT_TITLE_STRIP_LABEL_CLASS;
+    title.className = LEARNKIT_TITLE_STRIP_LABEL_CLASS;
     title.textContent = coachShellMode
       ? t(this.plugin.settings?.general?.interfaceLanguage, "ui.view.coach.title", "Coach")
       : t(this.plugin.settings?.general?.interfaceLanguage, "ui.view.noteReview.title", "Notes");
@@ -1318,7 +1318,7 @@ export class SproutNoteReviewView extends ItemView {
     }
 
     const contentShell = root.createDiv({
-      cls: `${SPROUT_HOME_CONTENT_SHELL_CLASS} learnkit-note-review-content-shell learnkit-session-column flex flex-col min-h-0`,
+      cls: `${LEARNKIT_HOME_CONTENT_SHELL_CLASS} learnkit-note-review-content-shell learnkit-session-column flex flex-col min-h-0`,
     });
 
     if (!this._header) {

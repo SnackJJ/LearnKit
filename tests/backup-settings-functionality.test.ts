@@ -80,7 +80,7 @@ function createPlugin(overrides?: {
 }) {
   const adapter = new InMemoryAdapter();
   const configDir = ".obsidian";
-  const pluginId = "sprout";
+  const pluginId = "learnkit";
 
   const states: Record<string, unknown> = {};
   const stateCount = overrides?.stateCount ?? 2;

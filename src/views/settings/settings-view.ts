@@ -1,8 +1,8 @@
 /**
  * @file src/views/settings/settings-view.ts
- * @summary Custom Obsidian ItemView that renders Sprout settings inside the
+ * @summary Custom Obsidian ItemView that renders LearnKit settings inside the
  * workspace leaf (like Home, Analytics, Browser) rather than in the native
- * Obsidian settings modal. Uses the shared Sprout header, tab navigation,
+ * Obsidian settings modal. Uses the shared LearnKit header, tab navigation,
  * and delegates individual tab rendering to the existing LearnKitSettingsTab
  * methods via a thin adapter layer.
  *
@@ -11,12 +11,12 @@
  */
 
 import { ItemView, setIcon, type WorkspaceLeaf, MarkdownRenderer, Component, TFile, normalizePath } from "obsidian";
-import { type SproutHeader, createViewHeader } from "../../platform/core/header";
+import { type LearnKitHeader, createViewHeader } from "../../platform/core/header";
 import { log } from "../../platform/core/logger";
 import { AOS_CASCADE_STEP, MAX_CONTENT_WIDTH_PX, VIEW_TYPE_SETTINGS } from "../../platform/core/constants";
 import { placePopover, setCssProps } from "../../platform/core/ui";
 import { createTitleStripFrame } from "../../platform/core/view-primitives";
-import { SPROUT_HOME_CONTENT_SHELL_CLASS } from "../../platform/core/ui-classes";
+import { LEARNKIT_HOME_CONTENT_SHELL_CLASS } from "../../platform/core/ui-classes";
 import type LearnKitPlugin from "../../main";
 import { LearnKitSettingsTab } from "./settings-tab";
 import {
@@ -47,7 +47,7 @@ export class LearnKitSettingsView extends ItemView {
 
   plugin: LearnKitPlugin;
 
-  private _header: SproutHeader | null = null;
+  private _header: LearnKitHeader | null = null;
   private _rootEl: HTMLElement | null = null;
   private _titleStripEl: HTMLElement | null = null;
   private _pageTitleEl: HTMLElement | null = null;
@@ -63,7 +63,7 @@ export class LearnKitSettingsView extends ItemView {
   private _activeSettingsSubTab = "general";
 
   /** Active page in Release Notes nav. */
-  private _activeReleasePage = "about-sprout";
+  private _activeReleasePage = "about-learnkit";
 
   /** Active page in Guide nav. */
   private _activeGuidePage = "Home";
@@ -194,7 +194,7 @@ export class LearnKitSettingsView extends ItemView {
     this._titleStripTabBtnEls.clear();
     const frame = createTitleStripFrame({
       root,
-      stripClassName: "lk-home-title-strip sprout-settings-title-strip",
+      stripClassName: "lk-home-title-strip learnkit-settings-title-strip",
     });
     const { strip, right, title, subtitle } = frame;
 
@@ -368,7 +368,7 @@ export class LearnKitSettingsView extends ItemView {
     this._applyWidthMode();
 
     const contentShell = makeEl("div");
-    contentShell.className = `${SPROUT_HOME_CONTENT_SHELL_CLASS} learnkit-settings-content-shell`;
+    contentShell.className = `${LEARNKIT_HOME_CONTENT_SHELL_CLASS} learnkit-settings-content-shell`;
     root.appendChild(contentShell);
     this._contentShellEl = contentShell;
     this._pageTitleEl = null;
@@ -1138,7 +1138,7 @@ export class LearnKitSettingsView extends ItemView {
           inner.appendChild(body);
 
           const selected = pages.find((p) => p.key === this._activeGuidePage) ?? pages[0];
-          const guidePageClass = `sprout-guide-page-${selected.key.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
+          const guidePageClass = `learnkit-guide-page-${selected.key.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
           body.classList.add(guidePageClass);
 
           const pageTitle = makeEl("h1");
@@ -1162,7 +1162,7 @@ export class LearnKitSettingsView extends ItemView {
             void renderSelectedPage(true);
           });
 
-          if (selected.key === "Support-Sprout") {
+          if (selected.key === "Support-LearnKit") {
             this._enhanceAboutPage(body);
           }
 
@@ -1414,7 +1414,7 @@ export class LearnKitSettingsView extends ItemView {
     await MarkdownRenderer.render(this.app, active.markdown, body, "", this._releaseComponent);
 
     /* ── About page: enhance with rich layout ── */
-    if (active.key === "about-sprout") {
+    if (active.key === "about-learnkit") {
       this._enhanceAboutPage(body);
     }
 
@@ -1497,7 +1497,7 @@ export class LearnKitSettingsView extends ItemView {
     const releasePages = await fetchGithubReleasePages();
 
     const pages: ReleaseNotesPage[] = [
-      { key: "about-sprout", label: "About LearnKit", markdown: supportMarkdown },
+      { key: "about-learnkit", label: "About LearnKit", markdown: supportMarkdown },
       ...releasePages,
     ];
     this._releasePagesCache = { pages, ts: Date.now() };
@@ -1591,20 +1591,20 @@ export class LearnKitSettingsView extends ItemView {
     }
 
     const remoteCandidates = [
-      "https://raw.githubusercontent.com/ctrlaltwill/Sprout/main/site/branding/Founder.jpg",
-      "https://cdn.jsdelivr.net/gh/ctrlaltwill/Sprout@main/site/branding/Founder.jpg",
-      "https://raw.githubusercontent.com/ctrlaltwill/Sprout/main/wiki/avatar.png",
-      "https://raw.githubusercontent.com/ctrlaltwill/Sprout/main/wiki/avatar.jpg",
-      "https://raw.githubusercontent.com/ctrlaltwill/Sprout/main/wiki/avatar.jpeg",
-      "https://raw.githubusercontent.com/ctrlaltwill/Sprout/main/wiki/avatar.webp",
-      "https://raw.githubusercontent.com/ctrlaltwill/Sprout/main/site/docs/avatar.png",
-      "https://raw.githubusercontent.com/ctrlaltwill/Sprout/main/site/docs/avatar.jpg",
-      "https://raw.githubusercontent.com/ctrlaltwill/Sprout/main/site/docs/avatar.jpeg",
-      "https://raw.githubusercontent.com/ctrlaltwill/Sprout/main/site/docs/avatar.webp",
-      "https://cdn.jsdelivr.net/gh/ctrlaltwill/Sprout@main/wiki/avatar.png",
-      "https://cdn.jsdelivr.net/gh/ctrlaltwill/Sprout@main/wiki/avatar.jpg",
-      "https://cdn.jsdelivr.net/gh/ctrlaltwill/Sprout@main/site/docs/avatar.png",
-      "https://cdn.jsdelivr.net/gh/ctrlaltwill/Sprout@main/site/docs/avatar.jpg",
+      "https://raw.githubusercontent.com/ctrlaltwill/learnkit/main/site/branding/Founder.jpg",
+      "https://cdn.jsdelivr.net/gh/ctrlaltwill/learnkit@main/site/branding/Founder.jpg",
+      "https://raw.githubusercontent.com/ctrlaltwill/learnkit/main/wiki/avatar.png",
+      "https://raw.githubusercontent.com/ctrlaltwill/learnkit/main/wiki/avatar.jpg",
+      "https://raw.githubusercontent.com/ctrlaltwill/learnkit/main/wiki/avatar.jpeg",
+      "https://raw.githubusercontent.com/ctrlaltwill/learnkit/main/wiki/avatar.webp",
+      "https://raw.githubusercontent.com/ctrlaltwill/learnkit/main/site/docs/avatar.png",
+      "https://raw.githubusercontent.com/ctrlaltwill/learnkit/main/site/docs/avatar.jpg",
+      "https://raw.githubusercontent.com/ctrlaltwill/learnkit/main/site/docs/avatar.jpeg",
+      "https://raw.githubusercontent.com/ctrlaltwill/learnkit/main/site/docs/avatar.webp",
+      "https://cdn.jsdelivr.net/gh/ctrlaltwill/learnkit@main/wiki/avatar.png",
+      "https://cdn.jsdelivr.net/gh/ctrlaltwill/learnkit@main/wiki/avatar.jpg",
+      "https://cdn.jsdelivr.net/gh/ctrlaltwill/learnkit@main/site/docs/avatar.png",
+      "https://cdn.jsdelivr.net/gh/ctrlaltwill/learnkit@main/site/docs/avatar.jpg",
     ];
     return remoteCandidates[0] ?? null;
   }
@@ -1614,7 +1614,7 @@ export class LearnKitSettingsView extends ItemView {
       t(this.plugin.settings?.general?.interfaceLanguage, token, fallback);
 
     const storyCodeBlock = body.querySelector<HTMLElement>("pre > code");
-    if (storyCodeBlock?.textContent?.includes("Sprout was built by William Guy")) {
+    if (storyCodeBlock?.textContent?.includes("LearnKit was built by William Guy")) {
       const paragraph = makeEl("p");
       paragraph.textContent = storyCodeBlock.textContent.trim();
       const pre = storyCodeBlock.closest("pre");
@@ -1703,7 +1703,7 @@ export class LearnKitSettingsView extends ItemView {
       wrapper.className = "learnkit-about-buttons";
 
       if (bugLink) {
-        const btn = this._createAboutBtn("sprout-about-btn--bug", "bug", "", "Report a Bug", "Report a bug on GitHub");
+        const btn = this._createAboutBtn("learnkit-about-btn--bug", "bug", "", "Report a Bug", "Report a bug on GitHub");
         (btn as HTMLAnchorElement).href = bugLink.href;
         (btn as HTMLAnchorElement).target = "_blank";
         (btn as HTMLAnchorElement).rel = "noopener nofollow";
@@ -1711,7 +1711,7 @@ export class LearnKitSettingsView extends ItemView {
       }
 
       if (featureLink) {
-        const btn = this._createAboutBtn("sprout-about-btn--feature", "lightbulb", "", "Request a Feature", "Request a feature on GitHub", "a", "accent");
+        const btn = this._createAboutBtn("learnkit-about-btn--feature", "lightbulb", "", "Request a Feature", "Request a feature on GitHub", "a", "accent");
         (btn as HTMLAnchorElement).href = featureLink.href;
         (btn as HTMLAnchorElement).target = "_blank";
         (btn as HTMLAnchorElement).rel = "noopener nofollow";
@@ -1719,7 +1719,7 @@ export class LearnKitSettingsView extends ItemView {
       }
 
       if (browseLink) {
-        const btn = this._createAboutBtn("sprout-about-btn--browse", "list", "", "Browse Issues", "Browse open issues on GitHub");
+        const btn = this._createAboutBtn("learnkit-about-btn--browse", "list", "", "Browse Issues", "Browse open issues on GitHub");
         (btn as HTMLAnchorElement).href = browseLink.href;
         (btn as HTMLAnchorElement).target = "_blank";
         (btn as HTMLAnchorElement).rel = "noopener nofollow";
@@ -1731,7 +1731,7 @@ export class LearnKitSettingsView extends ItemView {
 
     /* ── Section 3: Support the Project ── */
     const githubStarLink = allLinks.find(
-      (a) => a.href.includes("github.com/ctrlaltwill/Sprout") && !a.href.includes("/issues") && !a.href.includes("/discussions") && !a.href.includes("new") && a.textContent?.includes("Star"),
+      (a) => a.href.includes("github.com/ctrlaltwill/learnkit") && !a.href.includes("/issues") && !a.href.includes("/discussions") && !a.href.includes("new") && a.textContent?.includes("Star"),
     );
     const shareLink = allLinks.find((a) => a.textContent?.includes("Share"));
     const coffeeLink = allLinks.find((a) => a.href.includes("buymeacoffee.com"));
@@ -1742,7 +1742,7 @@ export class LearnKitSettingsView extends ItemView {
       wrapper.className = "learnkit-about-buttons";
 
       if (githubStarLink) {
-        const btn = this._createAboutBtn("sprout-about-btn--star", "star", "sprout-about-star-spin", "Star on GitHub", "Star on GitHub");
+        const btn = this._createAboutBtn("learnkit-about-btn--star", "star", "learnkit-about-star-spin", "Star on GitHub", "Star on GitHub");
         const starLabel = btn.querySelector<HTMLElement>(".learnkit-about-btn-label");
         if (starLabel) {
           const githubIcon = makeEl("span");
@@ -1757,7 +1757,7 @@ export class LearnKitSettingsView extends ItemView {
       }
 
       if (coffeeLink) {
-        const btn = this._createAboutBtn("sprout-about-btn--coffee", "coffee", "sprout-about-coffee-spin", "Buy me a Coffee", "Buy me a coffee", "a", "accent");
+        const btn = this._createAboutBtn("learnkit-about-btn--coffee", "coffee", "learnkit-about-coffee-spin", "Buy me a Coffee", "Buy me a coffee", "a", "accent");
         (btn as HTMLAnchorElement).href = coffeeLink.href;
         (btn as HTMLAnchorElement).target = "_blank";
         (btn as HTMLAnchorElement).rel = "noopener nofollow";
@@ -1768,7 +1768,7 @@ export class LearnKitSettingsView extends ItemView {
         const shareProductName = "Learn" + "Kit";
         const shareCta = "Share " + shareProductName;
         const shareBtn = this._createAboutBtn(
-          "sprout-about-btn--share",
+          "learnkit-about-btn--share",
           "share-2",
           "",
           shareCta,
@@ -1784,7 +1784,7 @@ export class LearnKitSettingsView extends ItemView {
           shareBtn.addEventListener("click", (ev) => {
             ev.preventDefault();
             ev.stopPropagation();
-            const text = `Check out ${shareProductName} - a spaced-repetition flashcard plugin for Obsidian!\nhttps://github.com/ctrlaltwill/Sprout`;
+            const text = `Check out ${shareProductName} - a spaced-repetition flashcard plugin for Obsidian!\nhttps://github.com/ctrlaltwill/learnkit`;
             if (typeof navigator.clipboard?.writeText !== "function") return;
             void navigator.clipboard.writeText(text).then(() => {
               const origLabel = shareLabel.textContent ?? shareCta;
@@ -1852,7 +1852,7 @@ export class LearnKitSettingsView extends ItemView {
     //    are direct children of the container (guide body).
     const wrapper = container.querySelector<HTMLElement>(":scope > .learnkit-settings-wrapper");
     if (wrapper) {
-      // Move the sprout-settings class to the container so
+      // Move the learnkit-settings class to the container so
       // .learnkit-settings .setting-item rules still apply.
       container.classList.add("learnkit-settings", "learnkit-settings");
       while (wrapper.firstChild) container.insertBefore(wrapper.firstChild, wrapper);

@@ -4,7 +4,7 @@
  *
  * @exports
  *  - INVIS_RE                    — regex stripping zero-width spaces and BOM characters
- *  - ANCHOR_RE                   — regex matching a ^sprout-<id> anchor
+ *  - ANCHOR_RE                   — regex matching a ^learnkit-<id> anchor
  *  - FIELD_START_RE              — regex matching a field-start line (FieldKey | value)
  *  - FieldKey                    — type alias for valid field keys (T, Q, A, I, MCQ, CQ, O, G, IO)
  *  - clean                       — strips invisible characters and trims whitespace
@@ -348,9 +348,9 @@ export function extractCardFromSource(sourceContent: string, anchorId: string): 
   const lines = sourceContent.split('\n');
   let anchorLineIndex = -1;
   
-  // Find the line with ^learnkit-{anchorId} or ^sprout-{anchorId}
+  // Find the line with ^learnkit-{anchorId} or ^learnkit-{anchorId}
   for (let i = 0; i < lines.length; i++) {
-    if (lines[i].includes(`^learnkit-${anchorId}`) || lines[i].includes(`^sprout-${anchorId}`)) {
+    if (lines[i].includes(`^learnkit-${anchorId}`) || lines[i].includes(`^learnkit-${anchorId}`)) {
       anchorLineIndex = i;
       break;
     }
@@ -851,7 +851,7 @@ export function buildMCQSectionHTML(question: string, options: string[], answers
 }
 
 export function buildOQSectionHTML(question: string, steps: string[]): string {
-  const aId = `sprout-oq-${Math.random().toString(36).slice(2,8)}`;
+  const aId = `learnkit-oq-${Math.random().toString(36).slice(2,8)}`;
 
   const stepsHTML = steps.map((step, idx) => {
     return `<div class="learnkit-oq-answer-row">
@@ -878,8 +878,8 @@ export function buildOQSectionHTML(question: string, steps: string[]): string {
 }
 
 export function buildBasicSectionHTML(question?: string, answer?: string): string {
-  const qId = `sprout-q-${Math.random().toString(36).slice(2,8)}`;
-  const aId = `sprout-a-${Math.random().toString(36).slice(2,8)}`;
+  const qId = `learnkit-q-${Math.random().toString(36).slice(2,8)}`;
+  const aId = `learnkit-a-${Math.random().toString(36).slice(2,8)}`;
   
   const q = question ? `
     <div class="learnkit-card-section learnkit-section-question">
@@ -893,8 +893,8 @@ export function buildBasicSectionHTML(question?: string, answer?: string): strin
 }
 
 export function buildIOSectionHTML(_ioContent: string): string {
-  const ioQuestionId = `sprout-io-question-${Math.random().toString(36).slice(2,8)}`;
-  const ioAnswerId = `sprout-io-answer-${Math.random().toString(36).slice(2,8)}`;
+  const ioQuestionId = `learnkit-io-question-${Math.random().toString(36).slice(2,8)}`;
+  const ioAnswerId = `learnkit-io-answer-${Math.random().toString(36).slice(2,8)}`;
 
   const answerSection = buildCollapsibleSectionHTML(
     'Answer (full image)',
@@ -914,7 +914,7 @@ export function buildIOSectionHTML(_ioContent: string): string {
 }
 
 export function buildInfoSectionHTML(_infoContent: string): string {
-  const iId = `sprout-i-${Math.random().toString(36).slice(2,8)}`;
+  const iId = `learnkit-i-${Math.random().toString(36).slice(2,8)}`;
   return buildCollapsibleSectionHTML('Extra Information', `.learnkit-info-${Math.random().toString(36).slice(2,8)}`, `<div class="learnkit-info learnkit-p-spacing-none" id="${iId}"></div>`, iId, 'learnkit-section-info');
 }
 

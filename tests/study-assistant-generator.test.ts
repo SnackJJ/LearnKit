@@ -13,7 +13,7 @@ import {
   generateStudyAssistantSuggestionsStreaming,
   parseUserRequestOverrides,
 } from "../src/platform/integrations/ai/study-assistant-generator";
-import type { SproutSettings } from "../src/platform/types/settings";
+import type { LearnKitSettings } from "../src/platform/types/settings";
 import {
   requestStudyAssistantCompletionDetailed,
   requestStudyAssistantStreamingCompletion,
@@ -27,7 +27,7 @@ vi.mock("../src/platform/integrations/ai/study-assistant-provider", () => ({
 const mockedCompletion = vi.mocked(requestStudyAssistantCompletionDetailed);
 const mockedStreamingCompletion = vi.mocked(requestStudyAssistantStreamingCompletion);
 
-function makeSettings(): SproutSettings["studyAssistant"] {
+function makeSettings(): LearnKitSettings["studyAssistant"] {
   return {
     enabled: true,
     location: "modal",

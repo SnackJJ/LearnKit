@@ -16,7 +16,7 @@
   --lk-font-size-xl: 1.3125rem;
   --lk-font-size-lg: 1.5rem;
 
-  /* Legacy Sprout aliases (kept for compatibility) */
+  /* Legacy LearnKit aliases (kept for compatibility) */
   --learnkit-font-3xs: var(--lk-font-size-3xs);
   --learnkit-font-2xs: var(--lk-font-size-2xs);
   --learnkit-font-xs: var(--lk-font-size-xs);

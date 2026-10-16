@@ -3,11 +3,11 @@
  * @summary Module for exam generator view.
  *
  * @exports
- *  - SproutExamGeneratorView
+ *  - LearnKitExamGeneratorView
  */
 
 import { ItemView, Notice, TFile, setIcon, type WorkspaceLeaf } from "obsidian";
-import { createViewHeader, type SproutHeader } from "../../platform/core/header";
+import { createViewHeader, type LearnKitHeader } from "../../platform/core/header";
 import { AOS_DURATION, MAX_CONTENT_WIDTH_PX, VIEW_TYPE_EXAM_GENERATOR } from "../../platform/core/constants";
 import { renderMarkdownPreviewInElement, setCssProps } from "../../platform/core/ui";
 import { createTitleStripFrame } from "../../platform/core/view-primitives";
@@ -61,10 +61,10 @@ type QuestionResult = {
 const MAX_SELECTABLE_NOTES = 5;
 const DEFAULT_MAX_FOLDER_NOTES = 20;
 
-export class SproutExamGeneratorView extends ItemView {
+export class LearnKitExamGeneratorView extends ItemView {
   plugin: LearnKitPlugin;
 
-  private _header: SproutHeader | null = null;
+  private _header: LearnKitHeader | null = null;
   private _rootEl: HTMLElement | null = null;
   private _shellEl: HTMLElement | null = null;
   private _aosInitialized = false;
@@ -580,7 +580,7 @@ export class SproutExamGeneratorView extends ItemView {
     const coachShellMode = this._coachScopePrefilled;
 
     const titleFrame = createTitleStripFrame({
-      root: this._rootEl, stripClassName: "lk-home-title-strip learnkit-exam-generator-title-strip", rowClassName: "sprout-inline-sentence w-full flex items-center justify-between gap-[10px]", leftClassName: "min-w-0 flex-1 flex flex-col gap-[2px]", rightClassName: "flex items-center gap-2", prepend: true, });
+      root: this._rootEl, stripClassName: "lk-home-title-strip learnkit-exam-generator-title-strip", rowClassName: "learnkit-inline-sentence w-full flex items-center justify-between gap-[10px]", leftClassName: "min-w-0 flex-1 flex flex-col gap-[2px]", rightClassName: "flex items-center gap-2", prepend: true, });
 
     const animateTitleStripNow =
       animationsEnabled && !this._titleStripAnimatedOnce && this._mode === "setup" && !coachShellMode && !suppressEntranceAos;
@@ -1762,7 +1762,7 @@ export class SproutExamGeneratorView extends ItemView {
       .replace(/\b\w/g, (c) => c.toUpperCase());
 
     const wrap = row.createDiv({ cls: "learnkit-exam-generator-select-wrap learnkit-exam-generator-select-wrap" });
-    const id = `sprout-dd-${Math.random().toString(36).slice(2, 9)}`;
+    const id = `learnkit-dd-${Math.random().toString(36).slice(2, 9)}`;
     const trigger = wrap.createEl("button", {
       cls: "learnkit-btn-filter learnkit-btn-filter h-7 px-3 text-sm inline-flex items-center gap-2 learnkit-pointer-auto learnkit-pointer-auto learnkit-exam-generator-select-trigger learnkit-exam-generator-select-trigger", attr: {
         type: "button", id: `${id}-trigger`, "aria-haspopup": "menu", "aria-expanded": "false", "aria-label": label, }, });
@@ -1877,7 +1877,7 @@ export class SproutExamGeneratorView extends ItemView {
     };
 
     const wrap = row.createDiv({ cls: "learnkit-exam-generator-select-wrap learnkit-exam-generator-select-wrap" });
-    const id = `sprout-dd-${Math.random().toString(36).slice(2, 9)}`;
+    const id = `learnkit-dd-${Math.random().toString(36).slice(2, 9)}`;
     const trigger = wrap.createEl("button", {
       cls: "learnkit-btn-filter learnkit-btn-filter h-7 px-3 text-sm inline-flex items-center gap-2 learnkit-pointer-auto learnkit-pointer-auto learnkit-exam-generator-select-trigger learnkit-exam-generator-select-trigger", attr: {
         type: "button", id: `${id}-trigger`, "aria-haspopup": "menu", "aria-expanded": "false", "aria-label": label, }, });
@@ -2498,7 +2498,7 @@ export class SproutExamGeneratorView extends ItemView {
       const focusEl = activeEl ?? targetEl;
       const eventInView = !!(targetEl && rootEl.contains(targetEl));
       const focusInView = !!(focusEl && rootEl.contains(focusEl));
-      const activeLeafMatches = this.app.workspace.getActiveViewOfType(SproutExamGeneratorView) === this;
+      const activeLeafMatches = this.app.workspace.getActiveViewOfType(LearnKitExamGeneratorView) === this;
       const isDocumentLevelTarget = !targetEl || targetEl === activeDocument.body || targetEl === activeDocument.documentElement;
 
       if (!eventInView && !focusInView && (!activeLeafMatches || !isDocumentLevelTarget)) return;

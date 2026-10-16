@@ -1015,7 +1015,7 @@ body.is-phone .small-card {
   margin: 0;
 }
 
-@keyframes sproutCoachSlideNext {
+@keyframes learnkitCoachSlideNext {
   from {
     opacity: 0;
     transform: translateX(22px);
@@ -1026,7 +1026,7 @@ body.is-phone .small-card {
   }
 }
 
-@keyframes sproutCoachSlideBack {
+@keyframes learnkitCoachSlideBack {
   from {
     opacity: 0;
     transform: translateX(-22px);
@@ -1038,29 +1038,29 @@ body.is-phone .small-card {
 }
 
 .learnkit .learnkit-coach-wizard-page.is-enter-next {
-  animation: sproutCoachSlideNext 230ms ease-out;
+  animation: learnkitCoachSlideNext 230ms ease-out;
 }
 
 .learnkit .learnkit-coach-wizard-page.is-enter-back {
-  animation: sproutCoachSlideBack 230ms ease-out;
+  animation: learnkitCoachSlideBack 230ms ease-out;
 }
 
-@keyframes sproutCoachSlideOutNext {
+@keyframes learnkitCoachSlideOutNext {
   from { opacity: 1; transform: translateX(0); }
   to   { opacity: 0; transform: translateX(-22px); }
 }
 
-@keyframes sproutCoachSlideOutBack {
+@keyframes learnkitCoachSlideOutBack {
   from { opacity: 1; transform: translateX(0); }
   to   { opacity: 0; transform: translateX(22px); }
 }
 
 .learnkit .learnkit-coach-wizard-page.is-exit-next {
-  animation: sproutCoachSlideOutNext 150ms ease-in forwards;
+  animation: learnkitCoachSlideOutNext 150ms ease-in forwards;
 }
 
 .learnkit .learnkit-coach-wizard-page.is-exit-back {
-  animation: sproutCoachSlideOutBack 150ms ease-in forwards;
+  animation: learnkitCoachSlideOutBack 150ms ease-in forwards;
 }
 
 .learnkit .learnkit-coach-stepper {
@@ -2029,7 +2029,7 @@ body.is-mobile .learnkit .learnkit-coach-scope-actions-grid {
   transition: width 220ms ease;
 }
 
-@keyframes sproutHealthBarGrow {
+@keyframes learnkitHealthBarGrow {
   from {
     width: 0%;
   }
@@ -2039,7 +2039,7 @@ body.is-mobile .learnkit .learnkit-coach-scope-actions-grid {
 }
 
 .learnkit .learnkit-coach-health-bar-fill-animated {
-  animation: sproutHealthBarGrow 600ms ease-out forwards;
+  animation: learnkitHealthBarGrow 600ms ease-out forwards;
 }
 
 .learnkit .learnkit-no-animate .learnkit-coach-health-bar-fill-animated {

@@ -206,7 +206,7 @@ export class ConfirmResetAnalyticsModal extends Modal {
 // ────────────────────────────────────────────
 
 /**
- * Destructive action: deletes every Sprout flashcard from every markdown
+ * Destructive action: deletes every LearnKit flashcard from every markdown
  * note in the vault and clears the plugin database.  Accepts an `onConfirm`
  * callback so the caller (LearnKitSettingsTab) can orchestrate vault-wide
  * deletion and store clearing.
@@ -529,7 +529,7 @@ export class BackupCompareModal extends Modal {
 // ────────────────────────────────────────────
 
 /**
- * Confirms restoring the Sprout database from a backup file.
+ * Confirms restoring the LearnKit database from a backup file.
  * Shows a summary of what will change (cards, states, review log, etc.)
  * and optionally creates a safety backup before proceeding.
  */

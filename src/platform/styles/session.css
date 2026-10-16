@@ -1140,7 +1140,7 @@ body.is-phone .learnkit .lk-review-title-strip-session .lk-review-title-timer-ho
 }
 
 /* Shake animation for empty MCQ submit */
-@keyframes sprout-shake {
+@keyframes learnkit-shake {
   0%, 100% { transform: translateX(0); }
   15% { transform: translateX(-6px); }
   30% { transform: translateX(5px); }
@@ -1151,7 +1151,7 @@ body.is-phone .learnkit .lk-review-title-strip-session .lk-review-title-timer-ho
 }
 
 .learnkit-mcq-submit-shake {
-  animation: sprout-shake 0.5s ease-in-out;
+  animation: learnkit-shake 0.5s ease-in-out;
 }
 
 /* Force-show tooltip when class is applied programmatically */

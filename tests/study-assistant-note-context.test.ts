@@ -2,11 +2,11 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { TFile } from "obsidian";
 
 import { buildStudyAssistantNoteContext } from "../src/platform/integrations/ai/study-assistant-note-context";
-import type { SproutSettings } from "../src/platform/types/settings";
+import type { LearnKitSettings } from "../src/platform/types/settings";
 
 vi.mock("obsidian");
 
-function makeStudyAssistantSettings(): SproutSettings["studyAssistant"] {
+function makeStudyAssistantSettings(): LearnKitSettings["studyAssistant"] {
   return {
     enabled: true,
     location: "modal",

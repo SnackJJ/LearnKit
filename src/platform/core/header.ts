@@ -1,16 +1,16 @@
 /**
  * @file src/core/header.ts
- * @summary Shared header bar component used by all top-level Sprout views (Home, Study,
+ * @summary Shared header bar component used by all top-level LearnKit views (Home, Study,
  * Flashcards, Analytics). Renders a dropdown navigation switcher, expand/collapse width
  * toggle, sync button, and a "More" popover with split-pane and settings actions. Manages
  * popover lifecycle, keyboard navigation, Obsidian theme synchronisation, and
  * ResizeObserver-based responsive visibility of the width toggle.
  *
  * @exports
- *   - SproutHeaderPage — type alias for the four navigation page identifiers
- *   - SproutHeaderMenuItem — type for items rendered in the More popover menu
- *   - SproutHeader — class that installs and manages the header bar DOM
- *   - createViewHeader — factory function that wires a SproutHeader to any ItemView
+ *   - LearnKitHeaderPage — type alias for the four navigation page identifiers
+ *   - LearnKitHeaderMenuItem — type for items rendered in the More popover menu
+ *   - LearnKitHeader — class that installs and manages the header bar DOM
+ *   - createViewHeader — factory function that wires a LearnKitHeader to any ItemView
  */
 import { MAX_CONTENT_WIDTH, VIEW_TYPE_ANALYTICS, VIEW_TYPE_BROWSER, VIEW_TYPE_REVIEWER, VIEW_TYPE_HOME, VIEW_TYPE_SETTINGS, VIEW_TYPE_NOTE_REVIEW, VIEW_TYPE_EXAM_GENERATOR, VIEW_TYPE_COACH } from "./constants";
 import { App, ItemView, Notice, WorkspaceLeaf, setIcon } from "obsidian";
@@ -24,9 +24,9 @@ import { LearnKitSettingsView } from "../../views/settings/view/settings-view";
 import { t } from "../translations/translator";
 import { makeEl, makeSvgEl } from "./dom-factory";
 
-export type SproutHeaderPage = "home" | "cards" | "notes" | "exam" | "coach" | "analytics" | "library" | "settings";
+export type LearnKitHeaderPage = "home" | "cards" | "notes" | "exam" | "coach" | "analytics" | "library" | "settings";
 
-export type SproutHeaderMenuItem = {
+export type LearnKitHeaderMenuItem = {
   type?: "action" | "section" | "separator";
   label: string;
   icon?: string; // lucide name used by setIcon
@@ -58,7 +58,7 @@ function clearChildren(node: HTMLElement | null) {
   clearNode(node);
 }
 
-export class SproutHeader {
+export class LearnKitHeader {
   private deps: Deps;
 
   private headerNavId: string;
@@ -86,7 +86,7 @@ export class SproutHeader {
 
   constructor(deps: Deps) {
     this.deps = deps;
-    this.headerNavId = `sprout-topnav-${Math.random().toString(36).slice(2, 9)}`;
+    this.headerNavId = `learnkit-topnav-${Math.random().toString(36).slice(2, 9)}`;
     this.moreId = `lk-more-${Math.random().toString(36).slice(2, 9)}`;
   }
 
@@ -94,7 +94,7 @@ export class SproutHeader {
     return t(this.deps.plugin?.settings?.general?.interfaceLanguage, token, fallback, vars);
   }
 
-  private pageLabel(page: SproutHeaderPage): string {
+  private pageLabel(page: LearnKitHeaderPage): string {
     return page === "home"
       ? this.tx("ui.header.page.home", "Home")
       : page === "cards"
@@ -377,7 +377,7 @@ export class SproutHeader {
     this.themeObserver = null;
   }
 
-  install(active: SproutHeaderPage) {
+  install(active: LearnKitHeaderPage) {
     const viewHeader =
       queryFirst<HTMLElement>(this.deps.containerEl, ":scope > .view-header") ??
       queryFirst<HTMLElement>(this.deps.containerEl, ".view-header");
@@ -437,10 +437,10 @@ export class SproutHeader {
   private syncThemeWithObsidian() {
     const updateTheme = () => {
       const isDark = activeDocument.body.classList.contains("theme-dark");
-      const sprout = this.deps.containerEl?.closest('.learnkit');
-      if (sprout) {
-        sprout.classList.toggle("theme-dark", isDark);
-        sprout.classList.toggle("theme-light", !isDark);
+      const learnkit = this.deps.containerEl?.closest('.learnkit');
+      if (learnkit) {
+        learnkit.classList.toggle("theme-dark", isDark);
+        learnkit.classList.toggle("theme-light", !isDark);
       }
     };
     updateTheme();
@@ -454,7 +454,7 @@ export class SproutHeader {
   // Navigation
   // ---------------------------
 
-  private async navigate(page: SproutHeaderPage) {
+  private async navigate(page: LearnKitHeaderPage) {
     const type =
       page === "home"
         ? VIEW_TYPE_HOME
@@ -538,16 +538,16 @@ export class SproutHeader {
     if (trigger) trigger.setAttribute("aria-expanded", "false");
   }
 
-  private openTopNavPopover(trigger: HTMLElement, active: SproutHeaderPage) {
+  private openTopNavPopover(trigger: HTMLElement, active: LearnKitHeaderPage) {
     this.closeTopNavPopover();
     trigger.setAttribute("aria-expanded", "true");
 
-    const sproutWrapper = makeEl("div", this.deps.containerEl.ownerDocument);
-    sproutWrapper.className = "learnkit";
+    const learnkitWrapper = makeEl("div", this.deps.containerEl.ownerDocument);
+    learnkitWrapper.className = "learnkit";
     const root = makeEl("div", this.deps.containerEl.ownerDocument);
     root.className = "dropdown-menu";
     root.classList.add("learnkit-popover-overlay", "learnkit-popover-overlay");
-    sproutWrapper.appendChild(root);
+    learnkitWrapper.appendChild(root);
 
     const panel = makeEl("div", this.deps.containerEl.ownerDocument);
     panel.className = "min-w-56 rounded-md border border-border bg-popover text-popover-foreground shadow-lg p-1 learnkit-pointer-auto learnkit-header-menu-panel";
@@ -558,7 +558,7 @@ export class SproutHeader {
     menu.className = "flex flex-col";
     panel.appendChild(menu);
 
-    const mkNavItem = (label: string, page: SproutHeaderPage, icon?: string, showBeta = false) => {
+    const mkNavItem = (label: string, page: LearnKitHeaderPage, icon?: string, showBeta = false) => {
       const item = makeEl("div", this.deps.containerEl.ownerDocument);
       item.className =
         "group flex items-center gap-2 rounded-md px-2 py-1.5 text-sm cursor-pointer select-none outline-none hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground";
@@ -694,9 +694,9 @@ export class SproutHeader {
     mkActionItem(this.tx("ui.header.menu.releaseNotes", "Release notes"), () => this.openSettingsTab("about"), "package");
     mkActionItem(this.tx("ui.header.page.settings", "Settings"), () => this.openSettingsTab("settings"), "settings");
 
-    activeDocument.body.appendChild(sproutWrapper);
+    activeDocument.body.appendChild(learnkitWrapper);
     this.topNavPopoverEl = root;
-    this.topNavWrapperEl = sproutWrapper;
+    this.topNavWrapperEl = learnkitWrapper;
     root.classList.add("is-open");
 
     const isMobile = activeDocument.body.classList.contains("is-mobile");
@@ -744,7 +744,7 @@ export class SproutHeader {
     };
   }
 
-  private installHeaderDropdownNav(active: SproutHeaderPage) {
+  private installHeaderDropdownNav(active: LearnKitHeaderPage) {
     const isMobile = activeDocument.body.classList.contains("is-mobile");
     // Render the page-switcher in the left nav area.
     const navHost = isMobile
@@ -833,7 +833,7 @@ export class SproutHeader {
         leaf: this.deps.leaf,
         plugin: this.deps.plugin,
         trigger: btn,
-        navigate: (page: string) => this.navigate(page as SproutHeaderPage),
+        navigate: (page: string) => this.navigate(page as LearnKitHeaderPage),
         runSync: () => this.deps.runSync(),
       });
     } else if (this.cmdPalette) {
@@ -873,17 +873,17 @@ export class SproutHeader {
     if (this.moreTriggerEl) this.moreTriggerEl.setAttribute("aria-expanded", "false");
   }
 
-  private openMorePopover(trigger: HTMLElement, items: SproutHeaderMenuItem[]) {
+  private openMorePopover(trigger: HTMLElement, items: LearnKitHeaderMenuItem[]) {
     this.closeMorePopover();
     this.moreTriggerEl = trigger as HTMLButtonElement;
     trigger.setAttribute("aria-expanded", "true");
 
-    const sproutWrapper = makeEl("div", this.deps.containerEl.ownerDocument);
-    sproutWrapper.className = "learnkit";
+    const learnkitWrapper = makeEl("div", this.deps.containerEl.ownerDocument);
+    learnkitWrapper.className = "learnkit";
     const root = makeEl("div", this.deps.containerEl.ownerDocument);
     root.className = "dropdown-menu";
     root.classList.add("learnkit-popover-overlay", "learnkit-popover-overlay");
-    sproutWrapper.appendChild(root);
+    learnkitWrapper.appendChild(root);
 
     const panel = makeEl("div", this.deps.containerEl.ownerDocument);
     panel.className = "min-w-56 rounded-md border border-border bg-popover text-popover-foreground shadow-lg p-1 learnkit-pointer-auto learnkit-header-menu-panel";
@@ -1005,9 +1005,9 @@ export class SproutHeader {
       menu.appendChild(row);
     }
 
-    activeDocument.body.appendChild(sproutWrapper);
+    activeDocument.body.appendChild(learnkitWrapper);
     this.morePopoverEl = root;
-    this.moreWrapperEl = sproutWrapper;
+    this.moreWrapperEl = learnkitWrapper;
     root.classList.add("is-open");
 
     const place = () => {
@@ -1065,7 +1065,7 @@ export class SproutHeader {
     };
   }
 
-  private installHeaderActionsButtonGroup(active: SproutHeaderPage) {
+  private installHeaderActionsButtonGroup(active: LearnKitHeaderPage) {
     const actionsHost =
       (this.deps.containerEl.querySelector<HTMLElement>(":scope > .view-header .view-actions")) ??
       (this.deps.containerEl.querySelector<HTMLElement>(".view-header .view-actions"));
@@ -1192,13 +1192,13 @@ export class SproutHeader {
     const openAnkiImport = () => runCommand("learnkit:import-anki", importFromAnkiLabel);
     const openAnkiExport = () => runCommand("learnkit:export-anki", exportToAnkiLabel);
     const openSupport = () => {
-      window.open("https://github.com/ctrlaltwill/Sprout/issues", "_blank", "noopener,noreferrer");
+      window.open("https://github.com/ctrlaltwill/learnkit/issues", "_blank", "noopener,noreferrer");
     };
     const openGithubRepository = () => {
-      window.open("https://github.com/ctrlaltwill/Sprout", "_blank", "noopener,noreferrer");
+      window.open("https://github.com/ctrlaltwill/learnkit", "_blank", "noopener,noreferrer");
     };
 
-    const menuItems: SproutHeaderMenuItem[] = [
+    const menuItems: LearnKitHeaderMenuItem[] = [
       { type: "section", label: ankiNoun },
       { label: exportToAnkiLabel, icon: "folder-up", onActivate: openAnkiExport },
       { label: importFromAnkiLabel, icon: "folder-down", onActivate: openAnkiImport },
@@ -1224,7 +1224,7 @@ export class SproutHeader {
 
 // ─── Factory ────────────────────────────────────────────────────────
 /**
- * Creates a {@link SproutHeader} with the common wiring shared by all
+ * Creates a {@link LearnKitHeader} with the common wiring shared by all
  * four top-level views (Home, Study, Flashcards, Analytics).
  *
  * Each view only needs to supply:
@@ -1238,9 +1238,9 @@ export function createViewHeader(opts: {
   plugin: { isWideMode: boolean };
   onToggleWide: () => void;
   beforeSync?: () => void;
-}): SproutHeader {
+}): LearnKitHeader {
   const leaf = opts.view.leaf ?? opts.view.app.workspace.getLeaf(false);
-  return new SproutHeader({
+  return new LearnKitHeader({
     app: opts.view.app,
     leaf,
     plugin: opts.plugin as LearnKitPlugin,

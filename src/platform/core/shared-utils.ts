@@ -439,14 +439,14 @@ export function collectMathSegments(text: string): MathSegment[] {
 }
 
 export interface MathProtection {
-  /** The text with math ranges replaced by `@@SPROUTMATH{idx}@@` placeholders. */
+  /** The text with math ranges replaced by `@@LEARNKITMATH{idx}@@` placeholders. */
   text: string;
   /** Restore placeholders (which may have been HTML-transformed) back to raw math. */
   restore: (html: string) => string;
 }
 
 /**
- * Replace every math range with an `@@SPROUTMATH{idx}@@` placeholder and return
+ * Replace every math range with an `@@LEARNKITMATH{idx}@@` placeholder and return
  * a restorer. This is the shared "island parsing" helper used before any
  * HTML-escaping or formatting step so LaTeX (`<`, `>`, `_`, `*`, etc.) is never
  * corrupted.
@@ -465,7 +465,7 @@ export function protectMathRanges(text: string): MathProtection {
     out += src.slice(cursor, s);
     const idx = placeholders.length;
     placeholders.push(src.slice(s, e));
-    out += `@@SPROUTMATH${idx}@@`;
+    out += `@@LEARNKITMATH${idx}@@`;
     cursor = e;
   }
   out += src.slice(cursor);
@@ -474,7 +474,7 @@ export function protectMathRanges(text: string): MathProtection {
     text: out,
     restore: (html: string) => {
       if (!placeholders.length) return html;
-      return html.replace(/@@SPROUTMATH(\d+)@@/g, (_m, idx) => {
+      return html.replace(/@@LEARNKITMATH(\d+)@@/g, (_m, idx) => {
         return placeholders[Number(idx)] ?? _m;
       });
     },
@@ -496,7 +496,7 @@ export function escapeAngleBracketsOutsideMathAndCode(text: string): string {
   const codeProtected = src.replace(/`([^`]*)`/g, (match) => {
     const idx = codePlaceholders.length;
     codePlaceholders.push(match);
-    return `@@SPROUTCODE${idx}@@`;
+    return `@@LEARNKITCODE${idx}@@`;
   });
 
   // 2. Protect math ranges (inline $, $$, \(...\), \[...\]).
@@ -510,7 +510,7 @@ export function escapeAngleBracketsOutsideMathAndCode(text: string): string {
 
   // 5. Restore code placeholders.
   if (codePlaceholders.length) {
-    result = result.replace(/@@SPROUTCODE(\d+)@@/g, (_m, idx) => {
+    result = result.replace(/@@LEARNKITCODE(\d+)@@/g, (_m, idx) => {
       return codePlaceholders[Number(idx)] ?? _m;
     });
   }
@@ -785,7 +785,7 @@ export function processClozeForMath(
 ): string {
   const isInsideMath = buildMathRangeChecker(text);
   const clozeMatches = matchClozeTokensBraceAware(text);
-  const blankClassName = (options?.blankClassName || "sprout-cloze-blank hidden-cloze").trim();
+  const blankClassName = (options?.blankClassName || "learnkit-cloze-blank hidden-cloze").trim();
   const useHintText = options?.useHintText !== false;
 
   const buildBlankHtml = (content: string, hintText?: string | null): string => {

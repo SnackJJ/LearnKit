@@ -227,7 +227,7 @@ export class CardCreatorModal extends Modal {
     // ── Type selector (dropdown + popover menu) ─────────────────────────────
     const typeField = body.createDiv({ cls: "flex flex-col gap-1" });
     typeField.classList.add("learnkit-is-hidden", "learnkit-is-hidden");
-    const typeId = `sprout-type-${Math.floor(Math.random() * 1e9)}`;
+    const typeId = `learnkit-type-${Math.floor(Math.random() * 1e9)}`;
 
     const typeLabel = typeField.createEl("label", { cls: "text-sm font-medium", attr: { for: typeId } });
     typeLabel.textContent = this.tx("ui.cardCreator.questionType", "Question type");
@@ -287,12 +287,12 @@ export class CardCreatorModal extends Modal {
     typeMenuBtn.appendChild(typeMenuBtnIcon);
 
     const typePopover = makeEl("div");
-    const typeSproutWrapper = makeEl("div");
-    typeSproutWrapper.className = "learnkit";
+    const typeLearnKitWrapper = makeEl("div");
+    typeLearnKitWrapper.className = "learnkit";
     typePopover.className = "";
     typePopover.setAttribute("aria-hidden", "true");
     typePopover.classList.add("learnkit-popover-overlay", "learnkit-popover-overlay", "learnkit-card-creator-type-popover", "learnkit-card-creator-type-popover");
-    typeSproutWrapper.appendChild(typePopover);
+    typeLearnKitWrapper.appendChild(typePopover);
 
     const typePanel = makeEl("div");
     typePanel.className = "rounded-md border border-border bg-popover text-popover-foreground shadow-lg p-1 learnkit-pointer-auto learnkit-card-creator-type-panel";
@@ -324,7 +324,7 @@ export class CardCreatorModal extends Modal {
       typePopover.setAttribute("aria-hidden", "true");
       typePopover.classList.remove("is-open");
       try {
-        typeSproutWrapper.remove();
+        typeLearnKitWrapper.remove();
       } catch (e) { log.swallow("remove type menu wrapper", e); }
       typeMenuOpen = false;
     };
@@ -396,7 +396,7 @@ export class CardCreatorModal extends Modal {
       typeMenuBtn.setAttribute("aria-expanded", "true");
       typePopover.setAttribute("aria-hidden", "false");
       typePopover.classList.add("is-open");
-      if (!typeSproutWrapper.parentElement) activeDocument.body.appendChild(typeSproutWrapper);
+      if (!typeLearnKitWrapper.parentElement) activeDocument.body.appendChild(typeLearnKitWrapper);
       window.requestAnimationFrame(() => placeTypeMenu());
 
       const onDocPointerDown = (ev: PointerEvent) => {

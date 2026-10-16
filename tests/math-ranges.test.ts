@@ -58,7 +58,7 @@ describe("collectMathRanges", () => {
 describe("protectMathRanges", () => {
   it("protects and restores math", () => {
     const { text, restore } = protectMathRanges("a $x<y$ b");
-    expect(text).toBe("a @@SPROUTMATH0@@ b");
+    expect(text).toBe("a @@LEARNKITMATH0@@ b");
     expect(restore(text)).toBe("a $x<y$ b");
   });
 

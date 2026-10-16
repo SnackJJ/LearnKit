@@ -4,7 +4,7 @@
  *
  * @exports
  *  - LearnKitPlugin
- *  - SproutPlugin
+ *  - LearnKitPlugin
  */
 
 // This file is small on purpose. The chaos now lives in organized modules. Have fun exploring!
@@ -36,7 +36,6 @@ const _Composed = WithLifecycleMethods(
 );
 
 export class LearnKitPlugin extends _Composed {}
-export { LearnKitPlugin as SproutPlugin };
 export default LearnKitPlugin;
 
 // If you want to help clean this up and keep the dev caffeinated, head here:

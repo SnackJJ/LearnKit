@@ -72,7 +72,7 @@ of France. |`
 
   it("attaches an anchor id when present", () => {
     const card = parseOne(
-      `^sprout-123456789
+      `^learnkit-123456789
 Q | Question |
 A | Answer |`
     );
@@ -280,7 +280,7 @@ Loss of horizontal gaze
 
   it("parses a multi-line cloze with anchor and title", () => {
     const card = parseOne(
-      `^sprout-837047008
+      `^learnkit-837047008
 T| Neurology |
 CQ| In addition to scopolamine, which drugs treat vestibular nausea?
 
@@ -473,11 +473,11 @@ CQ | The {{c1::sun}} sets. |`
 
   it("assigns different anchors to different cards", () => {
     const cards = parse(
-      `^sprout-111111111
+      `^learnkit-111111111
 Q | Q1 |
 A | A1 |
 
-^sprout-222222222
+^learnkit-222222222
 Q | Q2 |
 A | A2 |`
     );
@@ -633,7 +633,7 @@ Shorthand Q::Shorthand A`
   });
 
   it("attaches a pending anchor ID to a shorthand card", () => {
-    const card = parseOne("^sprout-123456789\nCapital::Paris");
+    const card = parseOne("^learnkit-123456789\nCapital::Paris");
     expect(card.id).toBe("123456789");
     expect(card.q).toBe("Capital");
     expect(card.a).toBe("Paris");

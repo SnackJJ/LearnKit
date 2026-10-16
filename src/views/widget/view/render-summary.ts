@@ -1,6 +1,6 @@
 /**
  * @file src/widget/widget-render-summary.ts
- * @summary Renders the "summary" mode of the Sprout sidebar widget — the screen the user sees before starting a study session. Extracted from SproutWidgetView.renderSummary to keep the main view file lean. Displays card counts, due-card statistics, and the "Start Studying" button.
+ * @summary Renders the "summary" mode of the LearnKit sidebar widget — the screen the user sees before starting a study session. Extracted from LearnKitWidgetView.renderSummary to keep the main view file lean. Displays card counts, due-card statistics, and the "Start Studying" button.
  *
  * @exports
  *  - renderWidgetSummary — builds and mounts the summary-mode DOM into the widget container
@@ -24,7 +24,7 @@ import { makeEl } from "../../../platform/core/dom-factory";
 /**
  * Build and append the summary-mode DOM tree into `root`.
  *
- * @param view – the `SproutWidgetView` instance (typed loosely to avoid
+ * @param view – the `LearnKitWidgetView` instance (typed loosely to avoid
  *               circular imports)
  * @param root – container element to render into
  */
@@ -41,7 +41,7 @@ export function renderWidgetSummary(view: WidgetViewLike, root: HTMLElement): vo
   const counts = computeCounts(cards, view.plugin.store);
 
   // Header: study title with open button
-  const header = el("div", "sprout-widget-summary-header");
+  const header = el("div", "learnkit-widget-summary-header");
 
   // Create title (not a button)
   const isFolder = isFolderNote(f);
@@ -50,10 +50,10 @@ export function renderWidgetSummary(view: WidgetViewLike, root: HTMLElement): vo
   const titleText = noteName.replace(/\.md$/, ""); // Remove .md extension
   const titleCased = toTitleCase(titleText);
 
-  const summaryLabelWrap = el("div", "sprout-widget-summary-labels");
+  const summaryLabelWrap = el("div", "learnkit-widget-summary-labels");
   const learnWord = tx("ui.widget.summary.headerLearn", "Learn");
   const kitWord = tx("ui.widget.summary.headerKit", "Kit");
-  const summaryTitle = el("div", "sprout-widget-summary-title", `${learnWord}${kitWord}`);
+  const summaryTitle = el("div", "learnkit-widget-summary-title", `${learnWord}${kitWord}`);
   summaryLabelWrap.appendChild(summaryTitle);
 
   const scopeKind = studyingAsFolder
@@ -63,7 +63,7 @@ export function renderWidgetSummary(view: WidgetViewLike, root: HTMLElement): vo
     scope: titleText,
     kind: scopeKind,
   });
-  const remainingLine = el("div", "sprout-widget-remaining-line", remainingLabel);
+  const remainingLine = el("div", "learnkit-widget-remaining-line", remainingLabel);
   summaryLabelWrap.appendChild(remainingLine);
 
   header.appendChild(summaryLabelWrap);
@@ -88,7 +88,7 @@ export function renderWidgetSummary(view: WidgetViewLike, root: HTMLElement): vo
       msg = tx("ui.widget.summary.enableFolderDecks", "No flashcards found. Enable 'Treat folder notes as decks' in settings.");
     }
 
-    const msgEl = el("div", "sprout-widget-empty-message", msg);
+    const msgEl = el("div", "learnkit-widget-empty-message", msg);
     body.appendChild(msgEl);
     wrap.appendChild(body);
     root.appendChild(wrap);
@@ -96,9 +96,9 @@ export function renderWidgetSummary(view: WidgetViewLike, root: HTMLElement): vo
   }
 
   // Teaser card: summary + next up preview
-  const teaser = el("div", "sprout-widget-teaser");
+  const teaser = el("div", "learnkit-widget-teaser");
 
-  const teaserTitle = el("div", "sprout-widget-teaser-title", titleCased);
+  const teaserTitle = el("div", "learnkit-widget-teaser-title", titleCased);
   teaser.appendChild(teaserTitle);
 
   const previewSession = view.buildSessionForActiveNote();
@@ -129,16 +129,16 @@ export function renderWidgetSummary(view: WidgetViewLike, root: HTMLElement): vo
     "{count} flashcards total",
     { count: counts.total },
   );
-  const countsLine = el("div", "sprout-widget-counts-line", `${dueLabel}  •  ${flashcardsTotalLabel}`);
+  const countsLine = el("div", "learnkit-widget-counts-line", `${dueLabel}  •  ${flashcardsTotalLabel}`);
   teaser.appendChild(countsLine);
 
   if (queueCount > 0) {
-    const timeLine = el("div", "sprout-widget-info-line", tx("ui.widget.summary.estimatedTime", "Estimated Time: {minutes} min", { minutes: estMinutes }));
+    const timeLine = el("div", "learnkit-widget-info-line", tx("ui.widget.summary.estimatedTime", "Estimated Time: {minutes} min", { minutes: estMinutes }));
     teaser.appendChild(timeLine);
   } else {
     const practiceLine = el(
       "div",
-      "sprout-widget-info-line",
+      "learnkit-widget-info-line",
       tx("ui.widget.summary.practicePrompt", "Would you like to start a practice session? This won't count towards card scheduling and you cannot bury cards or undo answers in this mode."),
     );
     teaser.appendChild(practiceLine);
@@ -147,19 +147,19 @@ export function renderWidgetSummary(view: WidgetViewLike, root: HTMLElement): vo
   wrap.appendChild(teaser);
 
   // Footer: Study button
-  const footer = el("div", "sprout-widget-summary-footer");
+  const footer = el("div", "learnkit-widget-summary-footer");
   const studyLabel = queueCount > 0
     ? tx("ui.widget.summary.startStudying", "Start Studying")
     : tx("ui.widget.summary.startPractice", "Start A Practice Session");
   const studyBtn = makeTextButton({
     label: studyLabel,
-    className: "learnkit-btn-toolbar sprout-widget-btn sprout-widget-btn-full",
+    className: "learnkit-btn-toolbar learnkit-widget-btn learnkit-widget-btn-full",
     onClick: () => (queueCount > 0 ? view.startSession() : view.startPracticeSession()),
   });
   applyWidgetActionButtonStyles(studyBtn);
 
   const studyKbd = makeEl("kbd");
-  studyKbd.className = "kbd sprout-widget-kbd";
+  studyKbd.className = "kbd learnkit-widget-kbd";
   studyKbd.textContent = "↵";
   studyBtn.appendChild(studyKbd);
 

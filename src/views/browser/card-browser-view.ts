@@ -9,7 +9,7 @@
  * browser-bulk-edit-modal, browser-helpers).
  *
  * @exports
- *   - SproutCardBrowserView — ItemView subclass that renders and manages the Flashcard Browser
+ *   - LearnKitCardBrowserView — ItemView subclass that renders and manages the Flashcard Browser
  */
 
 // src/views/browser/card-browser-view.ts
@@ -24,13 +24,13 @@ import { initAOS, resetAOS } from "../../platform/core/aos-loader";
 import { log } from "../../platform/core/logger";
 import { queryFirst, setCssProps } from "../../platform/core/ui";
 import { createTitleStripFrame } from "../../platform/core/view-primitives";
-import { SPROUT_HOME_CONTENT_SHELL_CLASS } from "../../platform/core/ui-classes";
+import { LEARNKIT_HOME_CONTENT_SHELL_CLASS } from "../../platform/core/ui-classes";
 import { findCardBlockRangeById } from "../reviewer/markdown-block";
 import { openCardAnchorInNote } from "../../platform/core/open-card-anchor";
 import { t } from "../../platform/translations/translator";
 
 // ✅ shared header
-import { type SproutHeader, createViewHeader } from "../../platform/core/header";
+import { type LearnKitHeader, createViewHeader } from "../../platform/core/header";
 
 // ✅ extracted browser sub-modules
 import { renderPagination } from "./shared/browser-pagination";
@@ -65,13 +65,30 @@ import { makeEl } from "../../platform/core/dom-factory";
 
 type BrowserDensityMode = "comfortable" | "compact";
 
-const BROWSER_DENSITY_STORAGE_KEY = "sprout.browser.tableDensity.v1";
-const BROWSER_COLS_STORAGE_KEY = "sprout.browser.colVisibility.v1";
+const BROWSER_DENSITY_STORAGE_KEY = "learnkit.browser.tableDensity.v1";
+const BROWSER_COLS_STORAGE_KEY = "learnkit.browser.colVisibility.v1";
+
+/**
+ * Pre-rebrand localStorage keys (fallback/migration only - data.json owns these
+ * prefs). Read once so an existing install migrates, then removed. Never write.
+ */
+const LEGACY_BROWSER_STORAGE_KEYS: Readonly<Record<string, string>> = {
+  [BROWSER_DENSITY_STORAGE_KEY]: "sprout.browser.tableDensity.v1",
+  [BROWSER_COLS_STORAGE_KEY]: "sprout.browser.colVisibility.v1",
+};
+
+/** Reads a prefs key, falling back to the pre-rebrand key for migration. */
+export function readBrowserStorageWithMigration(key: string): string | null {
+  const current = window.localStorage.getItem(key);
+  if (current !== null) return current;
+  const legacy = LEGACY_BROWSER_STORAGE_KEYS[key];
+  return legacy ? window.localStorage.getItem(legacy) : null;
+}
 const BROWSER_PREFS_ROOT_KEY = "browserPrefs";
 const COMPACT_DEFAULT_HIDDEN_COLS: ColKey[] = ["id", "stage", "due", "location"];
 const ALL_COLS: ColKey[] = ["id", "type", "stage", "due", "title", "question", "answer", "info", "location", "groups"];
 
-export class SproutCardBrowserView extends ItemView {
+export class LearnKitCardBrowserView extends ItemView {
   plugin: LearnKitPlugin;
 
   query = "";
@@ -145,7 +162,7 @@ export class SproutCardBrowserView extends ItemView {
   private _titleStripEl: HTMLElement | null = null;
   private _didEntranceAos = false;
   // ✅ shared view header renderer
-  private _header: SproutHeader | null = null;
+  private _header: LearnKitHeader | null = null;
 
   // ✅ popover cleanup for all filter dropdowns + page-size dropdown
   private _uiCleanups: Array<() => void> = [];
@@ -358,7 +375,7 @@ export class SproutCardBrowserView extends ItemView {
 
   private _loadDensityMode() {
     try {
-      const raw = window.localStorage.getItem(BROWSER_DENSITY_STORAGE_KEY);
+      const raw = readBrowserStorageWithMigration(BROWSER_DENSITY_STORAGE_KEY);
       this._densityMode = raw === "compact" ? "compact" : "comfortable";
     } catch {
       this._densityMode = "comfortable";
@@ -367,7 +384,7 @@ export class SproutCardBrowserView extends ItemView {
 
   private _loadColumnPrefs() {
     try {
-      const raw = window.localStorage.getItem(BROWSER_COLS_STORAGE_KEY);
+      const raw = readBrowserStorageWithMigration(BROWSER_COLS_STORAGE_KEY);
       if (!raw) return;
       const parsed = JSON.parse(raw) as Record<string, string[]>;
       const valid = new Set<ColKey>(ALL_COLS);
@@ -403,10 +420,13 @@ export class SproutCardBrowserView extends ItemView {
           },
         };
         await this.plugin.saveData(nextRoot);
-        // One-time cleanup: remove legacy localStorage keys
+        // One-time cleanup: remove current and pre-rebrand localStorage keys
         try {
-          window.localStorage.removeItem(BROWSER_DENSITY_STORAGE_KEY);
-          window.localStorage.removeItem(BROWSER_COLS_STORAGE_KEY);
+          for (const key of [BROWSER_DENSITY_STORAGE_KEY, BROWSER_COLS_STORAGE_KEY]) {
+            window.localStorage.removeItem(key);
+            const legacy = LEGACY_BROWSER_STORAGE_KEYS[key];
+            if (legacy) window.localStorage.removeItem(legacy);
+          }
         } catch { /* ignore */ }
       } catch {
         // Fallback: write to localStorage if data.json save fails
@@ -973,7 +993,7 @@ export class SproutCardBrowserView extends ItemView {
     this._applyWidthMode();
 
     const contentShell = makeEl("div");
-    contentShell.className = `${SPROUT_HOME_CONTENT_SHELL_CLASS} lk-browser-content-shell`;
+    contentShell.className = `${LEARNKIT_HOME_CONTENT_SHELL_CLASS} lk-browser-content-shell`;
     root.appendChild(contentShell);
 
     const animationsEnabled = this.plugin.settings?.general?.enableAnimations ?? true;

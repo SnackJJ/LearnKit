@@ -1,6 +1,6 @@
 /**
  * @file src/platform/modals/keyboard-shortcuts-modal.ts
- * @summary Modal that displays keyboard shortcuts for Sprout study sessions
+ * @summary Modal that displays keyboard shortcuts for LearnKit study sessions
  * (reviewer and sidebar widget). Opened from the header shortcuts button.
  *
  * @exports

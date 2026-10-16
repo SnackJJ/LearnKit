@@ -345,7 +345,7 @@ import { escapeDelimiterText, formatDelimitedField } from "../core/delimiter";
 import { normalizeGroups } from "../../engine/indexing/group-format";
 import { makeEl } from "../core/dom-factory";
 
-/** Escape delimiter characters for the Sprout delimited format. */
+/** Escape delimiter characters for the LearnKit delimited format. */
 export function escapePipeText(s: string): string {
   return escapeDelimiterText(s, { escapeBackslashes: false });
 }
@@ -683,7 +683,7 @@ export function createThemedDropdown(
 
   const container = makeEl("div");
   container.className = [
-    "sprout relative inline-flex",
+    "learnkit relative inline-flex",
     fullWidth ? "w-full" : "",
     extraCls ?? "",
     config?.containerClassName ?? "",

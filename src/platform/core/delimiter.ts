@@ -1,12 +1,13 @@
 import { collectMathRanges } from "./shared-utils";
+import { LEGACY_CARD_ANCHOR_PREFIXES, PRIMARY_CARD_ANCHOR_PREFIX } from "./identity";
 
 /**
  * @file src/core/delimiter.ts
- * @summary Centralised delimiter utilities for Sprout's pipe-delimited card format.
+ * @summary Centralised delimiter utilities for LearnKit's pipe-delimited card format.
  * Every file that reads or writes card fields should import helpers from here
  * instead of hard-coding the `|` character.
  *
- * The active delimiter is configured via `indexing.delimiter` in SproutSettings.
+ * The active delimiter is configured via `indexing.delimiter` in LearnKitSettings.
  * Presets: `|` (default), `@`, `~`, `;`. Custom single non-alphanumeric
  * Unicode characters (e.g. `⚵`) are also supported.
  *
@@ -337,7 +338,7 @@ let _FIELD_LINE_SETTINGS_RE: RegExp;
 let _FLASHCARD_HEADER_CARD_RE: RegExp;
 let _FLASHCARD_HEADER_FIELD_RE: RegExp;
 
-const ANCHOR_PREFIX_PATTERN = "(?:learnkit|sprout)";
+const ANCHOR_PREFIX_PATTERN = `(?:${PRIMARY_CARD_ANCHOR_PREFIX}|${LEGACY_CARD_ANCHOR_PREFIXES.join("|")})`;
 
 function _rebuildRegexes() {
   const d = escapeDelimiterRe(_delim);
@@ -351,7 +352,7 @@ function _rebuildRegexes() {
   // parser.ts — title outside card: ^T\s*<d>\s*(.*)$
   _TITLE_OUTSIDE_DELIM_RE = new RegExp(`^T\\s*${d}\\s*(.*)$`, "u");
 
-  // parser.ts — any header/anchor: ^(?:^learnkit-\d{9}|^sprout-\d{9}|(?:RQ|Q|MCQ|CQ|IO|HQ|OQ|QX|T|A|O|I|G|C|M|AX|\d{1,2})\s*<d>)\s*
+  // parser.ts — any header/anchor: ^(?:^learnkit-\d{9}|^learnkit-\d{9}|(?:RQ|Q|MCQ|CQ|IO|HQ|OQ|QX|T|A|O|I|G|C|M|AX|\d{1,2})\s*<d>)\s*
   _ANY_HEADER_DELIM_RE = new RegExp(
     `^(?:\\^${ANCHOR_PREFIX_PATTERN}-\\d{9}|(?:RQ|Q|MCQ|CQ|IO|HQ|OQ|QX|T|A|O|I|G|C|M|AX|\\d{1,2})\\s*${d})\\s*`,
     "u",

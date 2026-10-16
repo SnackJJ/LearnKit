@@ -147,7 +147,7 @@ export function mountSearchPopoverList(args: SearchPopoverListArgs): SearchPopov
   let typeFilterOpen = false;
 
   const searchWrap = args.searchInput.parentElement;
-  const filterPopoverId = `sprout-scope-type-filter-listbox-${Math.random().toString(36).slice(2, 9)}`;
+  const filterPopoverId = `learnkit-scope-type-filter-listbox-${Math.random().toString(36).slice(2, 9)}`;
   const typeFilterBtn = typeFilterDefs.length
     ? searchWrap?.createEl("button", {
       cls: "learnkit-btn-filter learnkit-btn-filter h-7 px-3 text-sm inline-flex items-center gap-2 learnkit-scope-type-filter-btn learnkit-scope-type-filter-btn",

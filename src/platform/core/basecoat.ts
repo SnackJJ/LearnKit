@@ -16,10 +16,10 @@ export type BasecoatApi = {
   stop?: () => void;
 };
 
-const SPROUT_BASECOAT_PATCHED = "__sproutPatchedNullGuards";
+const LEARNKIT_BASECOAT_PATCHED = "__learnkitPatchedNullGuards";
 
 type BasecoatRuntimeWithMarker = BasecoatApi & {
-  [SPROUT_BASECOAT_PATCHED]?: boolean;
+  [LEARNKIT_BASECOAT_PATCHED]?: boolean;
 };
 
 /**
@@ -41,7 +41,7 @@ export function getBasecoatApi(): BasecoatApi | null {
  */
 export function patchBasecoatNullGuards(api: BasecoatApi): void {
   const bc = api as BasecoatRuntimeWithMarker;
-  if (bc[SPROUT_BASECOAT_PATCHED]) return;
+  if (bc[LEARNKIT_BASECOAT_PATCHED]) return;
   if (typeof bc.register !== "function") return;
 
   const safeInitDropdownMenu = (dropdownMenuComponent: Element) => {
@@ -177,5 +177,5 @@ export function patchBasecoatNullGuards(api: BasecoatApi): void {
   };
 
   bc.register("dropdown-menu", ".dropdown-menu:not([data-dropdown-menu-initialized])", safeInitDropdownMenu);
-  bc[SPROUT_BASECOAT_PATCHED] = true;
+  bc[LEARNKIT_BASECOAT_PATCHED] = true;
 }

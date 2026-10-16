@@ -188,7 +188,7 @@ export class ReminderEngine {
     return null;
   }
 
-  private _isActiveStudyTabInSprout(): boolean {
+  private _isActiveStudyTabInLearnKit(): boolean {
     const leaf = this.plugin.app.workspace.getMostRecentLeaf?.() ?? null;
     const viewType = leaf?.view?.getViewType?.();
     return typeof viewType === "string" && ReminderEngine.STUDY_VIEW_TYPES.has(viewType);
@@ -208,7 +208,7 @@ export class ReminderEngine {
     const elapsedMs = Math.max(0, now - this._gatekeeperLastTickAt);
     this._gatekeeperLastTickAt = now;
 
-    const shouldPause = !!cfg.gatekeeperPauseWhenStudying && this._isActiveStudyTabInSprout();
+    const shouldPause = !!cfg.gatekeeperPauseWhenStudying && this._isActiveStudyTabInLearnKit();
     if (shouldPause) return;
 
     this._gatekeeperRemainingMs -= elapsedMs;

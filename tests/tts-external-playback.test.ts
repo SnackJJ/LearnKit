@@ -5,9 +5,9 @@
 
 import { describe, expect, it } from "vitest";
 import { applyExternalPlaybackSettings } from "../src/platform/integrations/tts/tts-service";
-import type { SproutSettings } from "../src/platform/types/settings";
+import type { LearnKitSettings } from "../src/platform/types/settings";
 
-function makeAudio(overrides: Partial<SproutSettings["audio"]> = {}): SproutSettings["audio"] {
+function makeAudio(overrides: Partial<LearnKitSettings["audio"]> = {}): LearnKitSettings["audio"] {
   return {
     enabled: true,
     autoplay: true,

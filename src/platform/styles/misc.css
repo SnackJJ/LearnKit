@@ -967,7 +967,7 @@
 
 }
 
-/* ---- MathJax: remove block margins inside Sprout cards/widgets ---- */
+/* ---- MathJax: remove block margins inside LearnKit cards/widgets ---- */
 
 /* eslint-disable-next-line obsidianmd/no-unknown-type-selector */
 .learnkit .lk-session-card .MathJax[jax="CHTML"][display="true"],
@@ -987,10 +987,10 @@
   margin-block-end: 0;
 }
 
-/* ---- Override theme math-block styling inside Sprout card views ---- */
+/* ---- Override theme math-block styling inside LearnKit card views ---- */
 /* Themes like the user's may set background, padding, border-radius on
    .math.math-block.is-loaded which clashes with card/widget/gatekeeper layout.
-   Reset those properties so Sprout cards look consistent regardless of theme. */
+   Reset those properties so LearnKit cards look consistent regardless of theme. */
 
 .learnkit .lk-session-card .math.math-block.is-loaded,
 .learnkit.learnkit-widget .math.math-block.is-loaded,
@@ -1086,7 +1086,7 @@
   outline: none;
 }
 
-/* Ensure Obsidian/LearnKit input focus rings never leak into Sprout surfaces */
+/* Ensure Obsidian/LearnKit input focus rings never leak into LearnKit surfaces */
 .learnkit :is(
   textarea,
   .multi-select-container,

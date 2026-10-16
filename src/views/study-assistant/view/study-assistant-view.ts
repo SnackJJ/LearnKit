@@ -3,22 +3,22 @@
  * @summary Module for study assistant view.
  *
  * @exports
- *  - SproutStudyAssistantView
+ *  - LearnKitStudyAssistantView
  */
 
 import { ItemView, TFile, WorkspaceLeaf } from "obsidian";
 import type LearnKitPlugin from "../../../main";
 import { VIEW_TYPE_STUDY_ASSISTANT } from "../../../platform/core/constants";
-import { SproutAssistantPopup } from "../popup/assistant-popup";
+import { LearnKitAssistantPopup } from "../popup/assistant-popup";
 
-export class SproutStudyAssistantView extends ItemView {
+export class LearnKitStudyAssistantView extends ItemView {
   plugin: LearnKitPlugin;
-  private popup: SproutAssistantPopup;
+  private popup: LearnKitAssistantPopup;
 
   constructor(leaf: WorkspaceLeaf, plugin: LearnKitPlugin) {
     super(leaf);
     this.plugin = plugin;
-    this.popup = new SproutAssistantPopup(plugin);
+    this.popup = new LearnKitAssistantPopup(plugin);
   }
 
   getViewType(): string {
@@ -35,7 +35,7 @@ export class SproutStudyAssistantView extends ItemView {
 
   onOpen(): Promise<void> {
     this.contentEl.empty();
-    this.contentEl.addClass("sprout", "learnkit-study-assistant-root");
+    this.contentEl.addClass("learnkit", "learnkit-study-assistant-root");
     this.popup.mountEmbedded(this.contentEl);
     this.popup.onFileOpen(this.app.workspace.getActiveFile());
     return Promise.resolve();

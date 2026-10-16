@@ -11,9 +11,9 @@
  *  - BackupIntegrityState
  */
 
-import type { SproutSettings } from "../../../platform/types/settings";
+import type { LearnKitSettings } from "../../../platform/types/settings";
 
-export type StudyAssistantProvider = SproutSettings["studyAssistant"]["provider"];
+export type StudyAssistantProvider = LearnKitSettings["studyAssistant"]["provider"];
 
 export type StudyAssistantModelOption = {
   value: string;

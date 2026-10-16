@@ -1,6 +1,6 @@
 /**
  * @file src/modals/anki-export-modal.ts
- * @summary Obsidian modal for exporting Sprout cards to an Anki .apkg file.
+ * @summary Obsidian modal for exporting LearnKit cards to an Anki .apkg file.
  * Single-page flow with scope selection (all / by deck / by group / current note),
  * options, and export button.
  *
@@ -507,7 +507,7 @@ export class AnkiExportModal extends Modal {
     mcqField.appendChild(mcqDropdown.element);
 
     // ── Default deck name ─────────────────────────────────────────────────────
-    const defaultDeckField = this.mkField(body, "Default deck name", "Anki deck name for cards without a Sprout group");
+    const defaultDeckField = this.mkField(body, "Default deck name", "Anki deck name for cards without a LearnKit group");
     const deckNameInput = defaultDeckField.createEl("input", { type: "text", cls: "input w-full", value: "LearnKit Export" });
 
     // ── Toggles grid ──────────────────────────────────────────────────────────

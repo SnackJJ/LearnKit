@@ -126,7 +126,7 @@
 
 /*
  * Hide raw card .el-p elements that are direct siblings of processed
- * sprout cards and haven't been processed themselves. These are the
+ * learnkit cards and haven't been processed themselves. These are the
  * duplicate text fragments Obsidian creates from multi-line card blocks.
  *
  * We only hide elements explicitly marked by the JS processor
@@ -1198,7 +1198,7 @@
 }
 
 .learnkit-pretty-card.learnkit-macro-flashcards.learnkit-flashcard-animating {
-  animation: sprout-parent-flip 360ms ease;
+  animation: learnkit-parent-flip 360ms ease;
 }
 
 .learnkit-pretty-card.learnkit-macro-flashcards .learnkit-flashcard-question,
@@ -1436,7 +1436,7 @@ padding: 0px ;
   vertical-align: baseline;
 }
 
-@keyframes sprout-parent-flip {
+@keyframes learnkit-parent-flip {
   0% {
     transform: rotateY(0deg);
   }

@@ -13,19 +13,19 @@ import {
   deckToFolderAndFile,
   generateAnkiId,
   generateAnkiGuid,
-  sproutRatingToAnkiEase,
-  ankiEaseToSproutRating,
-  sproutStageToAnkiTypeQueue,
-  ankiTypeQueueToSproutStage,
+  learnkitRatingToAnkiEase,
+  ankiEaseToLearnKitRating,
+  learnkitStageToAnkiTypeQueue,
+  ankiTypeQueueToLearnKitStage,
   fsrsDifficultyToAnkiFactor,
   ankiFactorToFsrsDifficulty,
-  sproutDueToAnkiReviewDue,
-  ankiReviewDueToSproutDue,
-  sproutDueToAnkiLearningDue,
-  ankiLearningDueToSproutDue,
+  learnkitDueToAnkiReviewDue,
+  ankiReviewDueToLearnKitDue,
+  learnkitDueToAnkiLearningDue,
+  ankiLearningDueToLearnKitDue,
   computeFieldChecksum,
-  sproutGroupsToAnkiTags,
-  ankiTagsToSproutGroups,
+  learnkitGroupsToAnkiTags,
+  ankiTagsToLearnKitGroups,
   _resetIdCounter,
 } from "../src/platform/integrations/anki/anki-utils";
 
@@ -126,62 +126,62 @@ describe("generateAnkiGuid", () => {
 
 // ── Rating ↔ Ease ──
 
-describe("sproutRatingToAnkiEase / ankiEaseToSproutRating", () => {
+describe("learnkitRatingToAnkiEase / ankiEaseToLearnKitRating", () => {
   it("maps again → 1", () => {
-    expect(sproutRatingToAnkiEase("again")).toBe(1);
+    expect(learnkitRatingToAnkiEase("again")).toBe(1);
   });
   it("maps hard → 2", () => {
-    expect(sproutRatingToAnkiEase("hard")).toBe(2);
+    expect(learnkitRatingToAnkiEase("hard")).toBe(2);
   });
   it("maps good → 3", () => {
-    expect(sproutRatingToAnkiEase("good")).toBe(3);
+    expect(learnkitRatingToAnkiEase("good")).toBe(3);
   });
   it("maps easy → 4", () => {
-    expect(sproutRatingToAnkiEase("easy")).toBe(4);
+    expect(learnkitRatingToAnkiEase("easy")).toBe(4);
   });
   it("round-trips each rating", () => {
     for (const r of ["again", "hard", "good", "easy"] as const) {
-      expect(ankiEaseToSproutRating(sproutRatingToAnkiEase(r))).toBe(r);
+      expect(ankiEaseToLearnKitRating(learnkitRatingToAnkiEase(r))).toBe(r);
     }
   });
 });
 
 // ── Stage ↔ Type/Queue ──
 
-describe("sproutStageToAnkiTypeQueue / ankiTypeQueueToSproutStage", () => {
+describe("learnkitStageToAnkiTypeQueue / ankiTypeQueueToLearnKitStage", () => {
   it("maps new → type 0, queue 0", () => {
-    const { type, queue } = sproutStageToAnkiTypeQueue("new");
+    const { type, queue } = learnkitStageToAnkiTypeQueue("new");
     expect(type).toBe(0);
     expect(queue).toBe(0);
   });
   it("maps learning → type 1, queue 1", () => {
-    const { type, queue } = sproutStageToAnkiTypeQueue("learning");
+    const { type, queue } = learnkitStageToAnkiTypeQueue("learning");
     expect(type).toBe(1);
     expect(queue).toBe(1);
   });
   it("maps review → type 2, queue 2", () => {
-    const { type, queue } = sproutStageToAnkiTypeQueue("review");
+    const { type, queue } = learnkitStageToAnkiTypeQueue("review");
     expect(type).toBe(2);
     expect(queue).toBe(2);
   });
   it("maps relearning → type 3, queue 1", () => {
-    const { type, queue } = sproutStageToAnkiTypeQueue("relearning");
+    const { type, queue } = learnkitStageToAnkiTypeQueue("relearning");
     expect(type).toBe(3);
     expect(queue).toBe(1);
   });
   it("maps suspended → queue -1", () => {
-    const { queue } = sproutStageToAnkiTypeQueue("suspended");
+    const { queue } = learnkitStageToAnkiTypeQueue("suspended");
     expect(queue).toBe(-1);
   });
   it("round-trips main stages", () => {
     for (const stage of ["new", "learning", "review"] as const) {
-      const { type, queue } = sproutStageToAnkiTypeQueue(stage);
-      expect(ankiTypeQueueToSproutStage(type, queue)).toBe(stage);
+      const { type, queue } = learnkitStageToAnkiTypeQueue(stage);
+      expect(ankiTypeQueueToLearnKitStage(type, queue)).toBe(stage);
     }
   });
   it("suspended detected from queue -1 regardless of type", () => {
-    expect(ankiTypeQueueToSproutStage(0, -1)).toBe("suspended");
-    expect(ankiTypeQueueToSproutStage(2, -1)).toBe("suspended");
+    expect(ankiTypeQueueToLearnKitStage(0, -1)).toBe("suspended");
+    expect(ankiTypeQueueToLearnKitStage(2, -1)).toBe("suspended");
   });
 });
 
@@ -217,18 +217,18 @@ describe("due date conversions", () => {
   const crt = 1700000000; // ~Nov 2023
 
   it("review due round-trips", () => {
-    const sproutDue = 1700864000000; // 10 days later in ms
-    const ankiDue = sproutDueToAnkiReviewDue(sproutDue, crt);
+    const learnkitDue = 1700864000000; // 10 days later in ms
+    const ankiDue = learnkitDueToAnkiReviewDue(learnkitDue, crt);
     expect(ankiDue).toBe(10);
-    const back = ankiReviewDueToSproutDue(ankiDue, crt);
+    const back = ankiReviewDueToLearnKitDue(ankiDue, crt);
     expect(back).toBe(1700864000000);
   });
 
   it("learning due round-trips", () => {
-    const sproutDue = 1700001000000; // some ms timestamp
-    const ankiDue = sproutDueToAnkiLearningDue(sproutDue);
+    const learnkitDue = 1700001000000; // some ms timestamp
+    const ankiDue = learnkitDueToAnkiLearningDue(learnkitDue);
     expect(ankiDue).toBe(1700001000);
-    const back = ankiLearningDueToSproutDue(ankiDue);
+    const back = ankiLearningDueToLearnKitDue(ankiDue);
     expect(back).toBe(1700001000000);
   });
 });
@@ -251,31 +251,31 @@ describe("computeFieldChecksum", () => {
 
 // ── Tag conversion ──
 
-describe("sproutGroupsToAnkiTags", () => {
+describe("learnkitGroupsToAnkiTags", () => {
   it("converts groups to space-separated :: tags", () => {
-    const result = sproutGroupsToAnkiTags(["Medicine/Paediatrics", "Important"]);
+    const result = learnkitGroupsToAnkiTags(["Medicine/Paediatrics", "Important"]);
     expect(result).toBe(" Medicine::Paediatrics Important ");
   });
   it("replaces spaces with underscores", () => {
-    const result = sproutGroupsToAnkiTags(["My Group"]);
+    const result = learnkitGroupsToAnkiTags(["My Group"]);
     expect(result).toBe(" My_Group ");
   });
   it("returns empty string for null/empty", () => {
-    expect(sproutGroupsToAnkiTags(null)).toBe("");
-    expect(sproutGroupsToAnkiTags([])).toBe("");
+    expect(learnkitGroupsToAnkiTags(null)).toBe("");
+    expect(learnkitGroupsToAnkiTags([])).toBe("");
   });
 });
 
-describe("ankiTagsToSproutGroups", () => {
+describe("ankiTagsToLearnKitGroups", () => {
   it("converts space-separated tags to groups", () => {
-    const result = ankiTagsToSproutGroups(" Medicine::Paediatrics Important ");
+    const result = ankiTagsToLearnKitGroups(" Medicine::Paediatrics Important ");
     expect(result).toEqual(["Medicine/Paediatrics", "Important"]);
   });
   it("converts underscores to spaces", () => {
-    const result = ankiTagsToSproutGroups("My_Group");
+    const result = ankiTagsToLearnKitGroups("My_Group");
     expect(result).toEqual(["My Group"]);
   });
   it("handles empty string", () => {
-    expect(ankiTagsToSproutGroups("")).toEqual([]);
+    expect(ankiTagsToLearnKitGroups("")).toEqual([]);
   });
 });

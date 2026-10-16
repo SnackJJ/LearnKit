@@ -12,7 +12,7 @@
  */
 
 import { requestUrl } from "obsidian";
-import type { SproutSettings } from "../../types/settings";
+import type { LearnKitSettings } from "../../types/settings";
 import type { TtsProvider } from "../../types/settings";
 
 // ── Helpers ─────────────────────────────────────────────────────
@@ -48,7 +48,7 @@ export class TtsProviderError extends Error {
 
 // ── Provider routing ────────────────────────────────────────────
 
-export function ttsProviderBaseUrl(audio: SproutSettings["audio"]): string {
+export function ttsProviderBaseUrl(audio: LearnKitSettings["audio"]): string {
   const provider = audio.ttsProvider;
 
   if (provider === "custom") {
@@ -71,7 +71,7 @@ export function ttsProviderBaseUrl(audio: SproutSettings["audio"]): string {
 
 export function ttsProviderApiKey(
   provider: TtsProvider,
-  apiKeys: SproutSettings["audio"]["ttsApiKeys"],
+  apiKeys: LearnKitSettings["audio"]["ttsApiKeys"],
 ): string {
   if (provider === "elevenlabs") return String(apiKeys.elevenlabs || "").trim();
   if (provider === "openai") return String(apiKeys.openai || "").trim();
@@ -101,7 +101,7 @@ export function formatTtsProviderLabel(provider: TtsProvider): string {
 export async function requestExternalTts(params: {
   text: string;
   lang: string;
-  audio: SproutSettings["audio"];
+  audio: LearnKitSettings["audio"];
 }): Promise<ArrayBuffer> {
   const { text, lang, audio } = params;
   const provider = audio.ttsProvider;
@@ -141,7 +141,7 @@ async function requestElevenLabsTts(
   apiKey: string,
   text: string,
   lang: string,
-  audio: SproutSettings["audio"],
+  audio: LearnKitSettings["audio"],
 ): Promise<ArrayBuffer> {
   const voiceId = audio.ttsVoiceId || "21m00Tcm4TlvDq8ikWAM"; // "Rachel" default
   const model = audio.ttsModel || "eleven_multilingual_v2";
@@ -209,7 +209,7 @@ async function requestOpenAiTts(
   apiKey: string,
   text: string,
   lang: string,
-  audio: SproutSettings["audio"],
+  audio: LearnKitSettings["audio"],
 ): Promise<ArrayBuffer> {
   const voice = audio.ttsVoiceId || "alloy";
   const model = audio.ttsModel || "gpt-4o-mini-tts";
@@ -272,7 +272,7 @@ async function requestGoogleCloudTts(
   apiKey: string,
   text: string,
   lang: string,
-  audio: SproutSettings["audio"],
+  audio: LearnKitSettings["audio"],
 ): Promise<ArrayBuffer> {
   const voiceName = audio.ttsVoiceId || "";
   const url = `${baseUrl}/text:synthesize?key=${encodeURIComponent(apiKey)}`;
@@ -339,7 +339,7 @@ async function requestCustomTts(
   apiKey: string,
   text: string,
   lang: string,
-  audio: SproutSettings["audio"],
+  audio: LearnKitSettings["audio"],
 ): Promise<ArrayBuffer> {
   const body = JSON.stringify({
     text,

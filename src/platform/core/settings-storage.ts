@@ -11,7 +11,7 @@
  *  - migrateLegacyConfigFiles
  */
 
-import { deepMerge, type SproutSettings } from "./constants";
+import { deepMerge, type LearnKitSettings } from "./constants";
 import { isPlainObject } from "./utils";
 import { log } from "./logger";
 
@@ -56,7 +56,7 @@ async function ensureDirectoryPath(adapter: AdapterLike, dirPath: string): Promi
  */
 const LEGACY_CONFIG_FILES: ReadonlyArray<{
   readonly file: string;
-  readonly keys: readonly (keyof SproutSettings)[];
+  readonly keys: readonly (keyof LearnKitSettings)[];
 }> = [
   { file: "general.json", keys: ["general"] },
   { file: "study.json", keys: ["study"] },
@@ -70,7 +70,7 @@ const LEGACY_CONFIG_FILES: ReadonlyArray<{
   { file: "audio.json", keys: ["audio"] },
 ];
 
-export function normaliseApiKeys(raw: unknown): SproutSettings["studyAssistant"]["apiKeys"] {
+export function normaliseApiKeys(raw: unknown): LearnKitSettings["studyAssistant"]["apiKeys"] {
   const obj = isPlainObject(raw) ? raw : {};
   const asApiKey = (value: unknown): string => {
     if (typeof value === "string") return value.trim();
@@ -92,14 +92,14 @@ export function normaliseApiKeys(raw: unknown): SproutSettings["studyAssistant"]
   };
 }
 
-export function hasAnyApiKey(apiKeys: SproutSettings["studyAssistant"]["apiKeys"]): boolean {
+export function hasAnyApiKey(apiKeys: LearnKitSettings["studyAssistant"]["apiKeys"]): boolean {
   return Object.values(apiKeys).some((value) => String(value || "").trim().length > 0);
 }
 
 export async function loadApiKeysFromDedicatedFile(params: {
   adapter: AdapterLike | null | undefined;
   filePath: string | null;
-  settings: SproutSettings;
+  settings: LearnKitSettings;
 }): Promise<boolean> {
   const { adapter, filePath, settings } = params;
   if (!adapter || !filePath) return false;
@@ -119,7 +119,7 @@ export async function persistApiKeysToDedicatedFile(params: {
   adapter: AdapterLike | null | undefined;
   dirPath: string | null;
   filePath: string | null;
-  apiKeys: SproutSettings["studyAssistant"]["apiKeys"];
+  apiKeys: LearnKitSettings["studyAssistant"]["apiKeys"];
 }): Promise<boolean> {
   const { adapter, dirPath, filePath, apiKeys } = params;
   if (!adapter || !dirPath || !filePath) return false;
@@ -147,7 +147,7 @@ export async function initialiseDedicatedApiKeyStorage(params: {
   adapter: AdapterLike | null | undefined;
   dirPath: string | null;
   filePath: string | null;
-  settings: SproutSettings;
+  settings: LearnKitSettings;
 }): Promise<void> {
   const { adapter, dirPath, filePath, settings } = params;
 
@@ -171,7 +171,7 @@ export async function initialiseDedicatedApiKeyStorage(params: {
 
 // ── TTS API keys ────────────────────────────────────────────────
 
-export function normaliseTtsApiKeys(raw: unknown): SproutSettings["audio"]["ttsApiKeys"] {
+export function normaliseTtsApiKeys(raw: unknown): LearnKitSettings["audio"]["ttsApiKeys"] {
   const obj = isPlainObject(raw) ? raw : {};
   const asKey = (value: unknown): string => {
     if (typeof value === "string") return value.trim();
@@ -188,14 +188,14 @@ export function normaliseTtsApiKeys(raw: unknown): SproutSettings["audio"]["ttsA
   };
 }
 
-export function hasAnyTtsApiKey(apiKeys: SproutSettings["audio"]["ttsApiKeys"]): boolean {
+export function hasAnyTtsApiKey(apiKeys: LearnKitSettings["audio"]["ttsApiKeys"]): boolean {
   return Object.values(apiKeys).some((v) => String(v || "").trim().length > 0);
 }
 
 export async function loadTtsApiKeysFromDedicatedFile(params: {
   adapter: AdapterLike | null | undefined;
   filePath: string | null;
-  settings: SproutSettings;
+  settings: LearnKitSettings;
 }): Promise<boolean> {
   const { adapter, filePath, settings } = params;
   if (!adapter || !filePath) return false;
@@ -215,7 +215,7 @@ export async function persistTtsApiKeysToDedicatedFile(params: {
   adapter: AdapterLike | null | undefined;
   dirPath: string | null;
   filePath: string | null;
-  apiKeys: SproutSettings["audio"]["ttsApiKeys"];
+  apiKeys: LearnKitSettings["audio"]["ttsApiKeys"];
 }): Promise<boolean> {
   const { adapter, dirPath, filePath, apiKeys } = params;
   if (!adapter || !dirPath || !filePath) return false;
@@ -243,7 +243,7 @@ export async function initialiseDedicatedTtsApiKeyStorage(params: {
   adapter: AdapterLike | null | undefined;
   dirPath: string | null;
   filePath: string | null;
-  settings: SproutSettings;
+  settings: LearnKitSettings;
 }): Promise<void> {
   const { adapter, dirPath, filePath, settings } = params;
 
@@ -268,7 +268,7 @@ export async function initialiseDedicatedTtsApiKeyStorage(params: {
 export async function migrateLegacyConfigFiles(params: {
   adapter: AdapterLike | null | undefined;
   getConfigFilePath: (filename: string) => string | null;
-  settings: SproutSettings;
+  settings: LearnKitSettings;
 }): Promise<void> {
   const { adapter, getConfigFilePath, settings } = params;
   if (!adapter) return;

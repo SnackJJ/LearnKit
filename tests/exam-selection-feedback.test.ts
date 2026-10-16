@@ -6,7 +6,7 @@ vi.mock("../src/platform/core/ui", () => ({
   setCssProps: vi.fn(),
 }));
 vi.mock("../src/platform/core/header", () => ({ createViewHeader: vi.fn() }));
-import { SproutExamGeneratorView } from "../src/views/exam-generator/exam-generator-view";
+import { LearnKitExamGeneratorView } from "../src/views/exam-generator/exam-generator-view";
 
 // Obsidian's DOM helpers, with real elements and browser click events.
 Object.assign(HTMLElement.prototype, {
@@ -24,7 +24,7 @@ Object.assign(HTMLElement.prototype, {
 });
 
 function runner(multi: boolean) {
-  const view = Object.create(SproutExamGeneratorView.prototype) as any;
+  const view = Object.create(LearnKitExamGeneratorView.prototype) as any;
   Object.assign(view, {
     _questions: [{ id: "q", type: "mcq", prompt: "Choose", options: ["A", "B", "C"], ...(multi ? { correctIndices: [0, 2] } : { correctIndex: 0 }) }],
     _answers: new Map(), _currentIndex: 0, _autoSubmitGrace: null,

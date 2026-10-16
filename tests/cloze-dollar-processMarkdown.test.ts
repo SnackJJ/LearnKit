@@ -81,7 +81,7 @@ $$`;
     formatted.forEach((l, i) => console.log(`  [${i}] ${JSON.stringify(l)}`));
 
     // Parse back: build a minimal card block & parse it
-    const blockSource = ["^sprout-test123", ...formatted, ""].join("\n");
+    const blockSource = ["^learnkit-test123", ...formatted, ""].join("\n");
     console.log("BLOCK SOURCE:", JSON.stringify(blockSource));
 
     const { cards: parsed } = parseCardsFromText("test/note.md", blockSource);
