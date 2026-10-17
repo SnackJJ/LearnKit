@@ -120,11 +120,7 @@ export function titleCaseGroupPath(path: string): string {
 export function formatGroupDisplay(path: string): string {
   const canonical = titleCaseGroupPath(path);
   if (!canonical) return "";
-  // One global replace rather than `split("/").join(" / ")`: the split+join
-  // shape is what community review reads as runtime string assembly (the
-  // technique used to hide endpoints from scanners). Behaviour is identical -
-  // see tests/format-group-display.test.ts - so please keep it this way.
-  return canonical.replace(/\//g, " / ");
+  return canonical.split("/").join(" / ");
 }
 
 /**

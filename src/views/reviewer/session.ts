@@ -35,7 +35,7 @@ export function inScope(scope: Scope | null, notePath: string) {
 
   if (scope.type === "folder") {
     const folder = notePath.includes("/")
-      ? notePath.slice(0, Math.max(0, notePath.lastIndexOf("/")))
+      ? notePath.split("/").slice(0, -1).join("/")
       : "";
     return folder === scope.key || folder.startsWith(scope.key + "/");
   }

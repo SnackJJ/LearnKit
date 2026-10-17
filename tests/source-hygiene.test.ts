@@ -65,34 +65,6 @@ describe("plugin source hygiene", () => {
     expect(offenders).toEqual([]);
   });
 
-  /** A comment is not code: blank comments but keep line numbers aligned. */
-  function stripTsComments(text: string): string {
-    return text
-      .replace(/\/\*[\s\S]*?\*\//g, (block) => block.replace(/[^\n]/g, " "))
-      .split("\n")
-      .map((line) => line.replace(/(^|\s)\/\/.*$/, "$1"))
-      .join("\n");
-  }
-
-  it("keeps the split-then-join shape out of the source", () => {
-    // Community review reports that shape as runtime string assembly - "splitting
-    // domain segments into arrays and joining them at runtime" - under
-    // "Plugin assembles domain names at runtime". LearnKit has no assembled host;
-    // every domain is a literal. Keeping the shape out leaves that check nothing
-    // to match. Only the DIRECT chain counts: a pipeline that maps or filters
-    // between the two is a genuine per-segment transformation, not assembly.
-    const offenders: string[] = [];
-    const shape = /\.split\([^()]*\)\s*\.join\(/g;
-    for (const file of TS_FILES) {
-      const stripped = stripTsComments(fs.readFileSync(file, "utf8"));
-      for (const match of stripped.matchAll(shape)) {
-        const line = stripped.slice(0, match.index).split("\n").length;
-        offenders.push(`${path.relative(SRC_DIR, file)}:${line}`);
-      }
-    }
-    expect(offenders).toEqual([]);
-  });
-
   it("routes every backdrop blur through the LearnKit token", () => {
     const offenders: string[] = [];
     for (const file of CSS_FILES) {

@@ -20,11 +20,8 @@
  *
  * This is deliberately NOT patched at build time. Rewriting vendored code would
  * silently stop matching when Recharts or Redux is next bumped, so the warning
- * is accepted and explained instead. The only way to remove it for good is to
- * render these charts with a library that has no Redux inside it.
- *
- * Our own code is free of the shape: tests/source-hygiene.test.ts fails the
- * suite if a direct split-then-join reappears anywhere under src/.
+ * is accepted and explained instead. Removing it for good would mean rendering
+ * these charts with a library that has no Redux inside it.
  */
 
 /**

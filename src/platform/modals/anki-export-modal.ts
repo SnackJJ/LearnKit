@@ -47,9 +47,7 @@ function titleCaseGroupPath(path: string): string {
 function formatGroupDisplay(path: string): string {
   const canonical = titleCaseGroupPath(path);
   if (!canonical) return "";
-  // See formatGroupDisplay in core/shared-utils: a global replace keeps the
-  // split+join shape out of the bundle, which community review flags.
-  return canonical.replace(/\//g, " / ");
+  return canonical.split("/").join(" / ");
 }
 
 // ── Modal ─────────────────────────────────────────────────────────────────────

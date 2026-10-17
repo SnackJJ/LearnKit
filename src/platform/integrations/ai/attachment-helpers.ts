@@ -174,7 +174,8 @@ function normalizeExtractedText(text: string): string {
   const normalized = String(text || "");
   return normalized
     .replace(/\r/g, "")
-    replace(/\u0000/g, "")
+    .split("\u0000")
+    .join("")
     .replace(/\n{3,}/g, "\n\n")
     .trim();
 }
@@ -447,7 +448,7 @@ export function splitTextLikeAttachmentDataUrls(dataUrls: string[]): {
     }
 
     const decodedText = base64ToUtf8(parsed.base64);
-    const text = decodedText.replace(/\u0000/g, "").trim();
+    const text = decodedText.split("\u0000").join("").trim();
     if (!text) continue;
     textBlocks.push({ mimeType: parsed.mimeType, text });
   }

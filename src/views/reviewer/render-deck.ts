@@ -42,7 +42,7 @@ type Args = {
 
 /** Format a group path for display (alias for formatGroupDisplay without title-casing). */
 function prettifyGroupLabel(groupPath: string) {
-  return groupPath.replace(/\//g, " / ");
+  return groupPath.split("/").join(" / ");
 }
 
 function ensureBasecoatStartedOnce() {
